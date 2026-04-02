@@ -67,7 +67,7 @@ jobs:
           fi
           skill-eval \
             --config eval.yaml \
-            --skill-sources skill-sources.yaml \
+            --skill-sources skill-sources.yaml --runs 1 \
             run $ARGS
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
