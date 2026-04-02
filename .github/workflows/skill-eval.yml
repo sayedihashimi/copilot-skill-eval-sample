@@ -30,13 +30,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install GitHub Copilot CLI
+        run: curl -fsSL https://gh.io/copilot-install | bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install skill-eval
-        run: pip install git+https://github.com/sayedihashimi/copilot-skill-eval.git@2026.04-externalskills
+        run: pip install git+https://github.com/sayedihashimi/copilot-skill-eval@2026.04-externalskills
 
       - name: Validate configuration
         run: |
