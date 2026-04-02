@@ -1,0 +1,114 @@
+name: first-try
+description: Evaluate how my custom skills improve code generation
+scenarios:
+- name: Create web api
+  prompt: prompts/scenarios/create-web-api.prompt.md
+  description: Create a new .net 10 asp.net core web api that has endpoints to manage
+    a contact list. store the data in a sqlite db. no auth or anything. I need the
+    typical support that a contact manager app requires.
+configurations:
+- name: no-skills
+  label: Baseline (default Copilot)
+  skills: []
+  plugins: []
+- name: dotnet-webapi-skill
+  label: dotnet-webapi-skill
+  skills:
+  - source: dotnet-webapi
+  plugins: []
+verification:
+  build:
+    command: dotnet build
+  run:
+    command: dotnet run
+    timeout_seconds: 15
+dimensions:
+- name: Code Organization
+  description: How files and modules are structured
+  what_to_look_for: Check folder structure, file naming, separation of concerns, module
+    boundaries.
+  why_it_matters: Good organization improves maintainability and discoverability.
+- name: Error Handling
+  description: How errors and exceptions are handled
+  what_to_look_for: Check for consistent error handling patterns, custom error types,
+    proper HTTP status codes or error responses.
+  why_it_matters: Consistent error handling is critical for reliability and debugging.
+- name: Type Safety
+  description: Use of type annotations, strict types, and immutability
+  what_to_look_for: Check for type annotations, strict mode settings, use of immutable
+    data structures.
+  why_it_matters: Type safety catches bugs at compile/lint time and improves code
+    clarity.
+- name: Input Validation
+  description: How user input and request data is validated
+  what_to_look_for: Check for validation libraries, data annotations, schema validation,
+    or manual checks.
+  why_it_matters: Proper validation prevents security issues and improves data integrity.
+- name: Testing Support
+  description: Whether the generated code is structured for testability
+  what_to_look_for: Check for dependency injection, interface abstractions, separation
+    of business logic from I/O.
+  why_it_matters: Testable code is a strong signal of good architecture.
+- name: Security Vulnerability Scan
+  description: Whether generated code is free from common security vulnerabilities
+  what_to_look_for: Scan for SQL injection, XSS, CSRF, insecure deserialization, hardcoded
+    secrets, and OWASP Top 10 issues.
+  why_it_matters: Security vulnerabilities in generated code can lead to serious production
+    incidents.
+  tier: critical
+  evaluation_method: automated
+- name: Input Validation Coverage
+  description: How thoroughly user input is validated across all entry points
+  what_to_look_for: Check that all API endpoints, form handlers, and data entry points
+    validate and sanitize input.
+  why_it_matters: Incomplete input validation is a primary source of security and
+    data integrity issues.
+  tier: critical
+  evaluation_method: hybrid
+- name: Endpoint Completeness
+  description: Whether all required endpoints (or pages for Razor Pages) are implemented
+  what_to_look_for: Verify all CRUD operations and business endpoints are present
+    and correctly routed.
+  why_it_matters: Missing endpoints mean the application cannot fulfill its functional
+    requirements.
+  tier: critical
+  evaluation_method: hybrid
+- name: Business Rule Implementation
+  description: Whether business logic and domain rules are correctly implemented
+  what_to_look_for: Check that validation rules, calculations, state transitions,
+    and domain constraints match requirements.
+  why_it_matters: Incorrect business rules lead to wrong application behavior regardless
+    of code quality.
+  tier: critical
+  evaluation_method: llm
+- name: Error Response Conformance
+  description: Whether error responses follow a consistent, standard format
+  what_to_look_for: Check for consistent error response structure, proper HTTP status
+    codes, and RFC 7807 problem details or equivalent.
+  why_it_matters: Consistent error responses improve API usability and client-side
+    error handling.
+  tier: high
+  evaluation_method: hybrid
+- name: API Style
+  description: Controllers (MVC) vs Minimal APIs
+  what_to_look_for: Check Program.cs and endpoint files for MapGet/MapPost (minimal)
+    vs [ApiController] classes.
+  why_it_matters: Minimal APIs have lower overhead and are the modern .NET default.
+  tier: high
+- name: CancellationToken Propagation
+  description: Whether tokens are forwarded through all layers
+  what_to_look_for: Check endpoint handlers for CancellationToken parameters. Trace
+    through service methods to EF Core calls.
+  why_it_matters: Critical for production — prevents wasted server resources on cancelled
+    requests.
+  tier: critical
+- name: Sealed Types
+  description: Whether classes and records are declared sealed
+  what_to_look_for: Check class/record declarations for the sealed modifier.
+  why_it_matters: Sealed types enable JIT optimizations and signal design intent.
+  tier: medium
+output:
+  directory: output
+  reports_directory: reports
+  analysis_file: analysis.md
+  notes_file: build-notes.md
