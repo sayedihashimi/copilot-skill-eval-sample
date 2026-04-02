@@ -1,7 +1,7 @@
 name: first-try
 description: Evaluate how my custom skills improve code generation
 scenarios:
-- name: Create web api
+- name: create-web-api
   prompt: prompts/scenarios/create-web-api.prompt.md
   description: Create a new .net 10 asp.net core web api that has endpoints to manage
     a contact list. store the data in a sqlite db. no auth or anything. I need the

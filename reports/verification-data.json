@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-04-02T04:36:25.039006+00:00",
+  "results": [
+    {
+      "config": "no-skills",
+      "run_id": 1,
+      "scenario": "create-web-api",
+      "build_success": true,
+      "run_success": true,
+      "build_warnings": {
+        "naming": 0,
+        "performance": 0,
+        "reliability": 0,
+        "security": 0,
+        "usage": 0,
+        "style": 0,
+        "other": 0,
+        "total": 0
+      },
+      "format_issues": 0,
+      "security_vulnerabilities": {}
+    },
+    {
+      "config": "dotnet-webapi-skill",
+      "run_id": 1,
+      "scenario": "create-web-api",
+      "build_success": true,
+      "run_success": true,
+      "build_warnings": {
+        "naming": 0,
+        "performance": 0,
+        "reliability": 0,
+        "security": 0,
+        "usage": 0,
+        "style": 0,
+        "other": 0,
+        "total": 0
+      },
+      "format_issues": 0,
+      "security_vulnerabilities": {}
+    }
+  ]
+}

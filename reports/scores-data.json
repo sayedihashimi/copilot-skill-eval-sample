@@ -1,0 +1,70 @@
+{
+  "timestamp": "2026-04-02T04:40:03.265590+00:00",
+  "runs": [
+    {
+      "run_id": 1,
+      "scores": {
+        "Code Organization": {
+          "dotnet-webapi-skill": 2.0,
+          "no-skills": 3.0
+        },
+        "Error Handling": {
+          "dotnet-webapi-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Type Safety": {
+          "dotnet-webapi-skill": 4.0,
+          "no-skills": 3.0
+        },
+        "Input Validation": {
+          "dotnet-webapi-skill": 3.0,
+          "no-skills": 2.0
+        },
+        "Testing Support": {
+          "dotnet-webapi-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Security Vulnerability Scan": {
+          "dotnet-webapi-skill": 3.0,
+          "no-skills": 3.0
+        },
+        "Input Validation Coverage": {
+          "dotnet-webapi-skill": 2.0,
+          "no-skills": 1.0
+        },
+        "Endpoint Completeness": {
+          "dotnet-webapi-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Business Rule Implementation": {
+          "dotnet-webapi-skill": 2.0,
+          "no-skills": 1.0
+        },
+        "Error Response Conformance": {
+          "dotnet-webapi-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "API Style": {
+          "dotnet-webapi-skill": 4.0,
+          "no-skills": 2.0
+        },
+        "CancellationToken Propagation": {
+          "dotnet-webapi-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Sealed Types": {
+          "dotnet-webapi-skill": 5.0,
+          "no-skills": 2.0
+        },
+        "Documentation & API Discoverability": {
+          "dotnet-webapi-skill": 4.0,
+          "no-skills": 2.0
+        }
+      },
+      "weighted_totals": {
+        "no-skills": 41.0,
+        "dotnet-webapi-skill": 57.0
+      }
+    }
+  ]
+}
