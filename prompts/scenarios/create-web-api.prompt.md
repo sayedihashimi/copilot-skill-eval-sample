@@ -19,7 +19,7 @@ tools: ["changes", "codebase", "fetch", "findTestFiles", "githubRepo", "problems
 - **Project Structure**: Structured with separation of concerns — **Models**, **DTOs**, **Services** (interface + implementation), and **API layer**
 - **Validation**: Use Data Annotations and/or FluentValidation for input validation
 - **Error Handling**: Global error handling middleware that returns consistent **ProblemDetails** responses
-- **Project Location**: Create the project at `./src/Create web api/`
+- **Project Location**: Create the project at `./src/`
 
 ## Entities & Relationships
 
@@ -430,6 +430,6 @@ Create a `.http` file in the same folder as `Program.cs`. This file should:
 
 ## Project Location
 
-Create the project at: `./src/Create web api/`
+Create the project at: `./src/`
 
 The project should be a standalone project with no dependencies on other projects in this repository.

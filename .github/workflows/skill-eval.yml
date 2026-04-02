@@ -44,7 +44,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install skill-eval
-        run: pip install git+https://github.com/sayedihashimi/copilot-skill-eval@2026.04-externalskills
+        run: pip install git+https://github.com/sayedihashimi/copilot-skill-eval
 
       - name: Validate configuration
         run: |
