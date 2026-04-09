@@ -1,0 +1,132 @@
+name: ".NET Performance Analysis Skill Evaluation"
+description: >
+  Evaluate how the dotnet/skills performance-related skills (analyzing-dotnet-performance,
+  microbenchmarking, dotnet-trace-collect) improve Copilot's ability to detect performance
+  anti-patterns in existing .NET code compared to baseline Copilot.
+
+scenarios:
+  - name: analyze-perf-issues
+    prompt: prompts/scenarios/analyze-perf-issues.prompt.md
+    description: "Analyze a .NET class library with known performance anti-patterns across regex, string, collections, async, reflection, and structural categories"
+    include_directories:
+      - path: ../../samples/perf01
+        name: perf01
+
+configurations:
+  - name: no-skills
+    label: "Baseline (default Copilot)"
+    skills: []
+    plugins: []
+  - name: dotnet-perf-skills
+    label: "dotnet/skills Performance Skills"
+    skills: []
+    plugins:
+      - source: dotnet-skills
+        path: dotnet-diag
+
+verification:
+  build:
+    command: "dotnet build"
+
+dimensions:
+  - name: Regex Anti-Pattern Detection
+    description: Whether per-call Regex instantiation and excessive RegexOptions.Compiled usage are identified
+    what_to_look_for: >
+      Check if the analysis flags per-call `new Regex(...)` allocations (especially in hot paths like
+      LogAnalyzer.TryParseLine), identifies the 40+ RegexOptions.Compiled instances in MarkdownStripper
+      as a startup budget problem, and recommends [GeneratedRegex] source generators on .NET 8+.
+    why_it_matters: >
+      Regex misuse is one of the most common .NET performance issues. Per-call instantiation can cause
+      10x+ regressions in hot paths, and excessive Compiled usage bloats startup time.
+    tier: critical
+
+  - name: String Allocation Detection
+    description: Whether string concatenation in loops and unnecessary .ToLower()/.ToUpper() calls are detected
+    what_to_look_for: >
+      Check if the analysis identifies `string +=` in loops (CsvParser.ParseLine char-by-char,
+      TemplateEngine.ProcessLoops, LogAnalyzer.Summarize), .Replace() chains allocating intermediate
+      strings (SlugGenerator, MarkdownStripper), and .ToLower()/.ToUpper() without
+      StringComparison.Ordinal or culture specification.
+    why_it_matters: >
+      String allocations in loops create O(n²) memory pressure and are a top cause of GC pauses
+      in .NET applications. Culture-unaware casing causes both correctness bugs (Turkish-I) and
+      unnecessary allocations.
+    tier: critical
+
+  - name: Collection and LINQ Efficiency
+    description: Whether collection misuse and LINQ overhead in hot paths are identified
+    what_to_look_for: >
+      Check if the analysis flags List.Contains for O(n) lookups instead of HashSet (SlugGenerator,
+      JsonTransformer.Diff), List without capacity hints, unnecessary .ToList() materializations,
+      ContainsKey + indexer instead of TryGetValue, .Distinct().ToList() allocations, and
+      Skip().Take().ToList() sliding windows in LogAnalyzer.DetectAnomalies.
+    why_it_matters: >
+      Collection misuse compounds in loops — O(n) lookups in O(m) loops become O(n×m). Unnecessary
+      materializations waste memory and GC budget. These are high-impact, easy-to-fix issues.
+    tier: critical
+
+  - name: Async and IO Pattern Detection
+    description: Whether async anti-patterns and resource misuse are identified
+    what_to_look_for: >
+      Check if the analysis flags `new HttpClient()` per call in NotificationService (socket
+      exhaustion risk), sequential awaits in loops (SendBatchAsync), unbounded parallelism
+      (SendBatchParallelAsync), missing CancellationToken propagation, and Task.Delay without
+      cancellation support.
+    why_it_matters: >
+      Async/IO anti-patterns cause production incidents — socket exhaustion crashes services,
+      sequential awaits waste latency, and unbounded parallelism can overwhelm downstream services.
+    tier: critical
+
+  - name: Reflection and Serialization Overhead
+    description: Whether uncached reflection and per-call serializer options are identified
+    what_to_look_for: >
+      Check if the analysis flags GetProperties()/SetValue() reflection in EntityMapper hot paths
+      without caching, new JsonSerializerOptions per call in JsonTransformer (should be static/cached),
+      and repeated full deserialization where Utf8JsonReader or partial parsing would suffice.
+    why_it_matters: >
+      Reflection is 100-1000x slower than direct access. Per-call JsonSerializerOptions defeats
+      the internal caching that System.Text.Json relies on for performance.
+    tier: high
+
+  - name: Structural Optimization Detection
+    description: Whether unsealed classes, structs without IEquatable, and FrozenDictionary candidates are identified
+    what_to_look_for: >
+      Check if the analysis identifies unsealed leaf classes (DataPipeline.Record, ValidationResult,
+      MappingConfig) that prevent JIT devirtualization, structs without IEquatable<T>
+      (DeliveryResult, ValidationError) causing boxing in generic collections, and static
+      Dictionary candidates for FrozenDictionary on .NET 8+.
+    why_it_matters: >
+      Sealed classes enable JIT devirtualization (up to 30% faster virtual calls). Missing
+      IEquatable on structs causes boxing allocations. FrozenDictionary provides faster
+      read-only lookups for static data.
+    tier: high
+
+  - name: Severity Classification Accuracy
+    description: Whether issues are correctly classified by severity and impact
+    what_to_look_for: >
+      Check if critical issues (per-call Regex in million-line log parser, HttpClient per call,
+      char-by-char string building) are ranked higher than moderate issues (missing capacity hints,
+      ContainsKey+indexer). Verify the analysis distinguishes between hot-path issues and
+      cold-path/setup-time issues.
+    why_it_matters: >
+      Accurate severity classification helps developers prioritize fixes. Treating all issues
+      equally dilutes the signal and wastes engineering effort on low-impact changes.
+    tier: high
+
+  - name: Fix Recommendation Quality
+    description: Whether suggested fixes are specific, correct, and actionable
+    what_to_look_for: >
+      Check if fix recommendations reference specific .NET APIs (e.g., [GeneratedRegex],
+      StringBuilder, StringComparison.OrdinalIgnoreCase, FrozenDictionary, IHttpClientFactory),
+      include code examples or patterns, and avoid incorrect suggestions (e.g., using Span<T>
+      in async methods, recommending unsafe code for micro-optimizations).
+    why_it_matters: >
+      Vague advice ("optimize this") is not actionable. Incorrect suggestions (Span in async)
+      would introduce bugs. Good fix recommendations accelerate developer productivity.
+    tier: high
+
+output:
+  directory: output
+  reports_directory: reports
+  analysis_file: analysis.md
+  notes_file: build-notes.md
