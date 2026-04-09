@@ -49,8 +49,8 @@ jobs:
       - name: Validate configuration
         run: |
           skill-eval \
-            --config eval.yaml \
-            --skill-sources skill-sources.yaml \
+            --config evals/dotnet-webapi/eval.yaml \
+            --skill-sources evals/dotnet-webapi/skill-sources.yaml \
             validate-config
 
       - name: Run evaluation pipeline
@@ -66,8 +66,8 @@ jobs:
             ARGS="$ARGS --analyze-only"
           fi
           skill-eval \
-            --config eval.yaml \
-            --skill-sources skill-sources.yaml \
+            --config evals/dotnet-webapi/eval.yaml \
+            --skill-sources evals/dotnet-webapi/skill-sources.yaml \
             run --runs 1 $ARGS
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -78,11 +78,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: evaluation-reports
-          path: reports/
+          path: evals/dotnet-webapi/reports/
 
       - name: Upload generated output
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: generated-output
-          path: output/
+          path: evals/dotnet-webapi/output/
