@@ -8,19 +8,11 @@ tools: ["changes", "codebase", "fetch", "problems", "runner", "terminalLastComma
 
 ## Task
 
-You are a .NET performance expert. Analyze the .NET class library project located at `./perf01/` for performance anti-patterns, inefficiencies, and optimization opportunities.
+You are a .NET performance expert. There is an **existing** .NET class library project already on disk at `./perf01/`. **Do NOT create any source files.** The project and all its source code already exist. Your job is to read the existing code and analyze it for performance issues.
 
-## Project Overview
+## Instructions
 
-The project is a .NET 8 class library (`Perf01`) containing utility classes for text processing, data parsing, services, and model mapping. The code is functional but may contain performance issues that would impact production workloads.
-
-## What To Do
-
-1. **Read all source files** in the `./perf01/` project directory. The project has this structure:
-   - `TextProcessing/` — SlugGenerator.cs, MarkdownStripper.cs, TemplateEngine.cs
-   - `Data/` — CsvParser.cs, JsonTransformer.cs
-   - `Services/` — LogAnalyzer.cs, NotificationService.cs, DataPipeline.cs
-   - `Models/` — ValidationEngine.cs, EntityMapper.cs
+1. **Read the existing source files** from the `./perf01/` directory. Start by listing the files with a glob or directory listing, then read each `.cs` file.
 
 2. **Scan for performance anti-patterns** across these categories:
    - **Regex** — per-call instantiation, excessive `RegexOptions.Compiled`, missing `[GeneratedRegex]`
