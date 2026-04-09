@@ -1,7 +1,7 @@
 # Build & Run Verification Report
 
 **Evaluation:** .NET Performance Analysis Skill Evaluation
-**Date:** 2026-04-09 18:56 UTC
+**Date:** 2026-04-09 19:56 UTC
 **Configurations:** 2
 **Scenarios:** 1
 **Total projects:** 2
@@ -17,7 +17,8 @@
 
 | Configuration | Run | Session ID | Model | Skills Loaded | Plugins | Match? |
 |---|---|---|---|---|---|---|
-| no-skills | 1 | 5e4524a0…363b | claude-opus-4.6 | — | — | ✅ |
+| no-skills | 1 | af06eebf…b044 | claude-opus-4.6 | — | — | ✅ |
+| dotnet-perf-skills | 1 | — | — | — | — | ✅ |
 
 ## Skill Configurations
 

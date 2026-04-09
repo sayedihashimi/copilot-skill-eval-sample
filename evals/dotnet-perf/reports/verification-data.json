@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-09T18:56:55.913268+00:00",
+  "timestamp": "2026-04-09T19:56:54.684308+00:00",
   "results": [
     {
       "config": "no-skills",
@@ -19,7 +19,7 @@
       },
       "format_issues": 0,
       "security_vulnerabilities": {},
-      "session_id": "5e4524a0-fba0-4123-ab7b-11cd958d363b",
+      "session_id": "af06eebf-733e-44d3-a8bb-7faf95deb044",
       "model": "claude-opus-4.6",
       "loaded_skills": [],
       "loaded_plugins": [],
@@ -42,7 +42,12 @@
         "total": 0
       },
       "format_issues": 0,
-      "security_vulnerabilities": {}
+      "security_vulnerabilities": {},
+      "session_id": null,
+      "model": null,
+      "loaded_skills": [],
+      "loaded_plugins": [],
+      "asset_match": true
     }
   ]
 }

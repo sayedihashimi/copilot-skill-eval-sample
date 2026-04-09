@@ -1,15 +1,15 @@
 [
   {
     "api_calls": 9,
-    "input_tokens": 415394,
-    "output_tokens": 10127,
-    "cache_read_tokens": 306482,
-    "api_duration_ms": 181566,
-    "wall_time_seconds": 203.3,
+    "input_tokens": 408994,
+    "output_tokens": 9398,
+    "cache_read_tokens": 306795,
+    "api_duration_ms": 174265,
+    "wall_time_seconds": 218.1,
     "config": "no-skills",
     "run_id": 1,
     "scenario": "analyze-perf-issues",
-    "session_id": "5e4524a0-fba0-4123-ab7b-11cd958d363b",
+    "session_id": "af06eebf-733e-44d3-a8bb-7faf95deb044",
     "model": "claude-opus-4.6",
     "copilot_version": "1.0.22-0",
     "loaded_resources": [],
@@ -21,5 +21,18 @@
       "contaminated": [],
       "match": true
     }
+  },
+  {
+    "api_calls": 16,
+    "input_tokens": 1191627,
+    "output_tokens": 22558,
+    "cache_read_tokens": 946515,
+    "api_duration_ms": 381387,
+    "wall_time_seconds": 302.7,
+    "timed_out": true,
+    "config": "dotnet-perf-skills",
+    "run_id": 1,
+    "scenario": "analyze-perf-issues",
+    "failed": true
   }
 ]
