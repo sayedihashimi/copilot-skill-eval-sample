@@ -33,7 +33,7 @@ You are a .NET performance expert. There is an **existing** .NET class library p
 
 ## Output
 
-Write your complete analysis to `./src/performance-analysis.md` with the following structure:
+Write your complete analysis to a file named `performance-analysis.md` in the output directory specified in the instructions above. Use the following structure:
 
 ```markdown
 # Performance Analysis Report

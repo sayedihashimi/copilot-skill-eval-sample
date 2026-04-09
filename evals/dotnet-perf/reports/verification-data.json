@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-04-09T18:56:55.913268+00:00",
+  "results": [
+    {
+      "config": "no-skills",
+      "run_id": 1,
+      "scenario": "analyze-perf-issues",
+      "build_success": false,
+      "run_success": false,
+      "build_warnings": {
+        "naming": 0,
+        "performance": 0,
+        "reliability": 0,
+        "security": 0,
+        "usage": 0,
+        "style": 0,
+        "other": 0,
+        "total": 0
+      },
+      "format_issues": 0,
+      "security_vulnerabilities": {},
+      "session_id": "5e4524a0-fba0-4123-ab7b-11cd958d363b",
+      "model": "claude-opus-4.6",
+      "loaded_skills": [],
+      "loaded_plugins": [],
+      "asset_match": true
+    },
+    {
+      "config": "dotnet-perf-skills",
+      "run_id": 1,
+      "scenario": "analyze-perf-issues",
+      "build_success": false,
+      "run_success": false,
+      "build_warnings": {
+        "naming": 0,
+        "performance": 0,
+        "reliability": 0,
+        "security": 0,
+        "usage": 0,
+        "style": 0,
+        "other": 0,
+        "total": 0
+      },
+      "format_issues": 0,
+      "security_vulnerabilities": {}
+    }
+  ]
+}

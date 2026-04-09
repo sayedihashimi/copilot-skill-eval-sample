@@ -1,0 +1,25 @@
+[
+  {
+    "api_calls": 9,
+    "input_tokens": 415394,
+    "output_tokens": 10127,
+    "cache_read_tokens": 306482,
+    "api_duration_ms": 181566,
+    "wall_time_seconds": 203.3,
+    "config": "no-skills",
+    "run_id": 1,
+    "scenario": "analyze-perf-issues",
+    "session_id": "5e4524a0-fba0-4123-ab7b-11cd958d363b",
+    "model": "claude-opus-4.6",
+    "copilot_version": "1.0.22-0",
+    "loaded_resources": [],
+    "resource_comparison": {
+      "expected_skills": [],
+      "actual_skills": [],
+      "expected_plugins": [],
+      "actual_plugins": [],
+      "contaminated": [],
+      "match": true
+    }
+  }
+]
