@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T15:22:16.798753+00:00",
+  "timestamp": "2026-04-10T19:39:22.668521+00:00",
   "runs": [
     {
       "run_id": 1,
@@ -41,13 +41,12 @@
           "no-skills": 5.0
         },
         "Token Efficiency": {
-          "no-skills": 5.0,
-          "dotnet-perf-skills": 3.0
+          "no-skills": 4.0
         }
       },
       "weighted_totals": {
-        "no-skills": 100.0,
-        "dotnet-perf-skills": 103.0
+        "no-skills": 99.0,
+        "dotnet-perf-skills": 100.0
       }
     },
     {
@@ -91,12 +90,12 @@
         },
         "Token Efficiency": {
           "no-skills": 5.0,
-          "dotnet-perf-skills": 5.0
+          "dotnet-perf-skills": 2.0
         }
       },
       "weighted_totals": {
         "no-skills": 87.0,
-        "dotnet-perf-skills": 104.0
+        "dotnet-perf-skills": 101.0
       }
     },
     {
@@ -140,12 +139,12 @@
         },
         "Token Efficiency": {
           "no-skills": 5.0,
-          "dotnet-perf-skills": 5.0
+          "dotnet-perf-skills": 2.0
         }
       },
       "weighted_totals": {
         "no-skills": 94.0,
-        "dotnet-perf-skills": 108.0
+        "dotnet-perf-skills": 105.0
       }
     },
     {
@@ -188,13 +187,13 @@
           "no-skills": 3.0
         },
         "Token Efficiency": {
-          "no-skills": 5.0,
-          "dotnet-perf-skills": 5.0
+          "no-skills": 4.0,
+          "dotnet-perf-skills": 2.0
         }
       },
       "weighted_totals": {
-        "no-skills": 97.0,
-        "dotnet-perf-skills": 110.0
+        "no-skills": 96.0,
+        "dotnet-perf-skills": 107.0
       }
     },
     {
@@ -237,13 +236,12 @@
           "dotnet-perf-skills": 5.0
         },
         "Token Efficiency": {
-          "no-skills": 1.0,
-          "dotnet-perf-skills": 5.0
+          "dotnet-perf-skills": 2.0
         }
       },
       "weighted_totals": {
-        "no-skills": 85.0,
-        "dotnet-perf-skills": 108.0
+        "no-skills": 84.0,
+        "dotnet-perf-skills": 105.0
       }
     }
   ]
