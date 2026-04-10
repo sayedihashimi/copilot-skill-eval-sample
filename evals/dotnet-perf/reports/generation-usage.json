@@ -1,17 +1,17 @@
 [
   {
     "api_calls": 9,
-    "input_tokens": 408994,
-    "output_tokens": 9398,
-    "cache_read_tokens": 306795,
-    "api_duration_ms": 174265,
-    "wall_time_seconds": 218.1,
+    "input_tokens": 404728,
+    "output_tokens": 12338,
+    "cache_read_tokens": 330315,
+    "api_duration_ms": 216054,
+    "wall_time_seconds": 248.1,
     "config": "no-skills",
-    "run_id": 1,
+    "run_id": 2,
     "scenario": "analyze-perf-issues",
-    "session_id": "af06eebf-733e-44d3-a8bb-7faf95deb044",
+    "session_id": "1c610bb9-c528-4147-9f80-e904f3ee9d2b",
     "model": "claude-opus-4.6",
-    "copilot_version": "1.0.22-0",
+    "copilot_version": "1.0.22",
     "loaded_resources": [],
     "resource_comparison": {
       "expected_skills": [],
@@ -23,15 +23,88 @@
     }
   },
   {
-    "api_calls": 16,
-    "input_tokens": 1191627,
-    "output_tokens": 22558,
-    "cache_read_tokens": 946515,
-    "api_duration_ms": 381387,
-    "wall_time_seconds": 302.7,
+    "api_calls": 9,
+    "input_tokens": 393137,
+    "output_tokens": 9438,
+    "cache_read_tokens": 321672,
+    "api_duration_ms": 173110,
+    "wall_time_seconds": 200.9,
+    "config": "no-skills",
+    "run_id": 3,
+    "scenario": "analyze-perf-issues",
+    "session_id": "a6c39e40-dc9b-4ea1-9708-6b02b7d57b35",
+    "model": "claude-opus-4.6",
+    "copilot_version": "1.0.22",
+    "loaded_resources": [],
+    "resource_comparison": {
+      "expected_skills": [],
+      "actual_skills": [],
+      "expected_plugins": [],
+      "actual_plugins": [],
+      "contaminated": [],
+      "match": true
+    }
+  },
+  {
+    "api_calls": 17,
+    "input_tokens": 1306909,
+    "output_tokens": 22982,
+    "cache_read_tokens": 1078211,
+    "api_duration_ms": 362891,
+    "wall_time_seconds": 303.1,
     "timed_out": true,
     "config": "dotnet-perf-skills",
     "run_id": 1,
+    "scenario": "analyze-perf-issues",
+    "failed": true
+  },
+  {
+    "api_calls": 14,
+    "input_tokens": 965786,
+    "output_tokens": 14808,
+    "cache_read_tokens": 715883,
+    "api_duration_ms": 260148,
+    "wall_time_seconds": 299.9,
+    "config": "dotnet-perf-skills",
+    "run_id": 2,
+    "scenario": "analyze-perf-issues",
+    "session_id": "1e857169-de9c-4c11-b1ab-ff41fc186a28",
+    "model": "claude-opus-4.6",
+    "copilot_version": "1.0.22",
+    "loaded_resources": [
+      {
+        "resource_type": "skill",
+        "name": "analyzing-dotnet-performance",
+        "plugin_name": "dotnet-diag",
+        "content_length": 11299,
+        "timestamp": "2026-04-09T20:38:10.492Z"
+      }
+    ],
+    "resource_comparison": {
+      "expected_skills": [],
+      "actual_skills": [
+        "analyzing-dotnet-performance"
+      ],
+      "expected_plugins": [
+        "dotnet-diag"
+      ],
+      "actual_plugins": [
+        "dotnet-diag"
+      ],
+      "contaminated": [],
+      "match": true
+    }
+  },
+  {
+    "api_calls": 16,
+    "input_tokens": 1225594,
+    "output_tokens": 24567,
+    "cache_read_tokens": 861201,
+    "api_duration_ms": 387195,
+    "wall_time_seconds": 301.9,
+    "timed_out": true,
+    "config": "dotnet-perf-skills",
+    "run_id": 3,
     "scenario": "analyze-perf-issues",
     "failed": true
   }

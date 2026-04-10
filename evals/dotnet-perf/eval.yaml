@@ -4,6 +4,8 @@ description: >
   microbenchmarking, dotnet-trace-collect) improve Copilot's ability to detect performance
   anti-patterns in existing .NET code compared to baseline Copilot.
 
+eval_type: text_output
+
 scenarios:
   - name: analyze-perf-issues
     prompt: prompts/scenarios/analyze-perf-issues.prompt.md
@@ -23,10 +25,6 @@ configurations:
     plugins:
       - source: dotnet-skills
         path: dotnet-diag
-
-verification:
-  build:
-    command: "dotnet build"
 
 dimensions:
   - name: Regex Anti-Pattern Detection

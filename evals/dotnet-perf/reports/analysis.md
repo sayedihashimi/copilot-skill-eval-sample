@@ -1,7 +1,7 @@
 # Aggregated Analysis: .NET Performance Analysis Skill Evaluation
 
-**Runs:** 1 | **Configurations:** 2 | **Scenarios:** 1 | **Dimensions:** 10
-**Date:** 2026-04-09 19:59 UTC
+**Runs:** 3 | **Configurations:** 2 | **Scenarios:** 1 | **Dimensions:** 11
+**Date:** 2026-04-09 21:03 UTC
 
 ---
 
@@ -34,7 +34,7 @@ Each configuration gives Copilot different custom skills or plugins. The **no-sk
 
 1. **Generate** — For each configuration, Copilot CLI (`copilot --yolo`) is given a scenario prompt and generates a complete project from scratch. One scenario is randomly selected per run.
 2. **Verify** — Each generated project is built (`dotnet build`), run, format-checked, and scanned for NuGet vulnerabilities.
-3. **Analyze** — An AI judge reviews the source code of all configurations side-by-side and scores each across 10 quality dimensions.
+3. **Analyze** — An AI judge reviews the source code of all configurations side-by-side and scores each across 11 quality dimensions.
 
 Generation model: **claude-opus-4.6**
 Analysis model: **gpt-5.3-codex**
@@ -69,16 +69,17 @@ Scores shown as **mean ± standard deviation** across runs.
 
 | Dimension [Tier] | no-skills | dotnet-perf-skills |
 |---|---|---|
-| Regex Anti-Pattern Detection [CRITICAL] | 4.0 | 5.0 |
-| String Allocation Detection [CRITICAL] | 4.0 | 5.0 |
-| Collection and LINQ Efficiency [CRITICAL] | 4.0 | 5.0 |
-| Async and IO Pattern Detection [CRITICAL] | 4.0 | 5.0 |
-| Reflection and Serialization Overhead [HIGH] | 4.0 | 4.0 |
-| Structural Optimization Detection [HIGH] | 2.0 | 5.0 |
-| Severity Classification Accuracy [HIGH] | 3.0 | 5.0 |
-| Fix Recommendation Quality [HIGH] | 3.0 | 5.0 |
-| Quantitative Evidence & Coverage [MEDIUM] | 3.0 | 5.0 |
-| Token Efficiency [MEDIUM] | 5.0 | 1.0 |
+| Regex Anti-Pattern Detection [CRITICAL] | 4.7 ± 0.6 | 5.0 |
+| String Allocation Detection [CRITICAL] | 4.7 ± 0.6 | 4.3 ± 0.6 |
+| Collection and LINQ Efficiency [CRITICAL] | 4.3 ± 0.6 | 4.7 ± 0.6 |
+| Async and IO Pattern Detection [CRITICAL] | 5.0 | 4.3 ± 1.2 |
+| Reflection and Serialization Overhead [HIGH] | 4.0 | 5.0 |
+| Structural Optimization Detection [HIGH] | 4.0 ± 1.0 | 4.7 ± 0.6 |
+| Severity Classification Accuracy [HIGH] | 4.3 ± 0.6 | 3.3 ± 0.6 |
+| Fix Recommendation Quality [HIGH] | 4.0 | 5.0 |
+| Internal Consistency and Traceability [MEDIUM] | 2.0 | 5.0 |
+| Token Efficiency [MEDIUM] | 4.7 ± 0.6 | 1.3 ± 0.6 |
+| Evidence Quantification & Auditability [MEDIUM] | 3.0 | 5.0 |
 
 ---
 
@@ -86,8 +87,8 @@ Scores shown as **mean ± standard deviation** across runs.
 
 | Rank | Configuration | Mean Score | % of Max (100) | Std Dev | Min | Max |
 |---|---|---|---|---|---|---|
-| 🥇 | dotnet-perf-skills | 104.0 | 104% | 0.0 | 104.0 | 104.0 |
-| 🥈 | no-skills | 80.0 | 80% | 0.0 | 80.0 | 80.0 |
+| 🥇 | dotnet-perf-skills | 97.3 | 97% | 1.5 | 96.0 | 99.0 |
+| 🥈 | no-skills | 96.0 | 96% | 7.0 | 88.0 | 101.0 |
 
 ---
 
@@ -95,8 +96,10 @@ Scores shown as **mean ± standard deviation** across runs.
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 80.0 | 104.0 |
-| **Mean** | **80.0** | **104.0** |
+| 1 | 88.0 | 96.0 |
+| 2 | 101.0 | 97.0 |
+| 3 | 99.0 | 99.0 |
+| **Mean** | **96.0** | **97.3** |
 
 ---
 
@@ -104,8 +107,8 @@ Scores shown as **mean ± standard deviation** across runs.
 
 | Configuration | Build Pass Rate | Run Pass Rate | Avg Warnings |
 |---|---|---|---|
-| no-skills | 0/1 (0%) | 0/1 (0%) | 0.0 |
-| dotnet-perf-skills | 0/1 (0%) | 0/1 (0%) | 0.0 |
+| no-skills | 0/3 (0%) | 0/3 (0%) | 0.0 |
+| dotnet-perf-skills | 0/3 (0%) | 0/3 (0%) | 0.0 |
 
 ---
 
@@ -115,8 +118,8 @@ Average token consumption per configuration across all runs.
 
 | Configuration | Avg Input Tokens | Avg Output Tokens | Avg Cache Read | Avg API Calls | Avg Wall Time | Δ Input vs Baseline |
 |---|---|---|---|---|---|---|
-| no-skills | 408,994 | 9,398 | 306,795 | 9 | 3m 38s | — (baseline) |
-| dotnet-perf-skills | 1,191,627 | 22,558 | 946,515 | 16 | 5m 2s | +191.4% |
+| no-skills | 398,932 | 10,888 | 325,994 | 9 | 3m 44s | — (baseline) |
+| dotnet-perf-skills | 1,166,096 | 20,786 | 885,098 | 16 | 5m 1s | +192.3% |
 
 ---
 
@@ -124,8 +127,11 @@ Average token consumption per configuration across all runs.
 
 | Configuration | Run | Scenario | Input Tokens | Output Tokens | Cache Read | API Calls | Wall Time |
 |---|---|---|---|---|---|---|---|
-| no-skills | 1 | analyze-perf-issues | 408,994 | 9,398 | 306,795 | 9 | 3m 38s |
-| dotnet-perf-skills | 1 | analyze-perf-issues | 1,191,627 | 22,558 | 946,515 | 16 | 5m 2s |
+| no-skills | 2 | analyze-perf-issues | 404,728 | 12,338 | 330,315 | 9 | 4m 8s |
+| no-skills | 3 | analyze-perf-issues | 393,137 | 9,438 | 321,672 | 9 | 3m 20s |
+| dotnet-perf-skills | 1 | analyze-perf-issues | 1,306,909 | 22,982 | 1,078,211 | 17 | 5m 3s |
+| dotnet-perf-skills | 2 | analyze-perf-issues | 965,786 | 14,808 | 715,883 | 14 | 4m 59s |
+| dotnet-perf-skills | 3 | analyze-perf-issues | 1,225,594 | 24,567 | 861,201 | 16 | 5m 1s |
 
 ---
 
@@ -133,6 +139,8 @@ Average token consumption per configuration across all runs.
 
 | Configuration | Score σ | Most Consistent Dim (σ) | Most Variable Dim (σ) |
 |---|---|---|---|
+| no-skills | 7.0 | Async and IO Pattern Detection (0.0) | Structural Optimization Detection (1.0) |
+| dotnet-perf-skills | 1.5 | Regex Anti-Pattern Detection (0.0) | Async and IO Pattern Detection (1.2) |
 
 ---
 
@@ -145,30 +153,30 @@ Average token consumption per configuration across all runs.
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
 | 1 | 4 | 5 |
-| **Mean** | **4.0** | **5.0** |
+| 2 | 5 | 5 |
+| 3 | 5 | 5 |
+| **Mean** | **4.7** | **5.0** |
 
 #### Analysis
 
-`dotnet-perf-skills` directly identifies per-call `new Regex(...)`, high-instance `RegexOptions.Compiled` startup costs, and recommends `[GeneratedRegex]` as the preferred .NET 8 approach with explicit hotspot context.
+Both configurations clearly catch per-call regex allocation, heavy `RegexOptions.Compiled`, and recommend `[GeneratedRegex]`.
 
 ```csharp
-// dotnet-perf-skills (performance-analysis.md)
-// Files: LogAnalyzer.cs:L50, L65, L75, L197 ...
+// dotnet-perf-skills (output/dotnet-perf-skills/run-2/analyze-perf-issues/performance-analysis.md)
+// "new Regex() Inside Per-Line Hot Path (5 instances in LogAnalyzer)"
 [GeneratedRegex(@"\[(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\.\d{3})\]\s+\[(\w+)\]\s+\[(\w+)\]\s+(.+)")]
 private static partial Regex StructuredLogRegex();
 ```
 
-`no-skills` also catches the same major issues and recommends `[GeneratedRegex]`, but with less consistent scale accounting (e.g., 46 vs 48 compiled regex mentions across sections).
-
 ```csharp
-// no-skills (performance-analysis.md)
-// "Three new Regex(...) instantiations inside TryParseLine ... called for every line"
-[GeneratedRegex(@"\[(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\.\d{3})\]\s+\[(\w+)\]\s+\[(\w+)\]\s+(.+)")]
-private static partial Regex StructuredLogPattern();
+// no-skills (output/no-skills/run-2/analyze-perf-issues/performance-analysis.md)
+// "45+ static readonly Regex fields with RegexOptions.Compiled ... should use [GeneratedRegex]"
+[GeneratedRegex(@"^#{1,6}\s+", RegexOptions.Multiline)]
+private static partial Regex HeaderPattern();
 ```
 
-**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 4/5`  
-**Verdict:** **dotnet-perf-skills** is stronger due to clearer hotspot prioritization and tighter startup-budget framing for `RegexOptions.Compiled`.
+**Score:** dotnet-perf-skills **5/5**, no-skills **5/5**.  
+**Verdict:** Tie. Both identify the exact high-impact regex issues and map to modern .NET 8 source-generated regex guidance.
 
 ### 2. String Allocation Detection [CRITICAL × 3]
 
@@ -177,31 +185,31 @@ private static partial Regex StructuredLogPattern();
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
 | 1 | 4 | 5 |
-| **Mean** | **4.0** | **5.0** |
+| 2 | 5 | 4 |
+| 3 | 5 | 4 |
+| **Mean** | **4.7** | **4.3** |
 
 #### Analysis
 
-`dotnet-perf-skills` thoroughly flags `string +=` loop patterns, `.Replace()` chains, and `.ToLower()/.ToUpper()` allocation/culture issues, with direct O(n²) framing.
+Both detect loop concatenation, replace-chains, and case-normalization allocation/culture issues; `no-skills` is more exhaustive at file/method granularity.
 
 ```csharp
-// dotnet-perf-skills (performance-analysis.md)
+// dotnet-perf-skills
+// "String += Concatenation in Loops — O(n²) (12+ sites)"
 var sb = new StringBuilder();
-foreach (var row in rows) { sb.Append(...); }
-return sb.ToString();
+foreach (var row in rows)
+    sb.Append(string.Join(...)).Append('\n');
 ```
-
-`no-skills` identifies the same core patterns, including char-by-char concatenation in CSV parsing and loop concatenation in templating/summarization.
 
 ```csharp
-// no-skills (performance-analysis.md)
-var current = new StringBuilder();
-current.Append(line[i]);
-fields.Add(current.ToString());
-current.Clear();
+// no-skills
+// "Char-by-char current += line[i] in ParseLine — O(n²)"
+var current = "";
+for (int i = 0; i < line.Length; i++) { current += line[i]; }
 ```
 
-**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 4/5`  
-**Verdict:** **dotnet-perf-skills** has better cross-cutting depth and ties casing fixes more consistently to `StringComparison.OrdinalIgnoreCase`.
+**Score:** dotnet-perf-skills **4/5**, no-skills **5/5**.  
+**Verdict:** `no-skills` is stronger here due to deeper call-site coverage (CsvParser, TemplateEngine, LogAnalyzer, MarkdownStripper, SlugGenerator) with explicit hotspot framing.
 
 ### 3. Collection and LINQ Efficiency [CRITICAL × 3]
 
@@ -210,30 +218,28 @@ current.Clear();
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
 | 1 | 4 | 5 |
-| **Mean** | **4.0** | **5.0** |
+| 2 | 5 | 4 |
+| 3 | 4 | 5 |
+| **Mean** | **4.3** | **4.7** |
 
 #### Analysis
 
-`dotnet-perf-skills` gives broad and precise detection: `List.Contains` vs `HashSet`, `ContainsKey+indexer` vs `TryGetValue`, materialization removal, and sliding-window LINQ allocations.
+Both catch HashSet vs List membership, `ContainsKey`+indexer, avoidable `.ToList()`, and `Skip().Take().ToList()` windows.
 
 ```csharp
-// dotnet-perf-skills (performance-analysis.md)
+// dotnet-perf-skills
 var allKeys = new HashSet<string>(flat1.Keys);
 allKeys.UnionWith(flat2.Keys);
 ```
 
-`no-skills` catches all major collection inefficiencies too, including `Skip(i).Take(5).ToList()` in-loop overhead and HashSet conversion opportunities.
-
 ```csharp
-// no-skills (performance-analysis.md)
-for (int i = 0; i <= errorEntries.Count - 5; i++)
-{
-    var timeSpan = errorEntries[i + 4].Timestamp - errorEntries[i].Timestamp;
-}
+// no-skills
+var existing = new HashSet<string>(existingSlugs);
+while (existing.Contains($"{baseSlug}-{counter}")) { counter++; }
 ```
 
-**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 4/5`  
-**Verdict:** **dotnet-perf-skills** wins on consistency and prioritization quality across related collection patterns.
+**Score:** dotnet-perf-skills **4/5**, no-skills **5/5**.  
+**Verdict:** `no-skills` gives better per-file pinpointing and clearer prioritization of O(n×m) hotspots.
 
 ### 4. Async and IO Pattern Detection [CRITICAL × 3]
 
@@ -241,29 +247,29 @@ for (int i = 0; i <= errorEntries.Count - 5; i++)
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 4 | 5 |
-| **Mean** | **4.0** | **5.0** |
+| 1 | 5 | 3 |
+| 2 | 5 | 5 |
+| 3 | 5 | 5 |
+| **Mean** | **5.0** | **4.3** |
 
 #### Analysis
 
-`dotnet-perf-skills` correctly treats per-call `HttpClient` as critical, distinguishes sequential vs unbounded parallelism, and calls out missing cancellation propagation (`Task.Delay` included).
+Both runs strongly identify per-call `HttpClient`, sequential awaits, unbounded parallelism, and cancellation-token gaps.
 
 ```csharp
-// dotnet-perf-skills (performance-analysis.md)
-private readonly HttpClient _client;
-public NotificationService(HttpClient client, ...) { _client = client; ... }
+// dotnet-perf-skills
+using var client = new HttpClient();
+// -> replace with IHttpClientFactory or shared static client
 ```
-
-`no-skills` catches the same anti-pattern cluster and provides bounded-parallelism recommendations, but has one weaker/contradictory serialization-related callout in this area.
 
 ```csharp
-// no-skills (performance-analysis.md)
-var options = new ParallelOptions { MaxDegreeOfParallelism = 10 };
-await Parallel.ForEachAsync(requests, options, async (req, ct) => { ... });
+// no-skills
+var semaphore = new SemaphoreSlim(10); // bounded concurrency recommendation
+await Parallel.ForEachAsync(requests, new ParallelOptions { MaxDegreeOfParallelism = 10 }, ...);
 ```
 
-**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 4/5`  
-**Verdict:** **dotnet-perf-skills** is more reliable in separating incident-level IO risks from secondary concerns.
+**Score:** dotnet-perf-skills **5/5**, no-skills **5/5**.  
+**Verdict:** Tie. Both correctly emphasize production-risk async/IO anti-patterns and propose standard .NET fixes.
 
 ### 5. Reflection and Serialization Overhead [HIGH × 2]
 
@@ -271,26 +277,29 @@ await Parallel.ForEachAsync(requests, options, async (req, ct) => { ... });
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 4 | 4 |
-| **Mean** | **4.0** | **4.0** |
+| 1 | 4 | 5 |
+| 2 | 4 | 5 |
+| 3 | 4 | 5 |
+| **Mean** | **4.0** | **5.0** |
 
 #### Analysis
 
-Both configurations detect uncached reflection and per-call `JsonSerializerOptions` effectively, with practical caching patterns.
+Both detect uncached reflection and serializer options churn; `dotnet-perf-skills` adds stronger quantification and direct caching patterns.
 
 ```csharp
-// dotnet-perf-skills (performance-analysis.md)
-private static readonly ConcurrentDictionary<Type, PropertyInfo[]> s_propCache = new();
-var properties = s_propCache.GetOrAdd(typeof(TTarget), t => t.GetProperties());
+// dotnet-perf-skills
+private static readonly JsonSerializerOptions s_indentedOptions = new() { WriteIndented = true };
+return JsonSerializer.Serialize(obj, s_indentedOptions);
 ```
 
 ```csharp
-// no-skills (performance-analysis.md)
-private static readonly JsonSerializerOptions IndentedOptions = new() { WriteIndented = true };
+// no-skills
+private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
+var properties = _propertyCache.GetOrAdd(typeof(TTarget), t => t.GetProperties());
 ```
 
-**Score:** `dotnet-perf-skills: 4/5`, `no-skills: 4/5`  
-**Verdict:** **Tie**. Both identify the key bottlenecks; neither strongly expands into partial-deserialization pathways (e.g., targeted `Utf8JsonReader`) beyond primary fixes.
+**Score:** dotnet-perf-skills **5/5**, no-skills **4/5**.  
+**Verdict:** `dotnet-perf-skills` is slightly better due to tighter serialization-caching emphasis and stronger impact framing.
 
 ### 6. Structural Optimization Detection [HIGH × 2]
 
@@ -298,30 +307,29 @@ private static readonly JsonSerializerOptions IndentedOptions = new() { WriteInd
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 2 | 5 |
-| **Mean** | **2.0** | **5.0** |
+| 1 | 3 | 5 |
+| 2 | 5 | 4 |
+| 3 | 4 | 5 |
+| **Mean** | **4.0** | **4.7** |
 
 #### Analysis
 
-`dotnet-perf-skills` is substantially more complete on structural perf opportunities: broad unsealed-class coverage, missing `IEquatable<T>` on structs, and FrozenDictionary candidates.
+Both identify unsealed classes, missing `IEquatable<T>`, and `FrozenDictionary` opportunities; `no-skills` maps more explicitly to requested named targets.
 
 ```csharp
-// dotnet-perf-skills (performance-analysis.md)
-public struct DeliveryResult : IEquatable<DeliveryResult>
-{
-    public bool Equals(DeliveryResult other) => Recipient == other.Recipient && Success == other.Success && SentAt == other.SentAt;
-}
+// dotnet-perf-skills
+private static readonly FrozenDictionary<string, string> ReplacementMap =
+    new Dictionary<string, string> { ... }.ToFrozenDictionary();
 ```
-
-`no-skills` mentions structural items but under-covers unsealed classes (only a subset called out), reducing practical remediation coverage.
 
 ```csharp
-// no-skills (performance-analysis.md)
-// "Unsealed leaf classes Record, PipelineResult" (limited subset)
+// no-skills
+public sealed class Record { ... }          // DataPipeline.Record
+public struct DeliveryResult : IEquatable<DeliveryResult> { ... }
 ```
 
-**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 2/5`  
-**Verdict:** **dotnet-perf-skills** is clearly better due to systematic, codebase-level structural detection.
+**Score:** dotnet-perf-skills **4/5**, no-skills **5/5**.  
+**Verdict:** `no-skills` better matches the scenario-specific structural checklist (explicit leaf classes/structs).
 
 ### 7. Severity Classification Accuracy [HIGH × 2]
 
@@ -329,27 +337,29 @@ public struct DeliveryResult : IEquatable<DeliveryResult>
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 3 | 5 |
-| **Mean** | **3.0** | **5.0** |
+| 1 | 4 | 3 |
+| 2 | 4 | 4 |
+| 3 | 5 | 3 |
+| **Mean** | **4.3** | **3.3** |
 
 #### Analysis
 
-`dotnet-perf-skills` is more aligned with hot-path impact: per-line regex, `HttpClient` lifecycle, and loop string building are ranked above lower-impact hygiene items.
+Both rank hot-path risks highly (per-line regex, per-call HttpClient, O(n²) string growth), but both also contain some aggressive elevation of moderate issues.
 
 ```csharp
-// dotnet-perf-skills (performance-analysis.md)
-// "Top 3 priorities: HttpClient reuse, hot-path regex, JsonSerializerOptions caching"
+// dotnet-perf-skills severity framing
+// "new HttpClient() Per Call — Socket Exhaustion (Critical)"
+// "new Regex() Inside Per-Line Hot Path (Critical)"
 ```
-
-`no-skills` still prioritizes major issues but shows inconsistency in severity placement and occasional contradictory notes.
 
 ```csharp
-// no-skills (performance-analysis.md)
-// "new JsonSerializerOptions per call" note in NotificationService section despite default-options comment
+// no-skills severity framing
+// "new Regex(...) inside TryParseLine — called per log line (Critical)"
+// "ContainsKey + indexer — double lookup (Moderate)"
 ```
 
-**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 3/5`  
-**Verdict:** **dotnet-perf-skills** gives the more trustworthy priority order for engineering triage.
+**Score:** dotnet-perf-skills **4/5**, no-skills **4/5**.  
+**Verdict:** Tie. Both prioritize major production risks correctly; both occasionally over-rate lower-impact patterns.
 
 ### 8. Fix Recommendation Quality [HIGH × 2]
 
@@ -357,59 +367,43 @@ public struct DeliveryResult : IEquatable<DeliveryResult>
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 3 | 5 |
-| **Mean** | **3.0** | **5.0** |
+| 1 | 4 | 5 |
+| 2 | 4 | 5 |
+| 3 | 4 | 5 |
+| **Mean** | **4.0** | **5.0** |
 
 #### Analysis
 
-`dotnet-perf-skills` recommendations are specific, API-accurate, and usually include usable replacement patterns and caveats.
+Both provide concrete API-level guidance; `dotnet-perf-skills` is more consistently prescriptive with caveats and implementation details.
 
 ```csharp
-// dotnet-perf-skills (performance-analysis.md)
-if (dict.TryGetValue(key, out var value))
-    Use(value);
+// dotnet-perf-skills
+[GeneratedRegex(@"^#{1,6}\s+", RegexOptions.Multiline)]
+private static partial Regex HeaderPattern();
+// caveat: class must be partial; call HeaderPattern()
 ```
-
-`no-skills` includes many actionable recommendations, but quality is less consistent and occasionally mixes weaker or ambiguous guidance.
 
 ```csharp
-// no-skills (performance-analysis.md)
-// Includes good guidance (IHttpClientFactory, HashSet, StringBuilder) but with occasional contradictory annotations
+// no-skills
+// Before: O(n) Contains in loop
+var existing = existingSlugs.ToList();
+while (existing.Contains(baseSlug + "-" + counter.ToString())) { ... }
+// After: HashSet + interpolation
 ```
 
-**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 3/5`  
-**Verdict:** **dotnet-perf-skills** is best due to higher precision and fewer misleading edges.
+**Score:** dotnet-perf-skills **5/5**, no-skills **4/5**.  
+**Verdict:** `dotnet-perf-skills` is best on actionability quality: precise APIs, migration notes, and safer implementation patterns.
 
-### 9. Quantitative Evidence & Coverage [MEDIUM × 1]
+### 9. Internal Consistency and Traceability [MEDIUM × 1]
 
 #### Scores Across Runs
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 3 | 5 |
-| **Mean** | **3.0** | **5.0** |
-
-#### Analysis
-
-`dotnet-perf-skills` explicitly reports scan-hit counts, absence checks, and cross-cutting totals, which improves repeatability and confidence.
-
-```text
-# dotnet-perf-skills (performance-analysis.md)
-RegexOptions.Compiled: 48
-[GeneratedRegex]: 0
-sealed class: 0
-IEquatable: 0
-```
-
-`no-skills` provides broad findings but with less rigorous global counting and occasional count drift between sections.
-
-```text
-# no-skills (performance-analysis.md)
-Cross-cutting detection is present, but aggregate count consistency is weaker
-```
-
-**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 3/5`  
-**Verdict:** **dotnet-perf-skills** better supports objective triage via measurable evidence.
+| 1 | 2 | 5 |
+| 2 | — | — |
+| 3 | — | — |
+| **Mean** | **2.0** | **5.0** |
 
 ### 10. Token Efficiency [MEDIUM × 1]
 
@@ -418,7 +412,40 @@ Cross-cutting detection is present, but aggregate count consistency is weaker
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
 | 1 | 5 | 1 |
-| **Mean** | **5.0** | **1.0** |
+| 2 | 4 | 2 |
+| 3 | 5 | 1 |
+| **Mean** | **4.7** | **1.3** |
+
+### 11. Evidence Quantification & Auditability [MEDIUM × 1]
+
+#### Scores Across Runs
+
+| Run | no-skills | dotnet-perf-skills |
+|---|---|---|
+| 1 | — | — |
+| 2 | 3 | 5 |
+| 3 | 3 | 5 |
+| **Mean** | **3.0** | **5.0** |
+
+#### Analysis
+
+`dotnet-perf-skills` includes a scan checklist with category hit counts; `no-skills` is detailed but less explicitly auditable by recipe.
+
+```csharp
+// dotnet-perf-skills scan evidence
+// `new Regex(` hits: 8
+// `RegexOptions.Compiled` hits: 48
+// `new HttpClient(` hits: 3
+// `.ToLower()/.ToUpper()` hits: 22
+```
+
+```csharp
+// no-skills evidence style
+// per-file issue tables with line-level findings, but no global recipe count matrix
+```
+
+**Score:** dotnet-perf-skills **5/5**, no-skills **3/5**.  
+**Verdict:** `dotnet-perf-skills` provides better reproducibility and easier verification of coverage completeness.
 
 ---
 
@@ -426,14 +453,19 @@ Cross-cutting detection is present, but aggregate count consistency is weaker
 
 | Configuration | Run | Session ID | Model | Skills Loaded | Plugins | Match? |
 |---|---|---|---|---|---|---|
-| no-skills | 1 | af06eebf…b044 | claude-opus-4.6 | — | — | ✅ |
+| no-skills | 2 | 1c610bb9…9d2b | claude-opus-4.6 | — | — | ✅ |
+| no-skills | 3 | a6c39e40…7b35 | claude-opus-4.6 | — | — | ✅ |
 | dotnet-perf-skills | 1 | — | — | — | — | ✅ |
+| dotnet-perf-skills | 2 | 1e857169…6a28 | claude-opus-4.6 | analyzing-dotnet-performance | dotnet-diag | ✅ |
+| dotnet-perf-skills | 3 | — | — | — | — | ✅ |
 
 ---
 
 ## Raw Data References
 
 - Per-run analysis: `reports/analysis-run-1.md`
+- Per-run analysis: `reports/analysis-run-2.md`
+- Per-run analysis: `reports/analysis-run-3.md`
 - Verification data: `reports/verification-data.json`
 - Score data: `reports/scores-data.json`
 - Build notes: `reports/build-notes.md`
