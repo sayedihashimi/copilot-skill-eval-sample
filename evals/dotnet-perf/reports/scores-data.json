@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T07:44:52.950043+00:00",
+  "timestamp": "2026-04-10T15:22:16.798753+00:00",
   "runs": [
     {
       "run_id": 1,
@@ -22,28 +22,32 @@
         },
         "Reflection and Serialization Overhead": {
           "dotnet-perf-skills": 5.0,
-          "no-skills": 5.0
+          "no-skills": 4.0
         },
         "Structural Optimization Detection": {
           "dotnet-perf-skills": 5.0,
-          "no-skills": 5.0
+          "no-skills": 3.0
         },
         "Severity Classification Accuracy": {
-          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills": 3.0,
           "no-skills": 4.0
         },
         "Fix Recommendation Quality": {
-          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills": 5.0,
           "no-skills": 4.0
         },
-        "Configuration Attribution Consistency": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 1.0
+        "Coverage Breadth and Granularity": {
+          "dotnet-perf-skills": 4.0,
+          "no-skills": 5.0
+        },
+        "Token Efficiency": {
+          "no-skills": 5.0,
+          "dotnet-perf-skills": 3.0
         }
       },
       "weighted_totals": {
-        "no-skills": 97.0,
-        "dotnet-perf-skills": 101.0
+        "no-skills": 100.0,
+        "dotnet-perf-skills": 103.0
       }
     },
     {
@@ -66,52 +70,7 @@
           "no-skills": 4.0
         },
         "Reflection and Serialization Overhead": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
-        },
-        "Structural Optimization Detection": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 3.0
-        },
-        "Severity Classification Accuracy": {
           "dotnet-perf-skills": 4.0,
-          "no-skills": 3.0
-        },
-        "Fix Recommendation Quality": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
-        },
-        "Quantification & Traceability": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 3.0
-        }
-      },
-      "weighted_totals": {
-        "no-skills": 79.0,
-        "dotnet-perf-skills": 103.0
-      }
-    },
-    {
-      "run_id": 3,
-      "scores": {
-        "Regex Anti-Pattern Detection": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
-        },
-        "String Allocation Detection": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
-        },
-        "Collection and LINQ Efficiency": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
-        },
-        "Async and IO Pattern Detection": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
-        },
-        "Reflection and Serialization Overhead": {
-          "dotnet-perf-skills": 5.0,
           "no-skills": 4.0
         },
         "Structural Optimization Detection": {
@@ -126,14 +85,165 @@
           "dotnet-perf-skills": 5.0,
           "no-skills": 4.0
         },
-        "Evidence Quantification and Traceability": {
+        "Evidence & Quantification Rigor": {
           "dotnet-perf-skills": 5.0,
           "no-skills": 4.0
+        },
+        "Token Efficiency": {
+          "no-skills": 5.0,
+          "dotnet-perf-skills": 5.0
         }
       },
       "weighted_totals": {
-        "no-skills": 82.0,
-        "dotnet-perf-skills": 101.0
+        "no-skills": 87.0,
+        "dotnet-perf-skills": 104.0
+      }
+    },
+    {
+      "run_id": 3,
+      "scores": {
+        "Regex Anti-Pattern Detection": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 4.0
+        },
+        "String Allocation Detection": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 5.0
+        },
+        "Collection and LINQ Efficiency": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 5.0
+        },
+        "Async and IO Pattern Detection": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 5.0
+        },
+        "Reflection and Serialization Overhead": {
+          "dotnet-perf-skills": 4.0,
+          "no-skills": 4.0
+        },
+        "Structural Optimization Detection": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 4.0
+        },
+        "Severity Classification Accuracy": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 3.0
+        },
+        "Fix Recommendation Quality": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 4.0
+        },
+        "Signal-to-Noise / Report Focus": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 2.0
+        },
+        "Token Efficiency": {
+          "no-skills": 5.0,
+          "dotnet-perf-skills": 5.0
+        }
+      },
+      "weighted_totals": {
+        "no-skills": 94.0,
+        "dotnet-perf-skills": 108.0
+      }
+    },
+    {
+      "run_id": 4,
+      "scores": {
+        "Regex Anti-Pattern Detection": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 5.0
+        },
+        "String Allocation Detection": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 5.0
+        },
+        "Collection and LINQ Efficiency": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 5.0
+        },
+        "Async and IO Pattern Detection": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 4.0
+        },
+        "Reflection and Serialization Overhead": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 5.0
+        },
+        "Structural Optimization Detection": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 4.0
+        },
+        "Severity Classification Accuracy": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 3.0
+        },
+        "Fix Recommendation Quality": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 4.0
+        },
+        "Signal-to-Noise / Prioritization Focus": {
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 3.0
+        },
+        "Token Efficiency": {
+          "no-skills": 5.0,
+          "dotnet-perf-skills": 5.0
+        }
+      },
+      "weighted_totals": {
+        "no-skills": 97.0,
+        "dotnet-perf-skills": 110.0
+      }
+    },
+    {
+      "run_id": 5,
+      "scores": {
+        "Regex Anti-Pattern Detection": {
+          "no-skills": 4.0,
+          "dotnet-perf-skills": 5.0
+        },
+        "String Allocation Detection": {
+          "no-skills": 4.0,
+          "dotnet-perf-skills": 5.0
+        },
+        "Collection and LINQ Efficiency": {
+          "no-skills": 4.0,
+          "dotnet-perf-skills": 5.0
+        },
+        "Async and IO Pattern Detection": {
+          "no-skills": 5.0,
+          "dotnet-perf-skills": 5.0
+        },
+        "Reflection and Serialization Overhead": {
+          "no-skills": 4.0,
+          "dotnet-perf-skills": 5.0
+        },
+        "Structural Optimization Detection": {
+          "no-skills": 4.0,
+          "dotnet-perf-skills": 5.0
+        },
+        "Severity Classification Accuracy": {
+          "no-skills": 3.0,
+          "dotnet-perf-skills": 5.0
+        },
+        "Fix Recommendation Quality": {
+          "no-skills": 4.0,
+          "dotnet-perf-skills": 4.0
+        },
+        "Evidence Quantification and Scan Rigor": {
+          "no-skills": 3.0,
+          "dotnet-perf-skills": 5.0
+        },
+        "Token Efficiency": {
+          "no-skills": 1.0,
+          "dotnet-perf-skills": 5.0
+        }
+      },
+      "weighted_totals": {
+        "no-skills": 85.0,
+        "dotnet-perf-skills": 108.0
       }
     }
   ]
