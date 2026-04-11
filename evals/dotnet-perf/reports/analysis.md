@@ -1,7 +1,7 @@
 # Aggregated Analysis: .NET Performance Analysis Skill Evaluation
 
 **Runs:** 3 | **Configurations:** 2 | **Scenarios:** 1 | **Dimensions:** 9
-**Date:** 2026-04-11 14:56 UTC
+**Date:** 2026-04-11 16:21 UTC
 
 ---
 
@@ -58,8 +58,9 @@ Dimensions are grouped into **tiers** that determine their weight in the final w
 |---|:---:|:---:|
 | CRITICAL | ×3 | 4 |
 | HIGH | ×2 | 4 |
+| MEDIUM | ×1 | 1 |
 
-**Maximum possible weighted score: 100.0** (all dimensions scoring 5).
+**Maximum possible weighted score: 105.0** (all dimensions scoring 5).
 Scores shown as **mean ± standard deviation** across runs.
 
 ---
@@ -82,10 +83,10 @@ Scores shown as **mean ± standard deviation** across runs.
 
 ## Final Rankings
 
-| Rank | Configuration | Mean Score | % of Max (100) | Std Dev | Min | Max |
+| Rank | Configuration | Mean Score | % of Max (105) | Std Dev | Min | Max |
 |---|---|---|---|---|---|---|
-| 🥇 | dotnet-perf-skills | 99.0 | 99% | 2.6 | 96.0 | 101.0 |
-| 🥈 | no-skills | 80.7 | 81% | 0.6 | 80.0 | 81.0 |
+| 🥇 | dotnet-perf-skills | 99.0 | 94% | 2.6 | 96.0 | 101.0 |
+| 🥈 | no-skills | 80.7 | 77% | 0.6 | 80.0 | 81.0 |
 
 ---
 
