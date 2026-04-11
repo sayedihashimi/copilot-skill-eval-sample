@@ -1,304 +1,40 @@
 [
   {
     "api_calls": 9,
-    "input_tokens": 388842,
-    "output_tokens": 8818,
-    "cache_read_tokens": 319953,
-    "api_duration_ms": 160559,
-    "wall_time_seconds": 196.4,
+    "input_tokens": 412742,
+    "output_tokens": 9735,
+    "cache_read_tokens": 304919,
+    "api_duration_ms": 190968,
+    "wall_time_seconds": 246.4,
     "config": "no-skills",
     "run_id": 1,
     "scenario": "analyze-perf-issues",
-    "session_id": "f39acac9-5bf8-4651-8ee7-62cb480dfc1c",
-    "model": "claude-opus-4.6",
-    "copilot_version": "1.0.24-0",
-    "loaded_resources": [],
-    "resource_comparison": {
-      "expected_skills": [],
-      "actual_skills": [],
-      "expected_plugins": [],
-      "actual_plugins": [],
-      "contaminated": [],
-      "match": true
-    }
-  },
-  {
-    "api_calls": 9,
-    "input_tokens": 386136,
-    "output_tokens": 8473,
-    "cache_read_tokens": 317674,
-    "api_duration_ms": 155093,
-    "wall_time_seconds": 182.0,
-    "config": "no-skills",
-    "run_id": 2,
-    "scenario": "analyze-perf-issues",
-    "session_id": "cf284294-27e1-4815-82b8-904da2dcd4d5",
-    "model": "claude-opus-4.6",
-    "copilot_version": "1.0.24-0",
-    "loaded_resources": [],
-    "resource_comparison": {
-      "expected_skills": [],
-      "actual_skills": [],
-      "expected_plugins": [],
-      "actual_plugins": [],
-      "contaminated": [],
-      "match": true
-    }
-  },
-  {
-    "api_calls": 9,
-    "input_tokens": 388508,
-    "output_tokens": 8459,
-    "cache_read_tokens": 320075,
-    "api_duration_ms": 154446,
-    "wall_time_seconds": 184.1,
-    "config": "no-skills",
-    "run_id": 3,
-    "scenario": "analyze-perf-issues",
-    "session_id": "f96f996f-e702-4cac-89db-0163e3a422d2",
-    "model": "claude-opus-4.6",
-    "copilot_version": "1.0.24-0",
-    "loaded_resources": [],
-    "resource_comparison": {
-      "expected_skills": [],
-      "actual_skills": [],
-      "expected_plugins": [],
-      "actual_plugins": [],
-      "contaminated": [],
-      "match": true
-    }
-  },
-  {
-    "api_calls": 9,
-    "input_tokens": 387090,
-    "output_tokens": 8640,
-    "cache_read_tokens": 318484,
-    "api_duration_ms": 157836,
-    "wall_time_seconds": 196.1,
-    "config": "no-skills",
-    "run_id": 4,
-    "scenario": "analyze-perf-issues",
-    "session_id": "334e5cff-ca3f-4665-9048-fe253d4f18aa",
-    "model": "claude-opus-4.6",
-    "copilot_version": "1.0.24-0",
-    "loaded_resources": [
-      {
-        "resource_type": "skill",
-        "name": "analyzing-dotnet-performance",
-        "plugin_name": "dotnet-diag",
-        "content_length": 11299,
-        "timestamp": "2026-04-10T20:22:33.747Z"
-      }
-    ],
-    "resource_comparison": {
-      "expected_skills": [],
-      "actual_skills": [
-        "analyzing-dotnet-performance"
-      ],
-      "expected_plugins": [],
-      "actual_plugins": [
-        "dotnet-diag"
-      ],
-      "contaminated": [],
-      "match": false
-    }
-  },
-  {
-    "api_calls": 9,
-    "input_tokens": 393317,
-    "output_tokens": 9816,
-    "cache_read_tokens": 323405,
-    "api_duration_ms": 182818,
-    "wall_time_seconds": 211.4,
-    "config": "no-skills",
-    "run_id": 5,
-    "scenario": "analyze-perf-issues",
-    "session_id": "334e5cff-ca3f-4665-9048-fe253d4f18aa",
-    "model": "claude-opus-4.6",
-    "copilot_version": "1.0.24-0",
-    "loaded_resources": [
-      {
-        "resource_type": "skill",
-        "name": "analyzing-dotnet-performance",
-        "plugin_name": "dotnet-diag",
-        "content_length": 11299,
-        "timestamp": "2026-04-10T20:22:33.747Z"
-      }
-    ],
-    "resource_comparison": {
-      "expected_skills": [],
-      "actual_skills": [
-        "analyzing-dotnet-performance"
-      ],
-      "expected_plugins": [],
-      "actual_plugins": [
-        "dotnet-diag"
-      ],
-      "contaminated": [],
-      "match": false
-    }
-  },
-  {
-    "api_calls": 12,
-    "input_tokens": 788911,
-    "output_tokens": 11767,
-    "cache_read_tokens": 589878,
-    "api_duration_ms": 209668,
-    "wall_time_seconds": 245.3,
-    "config": "dotnet-perf-skills",
-    "run_id": 1,
-    "scenario": "analyze-perf-issues",
-    "session_id": "48939371-24fd-469d-a9da-c6ef8a666976",
-    "model": "claude-opus-4.6",
-    "copilot_version": "1.0.24-0",
-    "loaded_resources": [
-      {
-        "resource_type": "skill",
-        "name": "analyzing-dotnet-performance",
-        "plugin_name": "dotnet-diag",
-        "content_length": 11299,
-        "timestamp": "2026-04-10T20:26:52.263Z"
-      }
-    ],
-    "resource_comparison": {
-      "expected_skills": [],
-      "actual_skills": [
-        "analyzing-dotnet-performance"
-      ],
-      "expected_plugins": [
-        "dotnet-diag"
-      ],
-      "actual_plugins": [
-        "dotnet-diag"
-      ],
-      "contaminated": [],
-      "match": true
-    }
-  },
-  {
-    "api_calls": 13,
-    "input_tokens": 906428,
-    "output_tokens": 19443,
-    "cache_read_tokens": 677527,
-    "api_duration_ms": 318326,
-    "wall_time_seconds": 360.8,
-    "config": "dotnet-perf-skills",
-    "run_id": 2,
-    "scenario": "analyze-perf-issues",
-    "session_id": "bd7d0d92-fde2-45fe-a20c-6a62c9a1fd7d",
-    "model": "claude-opus-4.6",
-    "copilot_version": "1.0.24-0",
-    "loaded_resources": [
-      {
-        "resource_type": "skill",
-        "name": "analyzing-dotnet-performance",
-        "plugin_name": "dotnet-diag",
-        "content_length": 11299,
-        "timestamp": "2026-04-10T20:31:00.891Z"
-      }
-    ],
-    "resource_comparison": {
-      "expected_skills": [],
-      "actual_skills": [
-        "analyzing-dotnet-performance"
-      ],
-      "expected_plugins": [
-        "dotnet-diag"
-      ],
-      "actual_plugins": [
-        "dotnet-diag"
-      ],
-      "contaminated": [],
-      "match": true
-    }
-  },
-  {
-    "api_calls": 11,
-    "input_tokens": 718269,
-    "output_tokens": 14910,
-    "cache_read_tokens": 515129,
-    "api_duration_ms": 249185,
-    "wall_time_seconds": 278.3,
-    "config": "dotnet-perf-skills",
-    "run_id": 3,
-    "scenario": "analyze-perf-issues",
-    "session_id": "21d36a5b-1af6-4dbb-a13e-69c63961d892",
-    "model": "claude-opus-4.6",
-    "copilot_version": "1.0.24-0",
-    "loaded_resources": [
-      {
-        "resource_type": "skill",
-        "name": "analyzing-dotnet-performance",
-        "plugin_name": "dotnet-diag",
-        "content_length": 11299,
-        "timestamp": "2026-04-10T20:37:00.263Z"
-      }
-    ],
-    "resource_comparison": {
-      "expected_skills": [],
-      "actual_skills": [
-        "analyzing-dotnet-performance"
-      ],
-      "expected_plugins": [
-        "dotnet-diag"
-      ],
-      "actual_plugins": [
-        "dotnet-diag"
-      ],
-      "contaminated": [],
-      "match": true
-    }
-  },
-  {
-    "api_calls": 12,
-    "input_tokens": 780981,
-    "output_tokens": 11784,
-    "cache_read_tokens": 591244,
-    "api_duration_ms": 204540,
-    "wall_time_seconds": 243.8,
-    "config": "dotnet-perf-skills",
-    "run_id": 4,
-    "scenario": "analyze-perf-issues",
-    "session_id": "556101cd-dac2-410d-ab14-2247bfb85816",
-    "model": "claude-opus-4.6",
-    "copilot_version": "1.0.24-0",
-    "loaded_resources": [
-      {
-        "resource_type": "skill",
-        "name": "analyzing-dotnet-performance",
-        "plugin_name": "dotnet-diag",
-        "content_length": 11299,
-        "timestamp": "2026-04-10T20:41:39.685Z"
-      }
-    ],
-    "resource_comparison": {
-      "expected_skills": [],
-      "actual_skills": [
-        "analyzing-dotnet-performance"
-      ],
-      "expected_plugins": [
-        "dotnet-diag"
-      ],
-      "actual_plugins": [
-        "dotnet-diag"
-      ],
-      "contaminated": [],
-      "match": true
-    }
-  },
-  {
-    "api_calls": 14,
-    "input_tokens": 831137,
-    "output_tokens": 12185,
-    "cache_read_tokens": 748513,
-    "api_duration_ms": 230224,
-    "wall_time_seconds": 277.3,
-    "config": "dotnet-perf-skills",
-    "run_id": 5,
-    "scenario": "analyze-perf-issues",
-    "session_id": "eb5baeb3-7bdc-4b05-aa1d-b4e5da87e06e",
+    "session_id": null,
     "model": null,
-    "copilot_version": "1.0.22",
+    "copilot_version": null,
+    "loaded_resources": [],
+    "resource_comparison": {
+      "expected_skills": [],
+      "actual_skills": [],
+      "expected_plugins": [],
+      "actual_plugins": [],
+      "contaminated": [],
+      "match": true
+    }
+  },
+  {
+    "api_calls": 12,
+    "input_tokens": 829055,
+    "output_tokens": 12995,
+    "cache_read_tokens": 571897,
+    "api_duration_ms": 236219,
+    "wall_time_seconds": 263.2,
+    "config": "dotnet-perf-skills",
+    "run_id": 1,
+    "scenario": "analyze-perf-issues",
+    "session_id": null,
+    "model": null,
+    "copilot_version": null,
     "loaded_resources": [],
     "resource_comparison": {
       "expected_skills": [],
