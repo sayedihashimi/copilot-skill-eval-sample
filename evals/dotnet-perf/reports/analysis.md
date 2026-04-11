@@ -1,7 +1,7 @@
 # Aggregated Analysis: .NET Performance Analysis Skill Evaluation
 
 **Runs:** 3 | **Configurations:** 2 | **Scenarios:** 1 | **Dimensions:** 9
-**Date:** 2026-04-11 05:42 UTC
+**Date:** 2026-04-11 12:42 UTC
 
 ---
 
@@ -76,7 +76,7 @@ Scores shown as **mean ± standard deviation** across runs.
 | Structural Optimization Detection [HIGH] | 3.3 ± 0.6 | 5.0 |
 | Severity Classification Accuracy [HIGH] | 3.7 ± 0.6 | 3.3 ± 0.6 |
 | Fix Recommendation Quality [HIGH] | 4.3 ± 0.6 | 5.0 |
-| Token Efficiency [MEDIUM] | 4.7 ± 0.6 | 2.0 |
+| Token Efficiency [MEDIUM] | 5.0 | 2.0 |
 
 ---
 
@@ -85,7 +85,7 @@ Scores shown as **mean ± standard deviation** across runs.
 | Rank | Configuration | Mean Score | % of Max (100) | Std Dev | Min | Max |
 |---|---|---|---|---|---|---|
 | 🥇 | dotnet-perf-skills | 97.3 | 97% | 1.2 | 96.0 | 98.0 |
-| 🥈 | no-skills | 85.3 | 85% | 5.9 | 81.0 | 92.0 |
+| 🥈 | no-skills | 85.7 | 86% | 6.4 | 81.0 | 93.0 |
 
 ---
 
@@ -93,10 +93,10 @@ Scores shown as **mean ± standard deviation** across runs.
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 92.0 | 98.0 |
+| 1 | 93.0 | 98.0 |
 | 2 | 81.0 | 98.0 |
 | 3 | 83.0 | 96.0 |
-| **Mean** | **85.3** | **97.3** |
+| **Mean** | **85.7** | **97.3** |
 
 ---
 
@@ -129,7 +129,7 @@ Average token consumption per configuration (1 outlier run(s) excluded from aver
 
 | Configuration | Score σ | Most Consistent Dim (σ) | Most Variable Dim (σ) |
 |---|---|---|---|
-| no-skills | 5.9 | Collection and LINQ Efficiency (0.0) | Regex Anti-Pattern Detection (0.6) |
+| no-skills | 6.4 | Collection and LINQ Efficiency (0.0) | Regex Anti-Pattern Detection (0.6) |
 | dotnet-perf-skills | 1.2 | Regex Anti-Pattern Detection (0.0) | Reflection and Serialization Overhead (0.6) |
 
 ---
@@ -347,10 +347,10 @@ Average token consumption per configuration (1 outlier run(s) excluded from aver
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 4 | 2 |
+| 1 | 5 | 2 |
 | 2 | 5 | — |
 | 3 | 5 | 2 |
-| **Mean** | **4.7** | **2.0** |
+| **Mean** | **5.0** | **2.0** |
 
 ---
 
@@ -369,26 +369,43 @@ Average token consumption per configuration (1 outlier run(s) excluded from aver
 
 ## Copilot Recommendations (Best Run)
 
-Final recommendations from Copilot's highest-scoring run for each configuration.
+Prioritized recommendations extracted from the highest-scoring run's output for each configuration.
 
-### no-skills (run 1, score 92)
+### no-skills (run 1, score 93)
 
-Done. Analyzed all 10 C# files and wrote `performance-analysis.md` with 62 findings:
+## Prioritized Fix Recommendations
 
-- **7 Critical** — `new HttpClient()` per call (socket exhaustion), `new Regex()` per log line, O(n²) string concatenation in CSV parser and template engine
-- **28 Moderate** — per-call regex allocations, uncached reflection, missing culture in `.ToLower()`, unbounded parallelism, sequential awaits
-- **27 Info** — missing capacity hints, unsealed classes, structs without `IEquatable<T>`, `FrozenDictionary` candidates
-
-Top fix: inject `IHttpClientFactory` in `NotificationService` to prevent socket exhaustion. Both output files are in `output/no-skills/run-1/analyze-perf-issues/`.
+| Rank | File | Issue | Impact | Effort |
+|------|------|-------|--------|--------|
+| 1 | `NotificationService.cs` | Replace `new HttpClient()` with `IHttpClientFactory` | 🔴 Socket exhaustion in production | Moderate |
+| 2 | `LogAnalyzer.cs` | Hoist `TryParseLine` regexes to static fields | 🔴 1M regex allocs per 1M-line log | Quick-fix |
+| 3 | `CsvParser.cs` | Replace char-by-char `+=` with `StringBuilder` in `ParseLine` / `SplitLines` | 🔴 O(n²) on every CSV parse | Quick-fix |
+| 4 | `TemplateEngine.cs` | Replace string `+=` with `StringBuilder` in `ProcessLoops` / `RenderBatch` | 🔴 O(n²) in template rendering | Quick-fix |
+| 5 | `MarkdownStripper.cs` | Convert 45 `RegexOptions.Compiled` to `[GeneratedRegex]` | 🟡 Excessive JIT startup cost | Moderate |
+| 6 | `EntityMapper.cs` | Cache `GetProperties()` per type in `ConcurrentDictionary` | 🟡 Reflection on every map call | Quick-fix |
+| 7 | `ValidationEngine.cs` | Pre-compile `Regex` in `AddPattern` closure | 🟡 Regex alloc per validation | Quick-fix |
+| 8 | `JsonTransformer.cs` | Share static `JsonSerializerOptions` instance | 🟡 4 allocations per call | Quick-fix |
+| 9 | `SlugGenerator.cs` | Use `HashSet` in `GenerateUniqueSlug` | 🟡 O(n²) slug uniqueness check | Quick-fix |
+| 10 | All files | Replace `ContainsKey` + indexer with `TryGetValue` | ℹ️ Double hash lookups | Quick-fix |
 
 ### dotnet-perf-skills (run 1, score 98)
 
-Done. I analyzed all 10 `.cs` files in `perf01/` using the **`analyzing-dotnet-performance`** skill and produced:
+## Prioritized Fix Recommendations
 
-- **`performance-analysis.md`** — Full report with 40 findings (8 🔴 Critical, 22 🟡 Moderate, 10 ℹ️ Info) across regex, strings, collections, async, reflection, serialization, and structural categories
-- **`gen-notes.md`** — Documents skill usage and how it influenced the analysis
+| # | Fix | Severity | Effort | Impact |
+|---|-----|----------|--------|--------|
+| 1 | Replace `new HttpClient()` with shared/injected instances | 🔴 | Quick-fix | Prevents socket exhaustion in production |
+| 2 | Cache `JsonSerializerOptions` as static readonly | 🔴 | Quick-fix | Up to 592× faster serialization |
+| 3 | Hoist `new Regex()` in `LogAnalyzer.TryParseLine` to static fields / `[GeneratedRegex]` | 🔴 | Quick-fix | >10× faster log parsing |
+| 4 | Cache remaining 5 `new Regex()` per-call instances | 🔴 | Quick-fix | Eliminates per-call regex construction |
+| 5 | Replace string `+=` loops with `StringBuilder` across 8+ methods | 🔴 | Moderate | Eliminates O(n²) string building |
+| 6 | Replace `ContainsKey` + indexer with `TryGetValue` (12 sites) | 🔴 | Quick-fix | ~2× faster dictionary access |
+| 7 | Convert 48 `RegexOptions.Compiled` to `[GeneratedRegex]` in MarkdownStripper | 🟡 | Moderate | Zero startup cost, better throughput |
+| 8 | Convert 17 static `Regex.Replace` calls to cached instances | 🟡 | Moderate | Eliminates regex cache thrashing |
+| 9 | Seal all 17 leaf classes | 🟡 | Quick-fix | Enables JIT devirtualization |
+| 10 | Cache reflection `GetProperties()` per type in EntityMapper | 🟡 | Moderate | ~100× faster property access |
 
-**Top critical findings:** `new HttpClient()` per call (socket exhaustion), uncached `new Regex()` in log parsing hot loops, uncached `JsonSerializerOptions` (up to 592× slower), `ContainsKey`+indexer double-lookups (12 sites), and string `+=` in loops (O(n²) across 8 methods).
+> ⚠️ **Disclaimer:** These results are generated by an AI assistant and are non-deterministic. Findings may include false positives, miss real issues, or suggest changes that are incorrect for your specific context. Always verify recommendations with benchmarks and human review before applying changes to production code.
 
 ---
 

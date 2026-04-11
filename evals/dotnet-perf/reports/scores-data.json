@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-11T05:42:16.854666+00:00",
+  "timestamp": "2026-04-11T12:42:07.912026+00:00",
   "runs": [
     {
       "run_id": 1,
@@ -37,12 +37,12 @@
           "no-skills": 5.0
         },
         "Token Efficiency": {
-          "no-skills": 4.0,
+          "no-skills": 5.0,
           "dotnet-perf-skills": 2.0
         }
       },
       "weighted_totals": {
-        "no-skills": 92.0,
+        "no-skills": 93.0,
         "dotnet-perf-skills": 98.0
       }
     },
