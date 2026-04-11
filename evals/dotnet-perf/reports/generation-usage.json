@@ -1,16 +1,16 @@
 [
   {
     "api_calls": 9,
-    "input_tokens": 412742,
-    "output_tokens": 9735,
-    "cache_read_tokens": 304919,
-    "api_duration_ms": 190968,
-    "wall_time_seconds": 246.4,
+    "input_tokens": 401881,
+    "output_tokens": 9644,
+    "cache_read_tokens": 300057,
+    "api_duration_ms": 179398,
+    "wall_time_seconds": 214.7,
+    "session_id": "f09771d4-ce09-4605-9a62-48705ccc0f9d",
     "config": "no-skills",
     "run_id": 1,
     "scenario": "analyze-perf-issues",
-    "session_id": null,
-    "model": null,
+    "model": "claude-opus-4.6",
     "copilot_version": null,
     "loaded_resources": [],
     "resource_comparison": {
@@ -23,17 +23,107 @@
     }
   },
   {
-    "api_calls": 12,
-    "input_tokens": 829055,
-    "output_tokens": 12995,
-    "cache_read_tokens": 571897,
-    "api_duration_ms": 236219,
-    "wall_time_seconds": 263.2,
+    "api_calls": 9,
+    "input_tokens": 388835,
+    "output_tokens": 8854,
+    "cache_read_tokens": 320068,
+    "api_duration_ms": 162207,
+    "wall_time_seconds": 196.0,
+    "session_id": "148356d7-f33e-4cfe-b6ea-3ee7750c3a43",
+    "config": "no-skills",
+    "run_id": 2,
+    "scenario": "analyze-perf-issues",
+    "model": "claude-opus-4.6",
+    "copilot_version": null,
+    "loaded_resources": [],
+    "resource_comparison": {
+      "expected_skills": [],
+      "actual_skills": [],
+      "expected_plugins": [],
+      "actual_plugins": [],
+      "contaminated": [],
+      "match": true
+    }
+  },
+  {
+    "api_calls": 9,
+    "input_tokens": 381274,
+    "output_tokens": 7756,
+    "cache_read_tokens": 313418,
+    "api_duration_ms": 151912,
+    "wall_time_seconds": 179.6,
+    "session_id": "a91fcbea-83e9-4774-8862-6c55dc48021f",
+    "config": "no-skills",
+    "run_id": 3,
+    "scenario": "analyze-perf-issues",
+    "model": "claude-opus-4.6",
+    "copilot_version": null,
+    "loaded_resources": [],
+    "resource_comparison": {
+      "expected_skills": [],
+      "actual_skills": [],
+      "expected_plugins": [],
+      "actual_plugins": [],
+      "contaminated": [],
+      "match": true
+    }
+  },
+  {
+    "api_calls": 14,
+    "input_tokens": 941955,
+    "output_tokens": 16993,
+    "cache_read_tokens": 694483,
+    "api_duration_ms": 321305,
+    "wall_time_seconds": 360.4,
+    "session_id": "701e3e26-025f-4d5b-9c9a-e5a272359b7a",
     "config": "dotnet-perf-skills",
     "run_id": 1,
     "scenario": "analyze-perf-issues",
-    "session_id": null,
-    "model": null,
+    "model": "claude-opus-4.6",
+    "copilot_version": null,
+    "loaded_resources": [],
+    "resource_comparison": {
+      "expected_skills": [],
+      "actual_skills": [],
+      "expected_plugins": [
+        "dotnet-diag"
+      ],
+      "actual_plugins": [],
+      "contaminated": [],
+      "match": true
+    }
+  },
+  {
+    "session_id": "cef98178-46a9-421c-8ea0-5876c664f362",
+    "config": "dotnet-perf-skills",
+    "run_id": 2,
+    "scenario": "analyze-perf-issues",
+    "model": "claude-opus-4.6",
+    "copilot_version": null,
+    "loaded_resources": [],
+    "resource_comparison": {
+      "expected_skills": [],
+      "actual_skills": [],
+      "expected_plugins": [
+        "dotnet-diag"
+      ],
+      "actual_plugins": [],
+      "contaminated": [],
+      "match": true
+    }
+  },
+  {
+    "api_calls": 13,
+    "input_tokens": 873387,
+    "output_tokens": 13323,
+    "cache_read_tokens": 679524,
+    "api_duration_ms": 281532,
+    "wall_time_seconds": 311.2,
+    "session_id": "452b8866-13e6-4add-944e-43f4c4ed44f7",
+    "config": "dotnet-perf-skills",
+    "run_id": 3,
+    "scenario": "analyze-perf-issues",
+    "model": "claude-opus-4.6",
     "copilot_version": null,
     "loaded_resources": [],
     "resource_comparison": {
