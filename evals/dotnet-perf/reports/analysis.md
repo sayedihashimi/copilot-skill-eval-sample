@@ -1,7 +1,7 @@
 # Aggregated Analysis: .NET Performance Analysis Skill Evaluation
 
 **Runs:** 3 | **Configurations:** 2 | **Scenarios:** 1 | **Dimensions:** 9
-**Date:** 2026-04-11 16:21 UTC
+**Date:** 2026-04-13 22:43 UTC
 
 ---
 
@@ -71,13 +71,13 @@ Scores shown as **mean ± standard deviation** across runs.
 |---|---|---|
 | Regex Anti-Pattern Detection [CRITICAL] | 4.3 ± 0.6 | 5.0 |
 | String Allocation Detection [CRITICAL] | 4.3 ± 0.6 | 5.0 |
-| Collection and LINQ Efficiency [CRITICAL] | 4.0 | 5.0 |
-| Async and IO Pattern Detection [CRITICAL] | 4.0 | 5.0 |
-| Reflection and Serialization Overhead [HIGH] | 3.7 ± 0.6 | 4.0 |
-| Structural Optimization Detection [HIGH] | 4.0 | 5.0 |
-| Severity Classification Accuracy [HIGH] | 2.7 ± 0.6 | 4.7 ± 0.6 |
-| Fix Recommendation Quality [HIGH] | 3.3 ± 0.6 | 5.0 |
-| Token Efficiency [MEDIUM] | 5.0 | 2.5 ± 0.7 |
+| Collection and LINQ Efficiency [CRITICAL] | 4.3 ± 0.6 | 5.0 |
+| Async and IO Pattern Detection [CRITICAL] | 4.7 ± 0.6 | 5.0 |
+| Reflection and Serialization Overhead [HIGH] | 4.0 | 4.3 ± 0.6 |
+| Structural Optimization Detection [HIGH] | 3.7 ± 0.6 | 5.0 |
+| Severity Classification Accuracy [HIGH] | 3.7 ± 0.6 | 4.3 ± 0.6 |
+| Fix Recommendation Quality [HIGH] | 4.0 | 5.0 |
+| Token Efficiency [MEDIUM] | 5.0 | 1.7 ± 0.6 |
 
 ---
 
@@ -85,8 +85,8 @@ Scores shown as **mean ± standard deviation** across runs.
 
 | Rank | Configuration | Mean Score | % of Max (105) | Std Dev | Min | Max |
 |---|---|---|---|---|---|---|
-| 🥇 | dotnet-perf-skills | 99.0 | 94% | 2.6 | 96.0 | 101.0 |
-| 🥈 | no-skills | 80.7 | 77% | 0.6 | 80.0 | 81.0 |
+| 🥇 | dotnet-perf-skills | 99.0 | 94% | 1.0 | 98.0 | 100.0 |
+| 🥈 | no-skills | 88.7 | 84% | 5.0 | 84.0 | 94.0 |
 
 ---
 
@@ -94,21 +94,21 @@ Scores shown as **mean ± standard deviation** across runs.
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 81.0 | 96.0 |
-| 2 | 80.0 | 100.0 |
-| 3 | 81.0 | 101.0 |
-| **Mean** | **80.7** | **99.0** |
+| 1 | 94.0 | 100.0 |
+| 2 | 88.0 | 99.0 |
+| 3 | 84.0 | 98.0 |
+| **Mean** | **88.7** | **99.0** |
 
 ---
 
 ## Token Usage Summary
 
-Average token consumption per configuration (2 outlier run(s) excluded from averages).
+Average token consumption per configuration across all runs.
 
 | Configuration | Avg Input Tokens | Avg Output Tokens | Avg Cache Read | Avg API Calls | Avg Wall Time | Δ Input vs Baseline |
 |---|---|---|---|---|---|---|
-| no-skills | 428,182 | 9,042 | 340,046 | 10 | 3m 57s | — (baseline) |
-| dotnet-perf-skills | 836,088 | 11,746 | 620,974 | 12 | 3m 56s | +95.3% |
+| no-skills | 341,409 | 9,173 | 260,970 | 8 | 3m 44s | — (baseline) |
+| dotnet-perf-skills | 786,422 | 14,622 | 620,613 | 13 | 5m 40s | +130.3% |
 
 ---
 
@@ -116,25 +116,13 @@ Average token consumption per configuration (2 outlier run(s) excluded from aver
 
 | Configuration | Run | Scenario | Input Tokens | Output Tokens | Cache Read | API Calls | Wall Time | Note |
 |---|---|---|---|---|---|---|---|---|
-| no-skills | 1 | analyze-perf-issues | 466,148 | 8,927 | 359,014 | 10 | 4m 7s |  |
-| no-skills | 2 | analyze-perf-issues | 1,597,501 | 14,869 | 1,398,629 | 26 | 3m 47s | ⚠️ outlier |
-| no-skills | 3 | analyze-perf-issues | 390,216 | 9,158 | 321,079 | 9 | 3m 48s |  |
-| dotnet-perf-skills | 1 | analyze-perf-issues | — | — | — | — | — | ⚠️ no usage data |
-| dotnet-perf-skills | 2 | analyze-perf-issues | 922,172 | 11,842 | 708,131 | 13 | 4m 5s |  |
-| dotnet-perf-skills | 3 | analyze-perf-issues | 750,004 | 11,649 | 533,818 | 11 | 3m 48s |  |
+| no-skills | 1 | analyze-perf-issues | 350,441 | 8,629 | 248,945 | 8 | 3m 35s |  |
+| no-skills | 2 | analyze-perf-issues | 338,082 | 9,637 | 268,038 | 8 | 3m 49s |  |
+| no-skills | 3 | analyze-perf-issues | 335,703 | 9,254 | 265,928 | 8 | 3m 49s |  |
+| dotnet-perf-skills | 1 | analyze-perf-issues | 747,327 | 12,819 | 586,010 | 13 | 5m 12s |  |
+| dotnet-perf-skills | 2 | analyze-perf-issues | 895,479 | 18,486 | 671,367 | 14 | 6m 20s |  |
+| dotnet-perf-skills | 3 | analyze-perf-issues | 716,461 | 12,560 | 604,461 | 13 | 5m 28s |  |
 
-
-### ⚠️ Token Usage Outliers
-
-The following runs were detected as outliers using the Modified Z-score (MAD) method. They are excluded from averages and Token Efficiency scores.
-
-| Configuration | Run | Total Tokens | Details |
-|---|---|---|---|
-| no-skills | 2 | 1,612,370 | 9 turns, 21 tool calls; ~2× more tool calls than typical |
-
-#### Recommendations to Reduce Outliers
-
-- **no-skills run 2**: Most-used tool: `view` (13 calls). The agent may have struggled with the task structure. Consider simplifying the scenario prompt or adding clearer instructions in the skill.
 
 ---
 
@@ -142,8 +130,8 @@ The following runs were detected as outliers using the Modified Z-score (MAD) me
 
 | Configuration | Score σ | Most Consistent Dim (σ) | Most Variable Dim (σ) |
 |---|---|---|---|
-| no-skills | 0.6 | Collection and LINQ Efficiency (0.0) | Regex Anti-Pattern Detection (0.6) |
-| dotnet-perf-skills | 2.6 | Regex Anti-Pattern Detection (0.0) | Token Efficiency (0.7) |
+| no-skills | 5.0 | Reflection and Serialization Overhead (0.0) | Regex Anti-Pattern Detection (0.6) |
+| dotnet-perf-skills | 1.0 | Regex Anti-Pattern Detection (0.0) | Reflection and Serialization Overhead (0.6) |
 
 ---
 
@@ -155,26 +143,26 @@ The following runs were detected as outliers using the Modified Z-score (MAD) me
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 4 | 5 |
-| 2 | 5 | 5 |
+| 1 | 5 | 5 |
+| 2 | 4 | 5 |
 | 3 | 4 | 5 |
 | **Mean** | **4.3** | **5.0** |
 
 #### Analysis
 
-**dotnet-perf-skills — `output/dotnet-perf-skills/run-2/analyze-perf-issues/performance-analysis.md`**
-> **Three `new Regex(...)` per log line** — this is the single hottest path in the class.
->  
-> **40+ `RegexOptions.Compiled` static fields** ... **Fix:** On .NET 8+, use `[GeneratedRegex]`
+**dotnet-perf-skills excerpt** (`output/dotnet-perf-skills/run-2/analyze-perf-issues/performance-analysis.md`)
+> 2. **Regex instantiation in hot loops** — `new Regex()` called per log line in LogAnalyzer (4 instances)  
+> 3. **48 `RegexOptions.Compiled` regexes** in MarkdownStripper with 0 `[GeneratedRegex]` usage project-wide  
+> **Fix:** Hoist to `static readonly` fields, or better, use `[GeneratedRegex]`
 
-**no-skills — `output/no-skills/run-2/analyze-perf-issues/performance-analysis.md`**
-> **Per-Call `new Regex()` in Hot Paths (8 instances)** ... In `LogAnalyzer.TryParseLine()`, this runs per log line
->  
-> **48 `RegexOptions.Compiled` Without `[GeneratedRegex]`**
+**no-skills excerpt** (`output/no-skills/run-2/analyze-perf-issues/performance-analysis.md`)
+> 2. `LogAnalyzer.TryParseLine` — `new Regex()` per log line → O(n) regex compilations on large files  
+> 5. `MarkdownStripper` — 45+ `RegexOptions.Compiled` instances → excessive JIT startup cost  
+> **Fix for #1 (on .NET 7+):** ... `[GeneratedRegex(...)]`
 
-**Score:** dotnet-perf-skills **5/5**; no-skills **5/5**. Both clearly identify per-call regex construction, compiled-regex startup cost, and recommend `[GeneratedRegex]`.
+**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 4/5` (both catch the key issues; skills output is more explicit on project-wide `[GeneratedRegex]` absence and quantified regex counts).
 
-**Verdict:** **Tie** — both outputs are excellent and specific on regex risks.
+**Verdict:** **dotnet-perf-skills** is best on regex depth and prioritization.
 
 ### 2. String Allocation Detection [CRITICAL × 3]
 
@@ -182,30 +170,26 @@ The following runs were detected as outliers using the Modified Z-score (MAD) me
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 4 | 5 |
-| 2 | 5 | 5 |
+| 1 | 5 | 5 |
+| 2 | 4 | 5 |
 | 3 | 4 | 5 |
 | **Mean** | **4.3** | **5.0** |
 
 #### Analysis
 
-**dotnet-perf-skills**
-> **`string +=` character-by-character** in a loop ... O(N²) allocations.
->  
-> **Chain of 40+ `.Replace()` calls**, each allocating a new string.
->  
-> **`.ToLower()` without `StringComparison`** ... Turkish-I problem.
+**dotnet-perf-skills excerpt**
+> #### 6. O(n²) String Concatenation via `+=` in Loops (7 files, ~15 sites)  
+> ... `CsvParser.ParseLine`, `CsvParser.SplitLines`, ... `TemplateEngine.ProcessLoops`, `TemplateEngine.RenderBatch`  
+> #### 8. `.ToLower()`/`.ToUpper()` Without Culture or StringComparison (25 instances)
 
-**no-skills**
-> String Concatenation (`+=`) in Loops — O(n²) (7 sites)
->  
-> `.ToLower()`/`.ToUpper()` Without Culture (16 instances)
->  
-> Chained `Regex.Replace` Allocations in `SlugGenerator` (14 calls)
+**no-skills excerpt**
+> | 1 | 🔴 Critical | 51–79 | Char-by-char string `+=` (O(n²)) | `ParseLine` builds field values with `current += line[i]` |  
+> | 2 | 🔴 Critical | 88–108 | Char-by-char string `+=` (O(n²)) | `SplitLines` has the same O(n²) pattern |  
+> | 6 |  |  | `.ToLower()`/`.ToUpper()` calls without `StringComparison` |
 
-**Score:** dotnet-perf-skills **5/5**; no-skills **5/5**. Both cover loop concatenation, casing allocations/correctness, and replace-chain allocation pressure.
+**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 4/5` (both strong; skills output is more systematic and counted across files).
 
-**Verdict:** **Tie** — both are comprehensive and actionable.
+**Verdict:** **dotnet-perf-skills** is stronger due to clearer scale framing and consolidated cross-file signal.
 
 ### 3. Collection and LINQ Efficiency [CRITICAL × 3]
 
@@ -214,29 +198,25 @@ The following runs were detected as outliers using the Modified Z-score (MAD) me
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
 | 1 | 4 | 5 |
-| 2 | 4 | 5 |
+| 2 | 5 | 5 |
 | 3 | 4 | 5 |
-| **Mean** | **4.0** | **5.0** |
+| **Mean** | **4.3** | **5.0** |
 
 #### Analysis
 
-**dotnet-perf-skills**
-> `allKeys.ToList()` + `.Contains(key)` ... O(n²) overall. **Fix:** Use `HashSet<string>`
->  
-> `ContainsKey` + indexer double lookup.
->  
-> `Skip(i).Take(5).ToList()` inside a loop — O(n²) allocation for the sliding window.
+**dotnet-perf-skills excerpt**
+> #### 10. `ContainsKey` + Indexer Double-Lookup (12 instances)  
+> #### 19. `.ToList()` for Counting / O(n) `.Contains()` on Lists (5 instances)  
+> #### 22. `Skip(i).Take(5).ToList()` in Sliding Window Loop (1 instance)
 
-**no-skills**
-> `ContainsKey` + Indexer Double-Lookup (12+ instances)
->  
-> `.ToList()` + `.Contains()` — O(n) Lookups (2 instances)
->  
-> `.Where().ToList()` Just for Counting (2 instances)
+**no-skills excerpt**
+> | 6 | 🔴 Critical | 75–85 | `List.Contains` in while loop (O(n²)) | ... Use a `HashSet<string>`. |  
+> | 5 | 🟡 Moderate | 85–89 | `List.Contains` for key lookups (O(n²)) | `JsonTransformer.Diff` ... |  
+> | 7 | 🟡 Moderate | 152–157 | `.ToList()` + `Skip(i).Take(5).ToList()` per iteration |
 
-**Score:** dotnet-perf-skills **5/5**; no-skills **4/5**. Baseline is strong, but skill-backed output is more complete for hot-path LINQ/window patterns (explicit `Skip/Take/ToList` sliding-window issue).
+**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 5/5` (both cover all requested hot-path collection/LINQ anti-patterns with concrete fixes).
 
-**Verdict:** **dotnet-perf-skills wins** on depth in hot-path collection/LINQ cases.
+**Verdict:** **Tie** — both are comprehensive and actionable.
 
 ### 4. Async and IO Pattern Detection [CRITICAL × 3]
 
@@ -244,32 +224,28 @@ The following runs were detected as outliers using the Modified Z-score (MAD) me
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 4 | 5 |
+| 1 | 5 | 5 |
 | 2 | 4 | 5 |
-| 3 | 4 | 5 |
-| **Mean** | **4.0** | **5.0** |
+| 3 | 5 | 5 |
+| **Mean** | **4.7** | **5.0** |
 
 #### Analysis
 
-**dotnet-perf-skills**
-> **`new HttpClient()` per call** ... socket exhaustion risk.
->  
-> **Unbounded parallelism** ... 10K notifications = 10K concurrent HTTP calls.
->  
-> **Sequential `await` in a loop**
->  
-> `Task.Delay` without `CancellationToken`
+**dotnet-perf-skills excerpt**
+> #### 1. `new HttpClient()` Per Call — Socket Exhaustion Risk (3 instances)  
+> #### 16. Sequential Awaits in Loop (1 instance)  
+> #### 17. Unbounded Parallelism (1 instance)  
+> #### 18. Missing `CancellationToken` on Async Methods
 
-**no-skills**
-> `new HttpClient()` Per Call — Socket Exhaustion (3 instances)
->  
-> Sequential Awaits in Batch Loop (1 instance)
->  
-> the parallel version ... has unbounded parallelism (separate concern).
+**no-skills excerpt**
+> | 1 | 🔴 Critical | 163, 179, 191 | `new HttpClient()` per call | ... socket exhaustion |  
+> | 2 | 🟡 Moderate | 116–118 | Sequential `await` in loop |  
+> | 3 | 🔴 Critical | 130–133 | Unbounded parallelism |  
+> | 4 | 🟡 Moderate | 102 | Missing `CancellationToken` |
 
-**Score:** dotnet-perf-skills **5/5**; no-skills **4/5**. Both catch major IO issues, but dotnet-perf-skills is more direct and explicit on cancellation propagation.
+**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 4/5` (baseline identifies all key patterns, but skills output provides richer impact and fix framing for cancellation/retry behavior).
 
-**Verdict:** **dotnet-perf-skills wins** with more complete async hygiene coverage.
+**Verdict:** **dotnet-perf-skills** is better on async/IO operational risk framing.
 
 ### 5. Reflection and Serialization Overhead [HIGH × 2]
 
@@ -278,25 +254,24 @@ The following runs were detected as outliers using the Modified Z-score (MAD) me
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
 | 1 | 4 | 4 |
-| 2 | 4 | 4 |
-| 3 | 3 | 4 |
-| **Mean** | **3.7** | **4.0** |
+| 2 | 4 | 5 |
+| 3 | 4 | 4 |
+| **Mean** | **4.0** | **4.3** |
 
 #### Analysis
 
-**dotnet-perf-skills**
-> `typeof(T).GetProperties()` on every call ... **Fix:** Cache `PropertyInfo[]`
->  
-> `new JsonSerializerOptions` per call ... recreating them discards the cache
+**dotnet-perf-skills excerpt**
+> #### 4. Uncached `JsonSerializerOptions` Per Call (4 instances)  
+> #### 7. Uncached Reflection — `GetProperties()` / `SetValue()` / `GetValue()` Per Call (4 instances)  
+> **Fix:** Cache `PropertyInfo[]` per type ... `ConcurrentDictionary<Type, PropertyInfo[]>`
 
-**no-skills**
-> Uncached `new JsonSerializerOptions` Per Call ... **Up to 592× slower**
->  
-> Uncached Reflection ... `GetProperties()`/`GetProperty()`/`SetValue()` in hot paths
+**no-skills excerpt**
+> | 1 | 🟡 Moderate | 74 | `new JsonSerializerOptions` per call | ... Cache as `static readonly`. |  
+> | 1 | 🔴 Critical | 77 | Uncached `GetProperties()` reflection | ... Cache per type using `ConcurrentDictionary<Type, PropertyInfo[]>`. |
 
-**Score:** dotnet-perf-skills **4/5**; no-skills **4/5**. Both identify the core reflection/options problems and propose caching. Neither output deeply develops partial parsing (`Utf8JsonReader`) guidance.
+**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 4/5` (both identify the core problems; skills output is broader and more quantified).
 
-**Verdict:** **Tie** — comparable quality on this dimension.
+**Verdict:** **dotnet-perf-skills** is stronger on serialization + reflection breadth.
 
 ### 6. Structural Optimization Detection [HIGH × 2]
 
@@ -306,28 +281,25 @@ The following runs were detected as outliers using the Modified Z-score (MAD) me
 |---|---|---|
 | 1 | 4 | 5 |
 | 2 | 4 | 5 |
-| 3 | 4 | 5 |
-| **Mean** | **4.0** | **5.0** |
+| 3 | 3 | 5 |
+| **Mean** | **3.7** | **5.0** |
 
 #### Analysis
 
-**dotnet-perf-skills**
-> `MappingConfig` ... **Unsealed class**
->  
-> `ValidationError` ... **Struct without `IEquatable<ValidationError>`**
->  
-> Static `Dictionary` ... candidate for `FrozenDictionary` on .NET 8+
+**dotnet-perf-skills excerpt**
+> #### 13. FrozenDictionary Candidates — `static readonly Dictionary<>` Never Mutated (2 instances)  
+> #### 14. Structs Without `IEquatable<T>` (2 instances)  
+> #### 15. Unsealed Classes — 0 of 17 Sealed (17 instances)
 
-**no-skills**
-> 17 Unsealed Classes (17 of 17, 0 sealed)
->  
-> Structs Without `IEquatable<T>` (2 structs, 0 implementing)
->  
-> `FrozenDictionary` Candidates (2 instances)
+**no-skills excerpt**
+> ### 5. Unsealed Classes  
+> **DataPipeline.Record**, **ValidationEngine.ValidationResult**, **EntityMapper.MappingConfig** ...  
+> ### 6. Structs Without `IEquatable<T>`  
+> ... **DeliveryResult** and **ValidationError**
 
-**Score:** dotnet-perf-skills **5/5**; no-skills **4/5**. Baseline detects all categories but is more blanket/less selective (e.g., “seal all 17 classes”).
+**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 4/5` (baseline catches structural themes but is less exhaustive on FrozenDictionary and global class-count framing).
 
-**Verdict:** **dotnet-perf-skills wins** for targeted, lower-risk structural recommendations.
+**Verdict:** **dotnet-perf-skills** wins on structural completeness.
 
 ### 7. Severity Classification Accuracy [HIGH × 2]
 
@@ -335,26 +307,26 @@ The following runs were detected as outliers using the Modified Z-score (MAD) me
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 3 | 4 |
-| 2 | 2 | 5 |
-| 3 | 3 | 5 |
-| **Mean** | **2.7** | **4.7** |
+| 1 | 4 | 5 |
+| 2 | 4 | 4 |
+| 3 | 3 | 4 |
+| **Mean** | **3.7** | **4.3** |
 
 #### Analysis
 
-**dotnet-perf-skills**
-> **Top priorities:** `new HttpClient` per call ... regex in hot paths ... string `+=` in loops ... unbounded parallelism
->  
-> 40+ `RegexOptions.Compiled` ... startup cost ... 🟡 Moderate
+**dotnet-perf-skills excerpt**
+> | Rank | Finding | Severity | Effort | Impact |  
+> | 1 | Reuse HttpClient (socket exhaustion) | 🔴 | Quick-fix | Prevents production incidents |  
+> | 2 | Cache Regex in LogAnalyzer hot loop | 🔴 | Quick-fix | >10x parsing speedup |
 
-**no-skills**
-> 🔴 **Critical**: ... `ContainsKey` + indexer double-lookups, and `.ToList()` + `.Contains()` O(n) lookups
->  
-> **Fix `new HttpClient()` ... cache `JsonSerializerOptions` ... hoist `new Regex()`**
+**no-skills excerpt**
+> | Rank | File | Issue | Severity | Effort | Impact |  
+> | 1 | NotificationService.cs | `new HttpClient()` per call — socket exhaustion | 🔴 Critical | Moderate | Prevents production outages |  
+> | 2 | LogAnalyzer.cs | `new Regex()` per log line in `TryParseLine` | 🔴 Critical | Quick-fix | 100x+ speedup |
 
-**Score:** dotnet-perf-skills **5/5**; no-skills **2/5**. dotnet-perf-skills mostly separates production-critical hot-path issues from moderate optimization items. no-skills over-classifies several medium-impact collection patterns as critical, reducing prioritization signal.
+**Score:** `dotnet-perf-skills: 4/5`, `no-skills: 4/5` (both prioritize true hot-path/incident issues correctly above moderate cleanup items).
 
-**Verdict:** **dotnet-perf-skills clearly wins** on practical triage quality.
+**Verdict:** **Tie** — both rank critical production risks first with reasonable impact ordering.
 
 ### 8. Fix Recommendation Quality [HIGH × 2]
 
@@ -362,30 +334,26 @@ The following runs were detected as outliers using the Modified Z-score (MAD) me
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 3 | 5 |
-| 2 | 3 | 5 |
+| 1 | 4 | 5 |
+| 2 | 4 | 5 |
 | 3 | 4 | 5 |
-| **Mean** | **3.3** | **5.0** |
+| **Mean** | **4.0** | **5.0** |
 
 #### Analysis
 
-**dotnet-perf-skills**
-> **Fix:** Inject `IHttpClientFactory` or use a single `static HttpClient`.
->  
-> **Fix:** Use `StringComparison.OrdinalIgnoreCase` ... or `ToLowerInvariant()`.
->  
-> **Fix:** use `[GeneratedRegex]` partial methods
+**dotnet-perf-skills excerpt**
+> **Fix:** Inject `IHttpClientFactory` or use a single `static readonly HttpClient` ...  
+> **Fix:** ... use `[GeneratedRegex]` ...  
+> **Fix:** Replace with `TryGetValue` ... `FrozenDictionary` ... `StringComparison.OrdinalIgnoreCase`
 
-**no-skills**
-> **Fix:** Hoist to `private static readonly Regex` ... or preferably `[GeneratedRegex]`
->  
-> **Fix:** Add `sealed` keyword to all leaf classes. None ... are subclassed within the project.
->  
-> **Fix:** ... on .NET 9+ use `params ReadOnlySpan<T>`
+**no-skills excerpt**
+> The fix is consistent: promote to `static readonly Regex` fields, or use `[GeneratedRegex]` on .NET 7+.  
+> Always replace with `StringBuilder`.  
+> Replace with `TryGetValue` ... Cache as `static readonly`.
 
-**Score:** dotnet-perf-skills **5/5**; no-skills **3/5**. Baseline includes many concrete APIs, but several recommendations are over-broad or high-confidence without sufficient safety qualifiers.
+**Score:** `dotnet-perf-skills: 5/5`, `no-skills: 4/5` (both actionable; skills output is more API-specific and consistently ties fixes to .NET 8 capabilities).
 
-**Verdict:** **dotnet-perf-skills wins** for consistently precise, context-safe guidance.
+**Verdict:** **dotnet-perf-skills** provides higher-quality, more implementation-ready recommendations.
 
 ### 9. Token Efficiency [MEDIUM × 1]
 
@@ -393,10 +361,10 @@ The following runs were detected as outliers using the Modified Z-score (MAD) me
 
 | Run | no-skills | dotnet-perf-skills |
 |---|---|---|
-| 1 | 5 | — |
-| 2 | — | 2 |
-| 3 | 5 | 3 |
-| **Mean** | **5.0** | **2.5** |
+| 1 | 5 | 2 |
+| 2 | 5 | 1 |
+| 3 | 5 | 2 |
+| **Mean** | **5.0** | **1.7** |
 
 ---
 
@@ -404,12 +372,12 @@ The following runs were detected as outliers using the Modified Z-score (MAD) me
 
 | Configuration | Run | Session ID | Model | Skills Loaded | Plugins | Match? |
 |---|---|---|---|---|---|---|
-| no-skills | 1 | 0c1b6ff4…3add | claude-opus-4.6 | — | — | ✅ |
-| no-skills | 2 | 6a0dd039…61cf | claude-opus-4.6 | — | — | ✅ |
-| no-skills | 3 | 9302f1a3…e7d5 | claude-opus-4.6 | — | — | ✅ |
-| dotnet-perf-skills | 1 | 8ac9a6e8…72d8 | claude-opus-4.6 | — | — | ✅ |
-| dotnet-perf-skills | 2 | 817bf3ae…35b7 | claude-opus-4.6 | — | — | ✅ |
-| dotnet-perf-skills | 3 | 906c444e…6822 | claude-opus-4.6 | — | — | ✅ |
+| no-skills | 1 | 88bad97c…2c17 | claude-opus-4.6 | — | — | ✅ |
+| no-skills | 2 | 6792eece…dfd1 | claude-opus-4.6 | — | — | ✅ |
+| no-skills | 3 | eeffd00e…8c7c | claude-opus-4.6 | — | — | ✅ |
+| dotnet-perf-skills | 1 | 58d615ab…ed01 | claude-opus-4.6 | — | — | ✅ |
+| dotnet-perf-skills | 2 | 847d61a6…b949 | claude-opus-4.6 | — | — | ✅ |
+| dotnet-perf-skills | 3 | bb15194f…5759 | claude-opus-4.6 | — | — | ✅ |
 
 ---
 
@@ -417,39 +385,39 @@ The following runs were detected as outliers using the Modified Z-score (MAD) me
 
 Prioritized recommendations extracted from the highest-scoring run's output for each configuration.
 
-### no-skills (run 1, score 81)
+### no-skills (run 1, score 94)
 
 ## Prioritized Fix Recommendations
 
-| Rank | Fix | Files | Severity | Effort | Impact |
-|------|-----|-------|----------|--------|--------|
-| 1 | **Replace `new HttpClient()` with injected/singleton instance** | NotificationService | 🔴 Critical | Quick-fix | Prevents socket exhaustion under load |
-| 2 | **Hoist `new Regex(...)` in `TryParseLine` to static fields / `[GeneratedRegex]`** | LogAnalyzer | 🔴 Critical | Quick-fix | Eliminates regex compilation per log line (potentially millions of times) |
-| 3 | **Replace char-by-char `+=` with `StringBuilder` in `ParseLine` / `SplitLines`** | CsvParser | 🔴 Critical | Quick-fix | Eliminates O(n²) allocations on every CSV parse |
-| 4 | **Convert 40+ `RegexOptions.Compiled` to `[GeneratedRegex]`** | MarkdownStripper | 🟡 Moderate | Moderate | Eliminates JIT compilation overhead at startup; AOT-friendly |
-| 5 | **Cache `new JsonSerializerOptions` as static readonly** | JsonTransformer | 🟡 Moderate | Quick-fix | Preserves internal serialization metadata cache |
-| 6 | **Cache `GetProperties()` per type in `MapTo<T>` / `MapFrom<T>`** | EntityMapper | 🔴 Critical | Moderate | Eliminates reflection per call in potentially hot mapping paths |
-| 7 | **Replace `List.Contains` with `HashSet` in `Diff` and `GenerateUniqueSlug`** | JsonTransformer, SlugGenerator | 🟡 Moderate | Quick-fix | O(1) vs O(n) lookups |
-| 8 | **Pre-compile regex at registration in `AddPattern`** | ValidationEngine | 🟡 Moderate | Quick-fix | Regex compiled once, not per validation call |
-| 9 | **Add `SemaphoreSlim` throttle to `SendBatchParallelAsync`** | NotificationService | 🟡 Moderate | Quick-fix | Prevents resource exhaustion from unbounded parallelism |
-| 10 | **Replace `string +=` with `StringBuilder` across all report-formatting methods** | LogAnalyzer, DataPipeline, NotificationService, TemplateEngine, ValidationEngine | 🟡 Moderate | Moderate | Reduces allocations in all output-building code |
+| Rank | Fix | Files | Severity | Effort |
+|------|-----|-------|----------|--------|
+| 1 | Replace `new HttpClient()` with `IHttpClientFactory` or shared instance | NotificationService | 🔴 Critical | Quick-fix |
+| 2 | Promote per-line `new Regex()` to static fields / `[GeneratedRegex]` | LogAnalyzer | 🔴 Critical | Quick-fix |
+| 3 | Replace char-by-char `+=` with `StringBuilder` | CsvParser | 🔴 Critical | Moderate |
+| 4 | Pre-compile regex at rule-creation time | ValidationEngine | 🔴 Critical | Quick-fix |
+| 5 | Cache `GetProperties()` / use compiled delegates for reflection | EntityMapper | 🔴 Critical | Moderate |
+| 6 | Promote all per-call `Regex` to static / `[GeneratedRegex]` | TemplateEngine, SlugGenerator | 🔴 Critical | Quick-fix |
+| 7 | Add `SemaphoreSlim` throttling to `SendBatchParallelAsync` | NotificationService | 🔴 Critical | Quick-fix |
+| 8 | Replace string `+=` in loops with `StringBuilder` | All files | 🟡 Moderate | Moderate |
+| 9 | Cache `JsonSerializerOptions` as static readonly | JsonTransformer, NotificationService | 🟡 Moderate | Quick-fix |
+| 10 | Replace `List.Contains()` with `HashSet` lookups | SlugGenerator, JsonTransformer | 🟡 Moderate | Quick-fix |
 
-### dotnet-perf-skills (run 3, score 101)
+### dotnet-perf-skills (run 1, score 100)
 
 ## Prioritized Fix Recommendations
 
-| # | Fix | Impact | Effort | Files |
-|---|-----|--------|--------|-------|
-| 1 | Replace `new HttpClient()` with shared/injected instance | 🔴 Socket exhaustion prevention | Quick-fix | NotificationService.cs |
-| 2 | Hoist `new Regex()` to `[GeneratedRegex]` static fields | 🔴 10-100x per-call improvement | Moderate | LogAnalyzer, TemplateEngine, ValidationEngine, CsvParser |
-| 3 | Cache `JsonSerializerOptions` as `static readonly` | 🔴 Up to 592x improvement | Quick-fix | JsonTransformer.cs |
-| 4 | Replace `+=` string concatenation with `StringBuilder` | 🔴 O(n²) → O(n) allocation | Moderate | 7 files |
-| 5 | Convert 48 `Compiled` regex to `[GeneratedRegex]` | 🟡 Faster startup, better throughput | Moderate | MarkdownStripper.cs |
-| 6 | Replace `ContainsKey` + indexer with `TryGetValue` | 🟡 ~2x per-lookup | Quick-fix | 4 files |
-| 7 | Fix `.ToLower()`/`.ToUpper()` — use ordinal comparison | 🟡 2-3x faster + correctness | Quick-fix | 6 files |
-| 8 | Cache reflection (`GetProperties`/`SetValue`) per type | 🔴 100-1000x faster | Moderate | EntityMapper.cs, TemplateEngine.cs |
-| 9 | Seal all 18 leaf classes | 🟡 JIT devirtualization | Quick-fix | All files |
-| 10 | Use `HashSet` instead of `List.Contains()` | 🟡 O(n) → O(1) lookup | Quick-fix | SlugGenerator.cs, JsonTransformer.cs |
+| # | Fix | Severity | Effort | Impact |
+|---|-----|----------|--------|--------|
+| 1 | Replace `new HttpClient()` with shared/injected instance | 🔴 | Quick-fix | Prevents socket exhaustion in production |
+| 2 | Cache Regex instances in `LogAnalyzer.TryParseLine` | 🔴 | Quick-fix | >100x faster log parsing |
+| 3 | Cache `JsonSerializerOptions` as static field | 🔴 | Quick-fix | Up to 592x faster serialization |
+| 4 | Cache `Regex` in `ValidationEngine.AddPattern` | 🔴 | Quick-fix | Eliminates regex compilation per validation |
+| 5 | Cache reflection `PropertyInfo[]` in `EntityMapper` | 🔴 | Moderate | ~100x faster property mapping |
+| 6 | Use `HashSet` instead of `List.Contains` in `JsonTransformer.Diff` | 🔴 | Quick-fix | O(n) → O(1) per key lookup |
+| 7 | Convert 48 `RegexOptions.Compiled` to `[GeneratedRegex]` | 🟡 | Moderate | Eliminates JIT startup cost, better throughput |
+| 8 | Replace `+=` string concat with `StringBuilder` (9 methods) | 🟡 | Moderate | Eliminates O(n²) allocation in all output methods |
+| 9 | Replace `.ToLower()` with `StringComparer.OrdinalIgnoreCase` | 🟡 | Moderate | 2-3x faster comparisons, fixes Turkish-I bug |
+| 10 | Replace `ContainsKey`+indexer with `TryGetValue` (12 sites) | 🟡 | Quick-fix | ~2x faster dictionary lookups |
 
 > ⚠️ **Disclaimer:** These results are generated by an AI assistant and are non-deterministic. Findings may include false positives, miss real issues, or suggest changes that are incorrect for your specific context. Always verify recommendations with benchmarks and human review before applying changes to production code.
 
@@ -460,7 +428,5 @@ Prioritized recommendations extracted from the highest-scoring run's output for 
 - Per-run analysis: `reports/analysis-run-1.md`
 - Per-run analysis: `reports/analysis-run-2.md`
 - Per-run analysis: `reports/analysis-run-3.md`
-- Verification data: `reports/verification-data.json`
 - Score data: `reports/scores-data.json`
-- Build notes: `reports/build-notes.md`
 - Generation usage: `reports/generation-usage.json`
