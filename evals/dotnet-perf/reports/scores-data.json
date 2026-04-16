@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-13T22:43:33.541716+00:00",
+  "timestamp": "2026-04-16T01:18:06.301810+00:00",
   "runs": [
     {
       "run_id": 1,
@@ -14,15 +14,15 @@
         },
         "Collection and LINQ Efficiency": {
           "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
+          "no-skills": 5.0
         },
         "Async and IO Pattern Detection": {
           "dotnet-perf-skills": 5.0,
           "no-skills": 5.0
         },
         "Reflection and Serialization Overhead": {
-          "dotnet-perf-skills": 4.0,
-          "no-skills": 4.0
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 5.0
         },
         "Structural Optimization Detection": {
           "dotnet-perf-skills": 5.0,
@@ -42,8 +42,8 @@
         }
       },
       "weighted_totals": {
-        "no-skills": 94.0,
-        "dotnet-perf-skills": 100.0
+        "no-skills": 99.0,
+        "dotnet-perf-skills": 102.0
       }
     },
     {
@@ -59,7 +59,7 @@
         },
         "Collection and LINQ Efficiency": {
           "dotnet-perf-skills": 5.0,
-          "no-skills": 5.0
+          "no-skills": 4.0
         },
         "Async and IO Pattern Detection": {
           "dotnet-perf-skills": 5.0,
@@ -74,8 +74,8 @@
           "no-skills": 4.0
         },
         "Severity Classification Accuracy": {
-          "dotnet-perf-skills": 4.0,
-          "no-skills": 4.0
+          "dotnet-perf-skills": 5.0,
+          "no-skills": 3.0
         },
         "Fix Recommendation Quality": {
           "dotnet-perf-skills": 5.0,
@@ -87,8 +87,8 @@
         }
       },
       "weighted_totals": {
-        "no-skills": 88.0,
-        "dotnet-perf-skills": 99.0
+        "no-skills": 83.0,
+        "dotnet-perf-skills": 101.0
       }
     },
     {
@@ -103,8 +103,8 @@
           "no-skills": 4.0
         },
         "Collection and LINQ Efficiency": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
+          "dotnet-perf-skills": 4.0,
+          "no-skills": 5.0
         },
         "Async and IO Pattern Detection": {
           "dotnet-perf-skills": 5.0,
@@ -112,15 +112,15 @@
         },
         "Reflection and Serialization Overhead": {
           "dotnet-perf-skills": 4.0,
-          "no-skills": 4.0
+          "no-skills": 5.0
         },
         "Structural Optimization Detection": {
           "dotnet-perf-skills": 5.0,
-          "no-skills": 3.0
+          "no-skills": 4.0
         },
         "Severity Classification Accuracy": {
-          "dotnet-perf-skills": 4.0,
-          "no-skills": 3.0
+          "dotnet-perf-skills": 3.0,
+          "no-skills": 4.0
         },
         "Fix Recommendation Quality": {
           "dotnet-perf-skills": 5.0,
@@ -132,8 +132,8 @@
         }
       },
       "weighted_totals": {
-        "no-skills": 84.0,
-        "dotnet-perf-skills": 98.0
+        "no-skills": 93.0,
+        "dotnet-perf-skills": 93.0
       }
     }
   ]

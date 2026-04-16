@@ -21,6 +21,7 @@ configurations:
     plugins: []
   - name: dotnet-perf-skills
     label: "dotnet/skills Performance Skills"
+    suggest_improvements: true
     skills: []
     plugins:
       - source: dotnet-skills
