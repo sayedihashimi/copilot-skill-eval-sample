@@ -1,49 +1,54 @@
 {
-  "timestamp": "2026-04-16T01:18:06.301810+00:00",
+  "timestamp": "2026-04-16T02:58:34.683565+00:00",
   "runs": [
     {
       "run_id": 1,
       "scores": {
         "Regex Anti-Pattern Detection": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 5.0
+          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills-improved": 5.0,
+          "no-skills": 4.0
         },
         "String Allocation Detection": {
-          "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills-improved": 5.0,
           "no-skills": 5.0
         },
         "Collection and LINQ Efficiency": {
-          "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills-improved": 5.0,
           "no-skills": 5.0
         },
         "Async and IO Pattern Detection": {
           "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills-improved": 2.0,
           "no-skills": 5.0
         },
         "Reflection and Serialization Overhead": {
           "dotnet-perf-skills": 5.0,
-          "no-skills": 5.0
+          "dotnet-perf-skills-improved": 5.0,
+          "no-skills": 4.0
         },
         "Structural Optimization Detection": {
           "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
+          "dotnet-perf-skills-improved": 5.0,
+          "no-skills": 3.0
         },
         "Severity Classification Accuracy": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
+          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills-improved": 5.0,
+          "no-skills": 3.0
         },
         "Fix Recommendation Quality": {
-          "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills-improved": 5.0,
           "no-skills": 4.0
-        },
-        "Token Efficiency": {
-          "no-skills": 5.0,
-          "dotnet-perf-skills": 2.0
         }
       },
       "weighted_totals": {
-        "no-skills": 99.0,
-        "dotnet-perf-skills": 102.0
+        "no-skills": 85.0,
+        "dotnet-perf-skills": 87.0,
+        "dotnet-perf-skills-improved": 91.0
       }
     },
     {
@@ -51,89 +56,99 @@
       "scores": {
         "Regex Anti-Pattern Detection": {
           "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills-improved": 5.0,
           "no-skills": 4.0
         },
         "String Allocation Detection": {
           "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills-improved": 5.0,
           "no-skills": 4.0
         },
         "Collection and LINQ Efficiency": {
-          "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills-improved": 5.0,
           "no-skills": 4.0
         },
         "Async and IO Pattern Detection": {
           "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills-improved": 4.0,
           "no-skills": 4.0
         },
         "Reflection and Serialization Overhead": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
+          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills-improved": 4.0,
+          "no-skills": 3.0
         },
         "Structural Optimization Detection": {
           "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills-improved": 5.0,
           "no-skills": 4.0
         },
         "Severity Classification Accuracy": {
-          "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills-improved": 5.0,
           "no-skills": 3.0
         },
         "Fix Recommendation Quality": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
-        },
-        "Token Efficiency": {
-          "no-skills": 5.0,
-          "dotnet-perf-skills": 1.0
+          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills-improved": 5.0,
+          "no-skills": 3.0
         }
       },
       "weighted_totals": {
-        "no-skills": 83.0,
-        "dotnet-perf-skills": 101.0
+        "no-skills": 74.0,
+        "dotnet-perf-skills": 91.0,
+        "dotnet-perf-skills-improved": 95.0
       }
     },
     {
       "run_id": 3,
       "scores": {
         "Regex Anti-Pattern Detection": {
-          "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills-improved": 5.0,
           "no-skills": 4.0
         },
         "String Allocation Detection": {
           "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
+          "dotnet-perf-skills-improved": 4.0,
+          "no-skills": 5.0
         },
         "Collection and LINQ Efficiency": {
-          "dotnet-perf-skills": 4.0,
-          "no-skills": 5.0
+          "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills-improved": 5.0,
+          "no-skills": 4.0
         },
         "Async and IO Pattern Detection": {
           "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills-improved": 5.0,
           "no-skills": 5.0
         },
         "Reflection and Serialization Overhead": {
-          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills": 5.0,
+          "dotnet-perf-skills-improved": 4.0,
           "no-skills": 5.0
         },
         "Structural Optimization Detection": {
           "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
+          "dotnet-perf-skills-improved": 5.0,
+          "no-skills": 3.0
         },
         "Severity Classification Accuracy": {
           "dotnet-perf-skills": 3.0,
-          "no-skills": 4.0
+          "dotnet-perf-skills-improved": 5.0,
+          "no-skills": 2.0
         },
         "Fix Recommendation Quality": {
-          "dotnet-perf-skills": 5.0,
-          "no-skills": 4.0
-        },
-        "Token Efficiency": {
-          "no-skills": 5.0,
-          "dotnet-perf-skills": 2.0
+          "dotnet-perf-skills": 4.0,
+          "dotnet-perf-skills-improved": 5.0,
+          "no-skills": 3.0
         }
       },
       "weighted_totals": {
-        "no-skills": 93.0,
-        "dotnet-perf-skills": 93.0
+        "no-skills": 80.0,
+        "dotnet-perf-skills": 91.0,
+        "dotnet-perf-skills-improved": 95.0
       }
     }
   ]
