@@ -106,6 +106,59 @@ dimensions:
       read-only lookups for static data.
     tier: high
 
+  - name: Aggregate and Replace Chain Detection
+    description: Whether Aggregate() calling Replace() over many items and char.ToString() allocations are identified
+    what_to_look_for: >
+      Check if the analysis flags `.Aggregate()` calling `.Replace()` over 16 unit prefixes in
+      MetricFormatter.ExpandPrefixSymbols as creating 16 intermediate string allocations (one per
+      prefix, even when no match occurs). Also check if `char.ToString()` allocation inside the
+      Aggregate lambda is identified as a per-iteration heap allocation.
+    why_it_matters: >
+      Aggregate+Replace chains are a subtle O(n×m) string allocation pattern — n prefixes times
+      m string length. Each Replace allocates even when nothing matches. Combined with
+      char.ToString() this creates 32+ allocations per call in a monitoring dashboard hot path.
+    tier: high
+
+  - name: Span Usage Consistency
+    description: Whether inconsistent Span usage across similar truncation classes and double-allocation patterns are detected
+    what_to_look_for: >
+      Check if the analysis flags `value[..maxLength].TrimEnd()` in FixedLengthTruncator as a
+      double allocation (substring + TrimEnd). Notes that FixedCharacterTruncator correctly uses
+      AsSpan but FixedLengthTruncator and WordBoundaryTruncator do not — inconsistent Span adoption.
+      Identifies `List<char>[]` in TruncationSymbols as heap-allocated collections where
+      ReadOnlySpan<char> or string constants would be more efficient.
+    why_it_matters: >
+      Inconsistent Span usage across similar classes signals missed optimization opportunities.
+      Double-allocation patterns like slice+TrimEnd are easy to miss but compound when called on
+      every displayed string. List<char> for static character sets wastes heap memory.
+    tier: high
+
+  - name: Inheritance Sealing Accuracy
+    description: Whether leaf classes are correctly identified for sealing while base classes are left unsealed
+    what_to_look_for: >
+      Check if the analysis identifies EnglishOrdinalizer, GermanOrdinalizer, and SpanishOrdinalizer
+      as unsealed leaf classes that should be sealed for JIT devirtualization. Critically, verify that
+      the analysis does NOT flag DefaultOrdinalizer for sealing — it is a base class with subclasses
+      (EnglishOrdinalizer and GermanOrdinalizer inherit from it). Abstract Ordinalizer base should
+      also not be flagged.
+    why_it_matters: >
+      Correctly distinguishing base classes from leaf classes in an inheritance hierarchy is essential
+      for accurate sealing recommendations. Incorrectly sealing a base class would break compilation.
+      This dimension tests precision — avoiding false positives is as important as catching true positives.
+    tier: high
+
+  - name: Params Overload Optimization
+    description: Whether params methods without single-argument fast-path overloads are identified
+    what_to_look_for: >
+      Check if the analysis flags TruncationPipeline.Apply(string, int, params ITruncator[]) as
+      always allocating a params array even for the common single-truncator case. Recommends adding
+      a single-argument overload Apply(string, int, ITruncator) to avoid the array allocation.
+    why_it_matters: >
+      params arrays allocate on every call. When the common case is a single argument, a dedicated
+      overload avoids the allocation entirely. This is a standard .NET performance pattern used
+      throughout the BCL (e.g., string.Format, Path.Combine).
+    tier: moderate
+
   - name: Severity Classification Accuracy
     description: Whether issues are correctly classified by severity and impact
     what_to_look_for: >

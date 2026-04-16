@@ -18,6 +18,8 @@ detects (or misses) various anti-patterns.
 | `Services/DataPipeline.cs` | Unsealed classes (devirtualization), exception-driven flow, `.Distinct().ToList()`, `ContainsKey` + indexer |
 | `Models/ValidationEngine.cs` | `new Regex` inside validation closure (called per record), struct without `IEquatable<T>`, `string +=` |
 | `Models/EntityMapper.cs` | `GetProperties()` reflection per call (not cached), `.ToLower()` for case-insensitive compare, `FrozenDictionary` candidate |
+| `TextProcessing/TextTruncation.cs` | `value[..n].TrimEnd()` double allocation, inconsistent `AsSpan` usage, `List<char>[]` vs `ReadOnlySpan<char>`, `params` without 1-arg fast path |
+| `TextProcessing/UnitFormatter.cs` | `.Aggregate()` + `.Replace()` chain (16 intermediate strings), `char.ToString()`, struct without `IEquatable<T>`, unsealed leaf classes in ordinalizer hierarchy |
 
 ## Categories of Issues
 
@@ -30,6 +32,10 @@ detects (or misses) various anti-patterns.
 - **Structural** — unsealed leaf classes, structs without `IEquatable<T>`
 - **Algorithmic** — multiple passes over same data, `Skip().Take()` sliding window, exception-driven control flow
 - **Serialization** — `new JsonSerializerOptions` per call, repeated deserialization
+- **Span** — inconsistent `AsSpan` usage, `value[..n].TrimEnd()` double allocation, `List<char>[]` vs `ReadOnlySpan<char>`
+- **Aggregate** — `.Aggregate()` + `.Replace()` chain creating intermediate strings, `char.ToString()` in loops
+- **Inheritance** — unsealed leaf classes vs. base classes that must remain unsealed (sealing accuracy)
+- **Params** — `params` methods without single-argument fast-path overloads
 
 ## Build
 

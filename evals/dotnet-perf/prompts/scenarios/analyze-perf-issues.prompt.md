@@ -23,6 +23,10 @@ You are a .NET performance expert. There is an **existing** .NET class library p
    - **Reflection** — uncached `GetProperties()`/`SetValue()` in hot paths
    - **Structural** — unsealed leaf classes, structs without `IEquatable<T>`
    - **Serialization** — `new JsonSerializerOptions` per call, repeated deserialization
+   - **Span** — inconsistent `AsSpan` usage across similar classes, `value[..n].TrimEnd()` double allocation, `List<char>[]` vs `ReadOnlySpan<char>`
+   - **Aggregate** — `.Aggregate()` with `.Replace()` creating intermediate string allocations, `char.ToString()` in loops
+   - **Inheritance** — leaf classes that should be `sealed` vs. base classes that must remain unsealed
+   - **Params** — `params` methods without single-argument fast-path overloads
 
 3. **Classify each finding** by severity:
    - 🔴 **Critical** — >10x performance regression potential or production incident risk (e.g., socket exhaustion, O(n²) in hot paths)
