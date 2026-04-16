@@ -62,15 +62,11 @@ dimensions:
   - name: Zstandard Compression Usage
     description: Whether built-in Zstandard compression is used instead of third-party packages
     what_to_look_for: >
-      CORRECT (.NET 11): `new ZstandardStream(stream, CompressionMode.Compress)`,
-      `new ZstandardStream(stream, CompressionMode.Decompress)`,
-      `new ZstandardCompressionOptions { Quality = 5, WindowLog = 22, AppendChecksum = true, EnableLongDistanceMatching = true }`,
-      `new ZstandardEncoder(quality, windowLog)`, `new ZstandardDecoder()`,
-      `DecompressionMethods.Zstandard` on HttpClientHandler.AutomaticDecompression.
-      All from `System.IO.Compression` namespace.
-
-      INCORRECT (old pattern): Using third-party packages like `ZstdSharp` (`new Compressor()`, `new Decompressor()`),
-      or any NuGet reference to `System.IO.Compression.Zstandard` (moved into core in Preview 3).
+      CORRECT: `ZstandardStream(stream, CompressionMode.Compress/Decompress)`,
+      `ZstandardCompressionOptions { Quality, WindowLog, AppendChecksum, EnableLongDistanceMatching }`,
+      `ZstandardEncoder`, `ZstandardDecoder`, `DecompressionMethods.Zstandard`.
+      All from `System.IO.Compression`.
+      INCORRECT: Third-party `ZstdSharp`, or separate `System.IO.Compression.Zstandard` NuGet package.
     why_it_matters: >
       .NET 11 ships Zstandard compression natively. Using third-party packages when the BCL
       provides the same functionality is a strong signal that the generator lacks .NET 11 knowledge.
@@ -79,15 +75,11 @@ dimensions:
   - name: BFloat16 Type Usage
     description: Whether the native BFloat16 type is used for ML-friendly float operations
     what_to_look_for: >
-      CORRECT (.NET 11): `System.Numerics.BFloat16` type, `(BFloat16)3.14f` casting,
-      arithmetic operators on BFloat16, `BFloat16.Max()`, `BFloat16.IsNaN()`,
-      `BinaryPrimitives.WriteBFloat16LittleEndian()`, `BinaryPrimitives.ReadBFloat16LittleEndian()`,
-      `BitConverter.BFloat16ToInt16Bits()`, `BitConverter.Int16BitsToBFloat16()`,
-      `BitConverter.GetBytes(bf)`, `BitConverter.ToBFloat16()`.
-      BFloat16 implements `INumber<BFloat16>`, `IFloatingPoint<BFloat16>`.
-
-      INCORRECT (old pattern): Manual bit manipulation like `(ushort)(BitConverter.SingleToInt32Bits(x) >> 16)`,
-      using `float` or `Half` as a substitute, or third-party BFloat16 types.
+      CORRECT: `System.Numerics.BFloat16`, casting `(BFloat16)3.14f`, arithmetic operators,
+      `BFloat16.Max()`, `BFloat16.IsNaN()`. Serialization: `BinaryPrimitives.WriteBFloat16LittleEndian()`,
+      `ReadBFloat16LittleEndian()`. `BitConverter.BFloat16ToInt16Bits()`, `Int16BitsToBFloat16()`.
+      Implements `INumber<BFloat16>`.
+      INCORRECT: Manual `(ushort)(BitConverter.SingleToInt32Bits(x) >> 16)`, using `float`/`Half` as substitute.
     why_it_matters: >
       BFloat16 is a new numeric primitive in .NET 11. Correct usage shows awareness of the
       new type system additions and their integration with existing numeric interfaces.
@@ -96,19 +88,13 @@ dimensions:
   - name: Rune-Based String Operations
     description: Whether Rune-based APIs are used for Unicode text processing
     what_to_look_for: >
-      CORRECT (.NET 11): `string.Contains(Rune)`, `string.IndexOf(Rune)`,
-      `string.Replace(Rune, Rune)`, `string.Split(Rune)`, `string.StartsWith(Rune)`,
-      `string.EndsWith(Rune)`, `string.LastIndexOf(Rune)`, `string.Trim(Rune)` — all with
-      optional `StringComparison` overloads.
-      `StringBuilder.Append(Rune)`, `StringBuilder.GetRuneAt(int)`,
-      `StringBuilder.Replace(Rune, Rune)`, `StringBuilder.EnumerateRunes()`.
-      `RunePosition.EnumerateUtf16(text)` for position-aware enumeration showing
-      `pos.Rune`, `pos.StartIndex`, `pos.Length`.
-      `char.Equals(char, StringComparison)` for case-insensitive char comparison.
-
-      INCORRECT (old pattern): `char.ConvertFromUtf32()` to create strings for supplementary chars,
-      `string.Contains(string)` instead of `string.Contains(Rune)`,
-      manual surrogate pair handling, no Rune-based StringBuilder methods.
+      CORRECT: `string.Contains(Rune)`, `IndexOf(Rune)`, `Replace(Rune, Rune)`, `Split(Rune)`,
+      `StartsWith(Rune)`, `EndsWith(Rune)` with optional `StringComparison`.
+      `StringBuilder.Append(Rune)`, `GetRuneAt(int)`, `Replace(Rune, Rune)`, `EnumerateRunes()`.
+      `RunePosition.EnumerateUtf16(text)` for position-aware enumeration.
+      `char.Equals(char, StringComparison)`.
+      INCORRECT: `char.ConvertFromUtf32()` for supplementary chars, manual surrogate pair handling,
+      string overloads instead of Rune overloads.
     why_it_matters: >
       Rune-based APIs are the correct way to handle supplementary Unicode characters in
       .NET 11. Falling back to string-based workarounds or manual surrogate pair handling
@@ -118,17 +104,10 @@ dimensions:
   - name: HMAC Single-Step Verification
     description: Whether single-step HMAC verification is used instead of the two-step pattern
     what_to_look_for: >
-      CORRECT (.NET 11): `HMACSHA256.Verify(key, data, expectedHash)`,
-      `HMACSHA256.VerifyAsync(key, stream, expectedHash)`,
-      `CryptographicOperations.VerifyHmac(HashAlgorithmName.SHA256, key, data, expectedHash)`,
-      `CryptographicOperations.VerifyHmacAsync(...)`.
-      Available on all HMAC classes: HMACMD5, HMACSHA1, HMACSHA256, HMACSHA384, HMACSHA512,
-      HMACSHA3_256, HMACSHA3_384, HMACSHA3_512.
-      KMAC: `Kmac128.Verify(key, data, expectedMac)`, `Kmac256.Verify(...)`.
-
-      INCORRECT (old pattern): Two-step `HMACSHA256.HashData(key, data)` followed by
-      `CryptographicOperations.FixedTimeEquals(computed, expected)`, or worse,
-      `SequenceEqual()` which is timing-vulnerable.
+      CORRECT: `HMACSHA256.Verify(key, data, expectedHash)`, `HMACSHA256.VerifyAsync(key, stream, expectedHash)`.
+      Algorithm-agnostic: `CryptographicOperations.VerifyHmac(HashAlgorithmName.SHA256, key, data, hash)`.
+      Available on all HMAC/KMAC classes. KMAC: `Kmac128.Verify()`, `Kmac256.Verify()`.
+      INCORRECT: Two-step `HMACSHA256.HashData()` + `CryptographicOperations.FixedTimeEquals()`, or worse `SequenceEqual()`.
     why_it_matters: >
       The two-step HMAC pattern is error-prone (developers often use non-constant-time
       comparison). The new single-step API is both safer and simpler.
@@ -166,14 +145,10 @@ dimensions:
   - name: Union Type Usage
     description: Whether discriminated union types are defined using the union keyword
     what_to_look_for: >
-      CORRECT (C# 15): `union Shape { Circle(double Radius); Rectangle(double Width, double Height); }`
-      Accessed via `new Shape.Circle(5)`, pattern matched with `shape switch { Shape.Circle(var r) => ..., Shape.Rectangle(var w, var h) => ... }`
-      — no default/wildcard case needed because the compiler knows all cases.
-      Preview 3 requires polyfill attributes:
-      `namespace System.Runtime.CompilerServices { [AttributeUsage(...)] public sealed class UnionAttribute : Attribute; public interface IUnion { object? Value { get; } } }`
-
-      INCORRECT (old pattern): `abstract class Shape { }` with `class Circle : Shape { ... }` subclasses,
-      or third-party `OneOf<T1,T2>` NuGet package, or switch with `_ => throw` default case.
+      CORRECT: `union Shape { Circle(double Radius); Rectangle(double Width, double Height); }`
+      Pattern match: `shape switch { Shape.Circle(var r) => ..., Shape.Rectangle(var w, var h) => ... }` — no default needed.
+      May need polyfill: `UnionAttribute` and `IUnion` in `System.Runtime.CompilerServices`.
+      INCORRECT: `abstract class Shape` hierarchy, `OneOf<T1,T2>` NuGet, switch with `_ => throw` default.
     why_it_matters: >
       Union types are a major C# 15 language addition. Using class hierarchies or third-party
       packages when the language natively supports discriminated unions is a clear signal of
@@ -198,15 +173,9 @@ dimensions:
   - name: DivisionRounding Modes
     description: Whether built-in division rounding modes are used instead of manual implementations
     what_to_look_for: >
-      CORRECT (.NET 11): `int.Divide(-7, 2, DivisionRounding.Floor)`,
-      `int.Divide(-7, 2, DivisionRounding.Ceiling)`,
-      `int.Divide(-7, 2, DivisionRounding.AwayFromZero)`,
-      `int.Remainder(-7, 3, DivisionRounding.Euclidean)` (always non-negative),
-      `int.DivRem(-7, 2, DivisionRounding.Floor)` returns `(quotient, remainder)`.
-      `DivisionRounding` enum values: `Truncate`, `Floor`, `Ceiling`, `AwayFromZero`, `Euclidean`.
-
-      INCORRECT (old pattern): Manual floored division with `int q = a / b; if ((a ^ b) < 0 && q * b != a) q--;`
-      or manual Euclidean remainder with `int r = a % b; return r < 0 ? r + Math.Abs(b) : r;`.
+      CORRECT: `int.Divide(-7, 2, DivisionRounding.Floor)`, `int.Remainder(-7, 3, DivisionRounding.Euclidean)`,
+      `int.DivRem(-7, 2, DivisionRounding.Floor)`. Enum values: Truncate, Floor, Ceiling, AwayFromZero, Euclidean.
+      INCORRECT: Manual `int q = a / b; if ((a ^ b) < 0 && q * b != a) q--;` or manual Euclidean remainder.
     why_it_matters: >
       Manual integer division rounding is error-prone (especially for negative numbers).
       The built-in API is correct, readable, and generic across all integer types.
@@ -215,19 +184,12 @@ dimensions:
   - name: System.Text.Json New Features
     description: Whether new JSON serialization features are used correctly
     what_to_look_for: >
-      CORRECT (.NET 11):
-      1. `JsonNamingPolicy.PascalCase` — new built-in policy, set via `options.PropertyNamingPolicy = JsonNamingPolicy.PascalCase`.
-      2. `[JsonNamingPolicy(JsonKnownNamingPolicy.CamelCase)]` on individual properties to override the global policy.
-      3. Type-level `[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]` on the class/record itself — applies to all nullable properties.
-      4. `IReadOnlySet<T>` serialization/deserialization works directly — `JsonSerializer.Serialize<IReadOnlySet<string>>(tags)`.
-      5. `options.GetTypeInfo<MyType>()` and `options.TryGetTypeInfo<MyType>(out var info)` — generic, no cast.
-
-      INCORRECT (old pattern):
-      1. Custom `PascalCaseNamingPolicy : JsonNamingPolicy` class.
-      2. No per-member naming override — all-or-nothing policy.
-      3. `[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]` on every individual nullable property.
-      4. Using `ISet<T>` or `HashSet<T>` instead of `IReadOnlySet<T>` to avoid serialization errors.
-      5. `(JsonTypeInfo<T>)options.GetTypeInfo(typeof(T))` with manual cast.
+      CORRECT: `JsonNamingPolicy.PascalCase` (built-in, not custom class).
+      `[JsonNamingPolicy(JsonKnownNamingPolicy.CamelCase)]` per-property override.
+      Type-level `[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]` on class (applies to all nullable props).
+      `IReadOnlySet<T>` serializes directly. `options.GetTypeInfo<T>()` and `TryGetTypeInfo<T>()` (no cast).
+      INCORRECT: Custom PascalCase policy class. Per-property `[JsonIgnore]` on each nullable field.
+      Using `ISet<T>`/`HashSet<T>` instead of `IReadOnlySet<T>`. Casting `(JsonTypeInfo<T>)options.GetTypeInfo(typeof(T))`.
     why_it_matters: >
       System.Text.Json has several new features in .NET 11 that simplify common
       serialization patterns. Using workarounds or custom implementations when built-in
@@ -252,18 +214,12 @@ dimensions:
   - name: File System New APIs
     description: Whether new file system APIs are used (hard links, null handle, anonymous pipes)
     what_to_look_for: >
-      CORRECT (.NET 11):
-      Hard links: `File.CreateHardLink("./link.txt", "./original.txt")` or
-      `new FileInfo("./original.txt").CreateAsHardLink("./link.txt")`.
-      Null handle: `File.OpenNullHandle()` — cross-platform, no conditional logic.
-      Anonymous pipes: `SafeFileHandle.CreateAnonymousPipe(out readEnd, out writeEnd, asyncReads: true, asyncWrites: false)`,
-      `readEnd.Type` to query handle type (Pipe, File, etc.),
-      `RandomAccess.Read(readEnd, buffer)` — now works with non-seekable handles.
-
-      INCORRECT (old pattern):
-      Hard links: `[DllImport("kernel32.dll")] CreateHardLink(...)` P/Invoke.
-      Null handle: `if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) File.OpenHandle("NUL") else File.OpenHandle("/dev/null")`.
-      Pipes: `AnonymousPipeServerStream`/`AnonymousPipeClientStream` with no per-end async control.
+      CORRECT: Hard links via `File.CreateHardLink()` or `FileInfo.CreateAsHardLink()`.
+      Null handle via `File.OpenNullHandle()` (cross-platform).
+      Pipes via `SafeFileHandle.CreateAnonymousPipe(out readEnd, out writeEnd, asyncReads, asyncWrites)`,
+      `readEnd.Type` for handle type, `RandomAccess.Read/Write` on non-seekable handles.
+      INCORRECT: P/Invoke `CreateHardLink`. Platform-conditional `/dev/null` vs `NUL`.
+      `AnonymousPipeServerStream`/`AnonymousPipeClientStream` without per-end async control.
     why_it_matters: >
       These APIs replace platform-specific workarounds and P/Invoke calls with clean,
       cross-platform BCL methods. Using the old approaches indicates missing .NET 11 knowledge.
@@ -312,12 +268,9 @@ dimensions:
   - name: Native OpenTelemetry Tracing
     description: Whether ASP.NET Core's built-in tracing is used without external instrumentation packages
     what_to_look_for: >
-      CORRECT (.NET 11): `builder.Services.AddOpenTelemetry().WithTracing(tracing => tracing.AddSource("Microsoft.AspNetCore").AddConsoleExporter());`
-      The framework natively populates: `http.request.method`, `url.path`, `http.response.status_code`, `server.address`.
-      Opt-out via: `AppContext.SetSwitch("Microsoft.AspNetCore.Hosting.SuppressActivityOpenTelemetryData", true)`.
-
-      INCORRECT (old pattern): Adding `OpenTelemetry.Instrumentation.AspNetCore` NuGet package and
-      calling `.AddAspNetCoreInstrumentation()` — this external package is no longer needed.
+      CORRECT: `AddOpenTelemetry().WithTracing(t => t.AddSource("Microsoft.AspNetCore").AddConsoleExporter())`.
+      Framework auto-populates http.request.method, url.path, status_code.
+      INCORRECT: Adding `OpenTelemetry.Instrumentation.AspNetCore` NuGet and `.AddAspNetCoreInstrumentation()`.
     why_it_matters: >
       .NET 11 has native OpenTelemetry support in ASP.NET Core. Using external instrumentation
       packages when the framework provides built-in tracing adds unnecessary dependencies.
@@ -338,13 +291,9 @@ dimensions:
   - name: Dynamic Output Cache Policy Provider
     description: Whether output cache policies are resolved dynamically via a provider interface
     what_to_look_for: >
-      CORRECT (.NET 11): Implement `IOutputCachePolicyProvider` with
-      `GetBasePolicies()` returning `IReadOnlyList<IOutputCachePolicy>` and
-      `GetPolicyAsync(string policyName)` returning `ValueTask<IOutputCachePolicy?>`.
-      Register via `builder.Services.AddSingleton<IOutputCachePolicyProvider, MyProvider>()`.
-
-      INCORRECT (old pattern): `builder.Services.AddOutputCache(options => { options.AddPolicy("name", b => b.Expire(...)); });`
-      — static policies defined at startup with no runtime resolution.
+      CORRECT: `IOutputCachePolicyProvider` with `GetBasePolicies()` and `GetPolicyAsync(policyName)`.
+      Registered via DI: `AddSingleton<IOutputCachePolicyProvider, MyProvider>()`.
+      INCORRECT: `AddOutputCache(options => options.AddPolicy("name", b => b.Expire(...)))` — static only.
     why_it_matters: >
       The dynamic policy provider interface is a new .NET 11 ASP.NET Core feature that
       enables per-tenant, config-driven, or database-backed cache policies.
@@ -353,12 +302,9 @@ dimensions:
   - name: Zstandard Response Compression
     description: Whether Zstandard is enabled for ASP.NET Core response and request compression
     what_to_look_for: >
-      CORRECT (.NET 11): `builder.Services.AddResponseCompression()` — Zstd enabled by default.
-      `builder.Services.AddRequestDecompression()` — Zstd request decompression.
-      `builder.Services.Configure<ZstandardCompressionProviderOptions>(options => { options.CompressionOptions = new ZstandardCompressionOptions { Quality = 6 }; });`
-
-      INCORRECT (old pattern): Only enabling Brotli and Gzip compression, with no awareness that
-      Zstandard is available by default in .NET 11.
+      CORRECT: `AddResponseCompression()` (Zstd on by default), `AddRequestDecompression()`,
+      `Configure<ZstandardCompressionProviderOptions>(o => o.CompressionOptions = new ZstandardCompressionOptions { Quality = 6 })`.
+      INCORRECT: Only Brotli/Gzip with no Zstandard awareness.
     why_it_matters: >
       Zstandard response compression is a built-in .NET 11 feature. Not enabling it or
       being unaware it's available by default indicates missing knowledge.
@@ -382,15 +328,11 @@ dimensions:
   - name: Blazor Label and DisplayName Components
     description: Whether the new Label and DisplayName components are used for forms and tables
     what_to_look_for: >
-      CORRECT (.NET 11):
-      Nested label: `<Label For="() => model.Name"><InputText @bind-Value="model.Name" /></Label>` — renders `<label>Name<input .../></label>`.
-      Non-nested: `<Label For="() => model.Name" />` + `<InputText @bind-Value="model.Name" />` — renders `<label for="Name">Name</label><input id="Name" .../>`.
-      DisplayName: `<DisplayName For="() => product.Name" />` in table headers.
-      Both read from `[Display(Name = "...")]` → `[DisplayName("...")]` → property name.
-      From `Microsoft.AspNetCore.Components.Forms`.
-
-      INCORRECT (old pattern): `<label for="name-input">Name</label><InputText id="name-input" .../>` — manual hardcoded labels.
-      Hardcoded `<th>Name</th>` strings in table headers.
+      CORRECT: Nested `<Label For="() => model.Name"><InputText @bind-Value="model.Name" /></Label>`.
+      Non-nested: `<Label For="() => model.Name" />` + `<InputText .../>`.
+      Table headers: `<DisplayName For="() => product.Name" />`.
+      Both auto-read `[Display]`/`[DisplayName]` attributes. From `Microsoft.AspNetCore.Components.Forms`.
+      INCORRECT: Manual `<label for="id">Name</label>` with hardcoded text. Hardcoded `<th>Name</th>` headers.
     why_it_matters: >
       These components bring parity with MVC's label/display-name helpers to Blazor, reducing
       hardcoded strings and enabling localization. Using manual label elements indicates
@@ -414,13 +356,10 @@ dimensions:
   - name: RelativeToCurrentUri Navigation
     description: Whether relative-to-current-URI navigation is used instead of base-relative
     what_to_look_for: >
-      CORRECT (.NET 11): `NavigationManager.NavigateTo("edit", new NavigationOptions { RelativeToCurrentUri = true })` —
-      at `/tasks/5/details` navigates to `/tasks/5/edit`.
-      `<NavLink href="details" RelativeToCurrentUri="true">View Details</NavLink>`.
-      `NavigationManager.GetUriWithHash("section-id")` for hash fragment navigation.
-
-      INCORRECT (old pattern): `NavigationManager.NavigateTo("edit")` resolves relative to base URI not current URI.
-      Manual URI construction: `var parent = basePath[..basePath.LastIndexOf('/')]; NavigateTo($"{parent}/edit")`.
+      CORRECT: `NavigationManager.NavigateTo("edit", new NavigationOptions { RelativeToCurrentUri = true })`.
+      `<NavLink href="details" RelativeToCurrentUri="true">`.
+      `NavigationManager.GetUriWithHash("section-id")` for hash fragments.
+      INCORRECT: Manual URI construction or base-relative `NavigateTo("edit")`.
     why_it_matters: >
       Relative-to-current-URI navigation is a new .NET 11 Blazor feature that makes nested
       page navigation intuitive. Manual URI construction is error-prone and verbose.
@@ -429,15 +368,9 @@ dimensions:
   - name: Blazor TempData Support
     description: Whether TempData is used for cross-page flash messages
     what_to_look_for: >
-      CORRECT (.NET 11): `[CascadingParameter] public ITempData? TempData { get; set; }`
-      Read: `TempData?.Get("Message")` — removes after reading (one-time).
-      Peek: `TempData?.Peek("Message")` — reads without removing.
-      Write: `TempData!["Message"] = "Success!"`.
-      Keep: `TempData?.Keep("Message")` — prevent removal.
-      Providers: `CookieTempDataProvider` (default), `SessionStorageTempDataProvider`.
-
-      INCORRECT (old pattern): Manual cookie-based flash messaging via `IHttpContextAccessor`:
-      `HttpContextAccessor.HttpContext?.Request.Cookies["Flash"]` with manual cookie deletion.
+      CORRECT: `[CascadingParameter] ITempData? TempData`. Read: `TempData?.Get("Key")` (removes after read).
+      Peek: `TempData?.Peek("Key")`. Write: `TempData!["Key"] = "value"`. Keep: `TempData?.Keep("Key")`.
+      INCORRECT: Manual cookie-based flash via `IHttpContextAccessor` with cookie read/delete.
     why_it_matters: >
       TempData support brings Blazor SSR to parity with MVC for flash messaging. Custom
       workarounds are verbose and error-prone compared to the built-in mechanism.
@@ -498,13 +431,10 @@ dimensions:
   - name: EF Core JSON Query Functions
     description: Whether built-in JSON query functions are used for JSON column queries
     what_to_look_for: >
-      CORRECT (.NET 11): `context.Products.Where(p => EF.Functions.JsonContains(p.Tags, @"""featured"""))`,
-      `context.Products.Where(p => EF.Functions.JsonPathExists(p.Metadata, "$.pricing.discount"))`.
-      Note: These translate to SQL Server 2025 JSON functions. On SQLite a fallback (e.g., LIKE) is acceptable
-      but the EF.Functions usage should still be demonstrated or documented.
-
-      INCORRECT (old pattern): `context.Products.FromSqlRaw("SELECT * FROM Products WHERE JSON_PATH_EXISTS(...)")` — raw SQL.
-      Or `context.Products.Where(p => p.Tags.Contains("featured"))` — string-based workaround.
+      CORRECT: `EF.Functions.JsonContains(p.Tags, @"""featured""")`,
+      `EF.Functions.JsonPathExists(p.Metadata, "$.pricing.discount")`.
+      Note: SQL Server 2025 functions; SQLite fallback with LIKE is acceptable but EF.Functions should be shown.
+      INCORRECT: `FromSqlRaw("SELECT * FROM Products WHERE JSON_PATH_EXISTS(...)")` or string LIKE workarounds only.
     why_it_matters: >
       Built-in JSON functions are type-safe and composable with LINQ, unlike raw SQL.
       Using raw SQL when built-in functions exist indicates missing knowledge.
@@ -513,9 +443,8 @@ dimensions:
   - name: SignalR ConfigureConnection
     description: Whether SignalR connection options are configured for interactive server components
     what_to_look_for: >
-      CORRECT (.NET 11): `app.MapRazorComponents<App>().AddInteractiveServerRenderMode(options => { options.ConfigureConnection = dispatcherOptions => { dispatcherOptions.CloseOnAuthenticationExpiration = true; dispatcherOptions.AllowStatefulReconnects = true; dispatcherOptions.ApplicationMaxBufferSize = 1024 * 1024; }; });`
-
-      INCORRECT (old pattern): No clean way to access `HttpConnectionDispatcherOptions` for interactive server — had to use workarounds.
+      CORRECT: `AddInteractiveServerRenderMode(o => o.ConfigureConnection = d => { d.CloseOnAuthenticationExpiration = true; d.AllowStatefulReconnects = true; })`.
+      INCORRECT: No clean way to configure SignalR dispatcher options — workarounds required.
     why_it_matters: >
       The ConfigureConnection option is a new .NET 11 Blazor feature that provides clean
       access to SignalR dispatcher options without workarounds.
