@@ -7,7 +7,5 @@ sources:
     path: plugins
 
   - name: dotnet-skills-improved
-    type: git
-    url: https://github.com/sayedihashimi/skills
-    ref: update-dotnet-diag
-    path: plugins
+    type: local
+    path: C:\data\mycode\skills\update-dotnet-diag\plugins
