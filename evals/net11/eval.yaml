@@ -1,0 +1,395 @@
+name: ".NET 11 Feature Adoption Evaluation"
+description: >
+  Evaluate how the dotnet-net11 skill improves Copilot's ability to generate code that
+  correctly uses new .NET 11 APIs, C# language features, and framework capabilities
+  instead of falling back to older patterns or third-party packages.
+
+scenarios:
+  - name: console-bcl
+    prompt: prompts/scenarios/console-bcl.prompt.md
+    description: >
+      Create a console developer toolkit app that exercises new BCL features including
+      Zstandard compression, BFloat16, Rune-based text processing, HMAC verification,
+      frozen collections, MIME type mapping, hard links, division rounding, JSON
+      serialization improvements, Base64 parity, regex enhancements, anonymous pipes,
+      union types, and collection expression arguments.
+
+  - name: webapi
+    prompt: prompts/scenarios/webapi.prompt.md
+    description: >
+      Create a product catalog Web API that exercises new ASP.NET Core features including
+      native OpenTelemetry tracing, OpenAPI 3.2, dynamic output cache policies, Zstandard
+      response compression, and modern JSON serialization (PascalCase, per-member naming,
+      type-level ignore, IReadOnlySet, generic GetTypeInfo).
+
+  - name: blazor
+    prompt: prompts/scenarios/blazor.prompt.md
+    description: >
+      Create a Blazor task management app that exercises new Blazor components and
+      navigation features including EnvironmentBoundary, Label, DisplayName, QuickGrid
+      OnRowClick, relative-to-current-URI navigation, hash fragment URIs, TempData,
+      BasePath, variable-height virtualization, and SignalR connection configuration.
+
+  - name: efcore
+    prompt: prompts/scenarios/efcore.prompt.md
+    description: >
+      Create an EF Core order management demo that exercises new EF Core features
+      including efficient state-based change tracking, clean DbContext replacement for
+      testing, foreign key migration exclusion, and JSON column queries.
+
+configurations:
+  - name: no-skills
+    label: "Baseline (default Copilot)"
+    skills: []
+    plugins: []
+
+  - name: dotnet-net11-skill
+    label: "dotnet-net11 Skill"
+    suggest_improvements: true
+    skills: []
+    plugins:
+      - source: dotnet-net11
+        path: dotnet-net11
+
+verification:
+  build:
+    command: dotnet build
+  run:
+    command: dotnet run
+    timeout_seconds: 15
+
+dimensions:
+  - name: Zstandard Compression Usage
+    description: Whether built-in Zstandard compression is used instead of third-party packages
+    what_to_look_for: >
+      Check if the generated code uses the built-in Zstandard stream and compression options
+      from System.IO.Compression instead of third-party packages like ZstdSharp. Verify that
+      advanced options (quality, window size, checksum, long-distance matching) and HTTP
+      automatic decompression with Zstandard are used where appropriate.
+    why_it_matters: >
+      .NET 11 ships Zstandard compression natively. Using third-party packages when the BCL
+      provides the same functionality is a strong signal that the generator lacks .NET 11 knowledge.
+    tier: critical
+
+  - name: BFloat16 Type Usage
+    description: Whether the native BFloat16 type is used for ML-friendly float operations
+    what_to_look_for: >
+      Check if BFloat16 arithmetic, serialization via BinaryPrimitives and BitConverter,
+      and standard numeric interface usage are demonstrated using the built-in type rather
+      than manual bit manipulation or third-party types.
+    why_it_matters: >
+      BFloat16 is a new numeric primitive in .NET 11. Correct usage shows awareness of the
+      new type system additions and their integration with existing numeric interfaces.
+    tier: high
+
+  - name: Rune-Based String Operations
+    description: Whether Rune-based APIs are used for Unicode text processing
+    what_to_look_for: >
+      Check if the code uses Rune overloads on string (Contains, IndexOf, Replace, Split,
+      StartsWith, EndsWith), StringBuilder Rune methods (Append, GetRuneAt, Replace,
+      EnumerateRunes), RunePosition enumeration, and char comparison with StringComparison.
+      Verify that supplementary characters (emoji, CJK) are handled correctly via Rune
+      rather than surrogate pair workarounds.
+    why_it_matters: >
+      Rune-based APIs are the correct way to handle supplementary Unicode characters in
+      .NET 11. Falling back to string-based workarounds or manual surrogate pair handling
+      indicates missing knowledge of these new APIs.
+    tier: high
+
+  - name: HMAC Single-Step Verification
+    description: Whether single-step HMAC verification is used instead of the two-step pattern
+    what_to_look_for: >
+      Check if HMAC verification uses the single-step Verify methods rather than the old
+      two-step pattern of computing a hash and then comparing with FixedTimeEquals. Also
+      check for algorithm-agnostic verification and KMAC support.
+    why_it_matters: >
+      The two-step HMAC pattern is error-prone (developers often use non-constant-time
+      comparison). The new single-step API is both safer and simpler.
+    tier: high
+
+  - name: FrozenDictionary Collection Expressions
+    description: Whether FrozenDictionary is created using collection expression syntax
+    what_to_look_for: >
+      Check if FrozenDictionary instances are created using dictionary expression syntax
+      with optional comparer arguments via with(), rather than building a Dictionary and
+      calling ToFrozenDictionary().
+    why_it_matters: >
+      Collection expression support for FrozenDictionary is new in .NET 11 and the with()
+      syntax is a C# 15 feature. Using the old multi-step approach indicates lack of
+      awareness of these improvements.
+    tier: high
+
+  - name: Collection Expression with() Arguments
+    description: Whether the C# 15 with() syntax is used in collection expressions
+    what_to_look_for: >
+      Check if collection expressions use with() to pass constructor arguments like capacity
+      hints and custom comparers inline, rather than separate constructor calls followed by
+      AddRange or manual initialization.
+    why_it_matters: >
+      The with() syntax in collection expressions is a new C# 15 language feature. Using it
+      demonstrates awareness of the latest language capabilities for concise collection creation.
+    tier: high
+
+  - name: Union Type Usage
+    description: Whether discriminated union types are defined using the union keyword
+    what_to_look_for: >
+      Check if the code defines discriminated unions using the C# 15 union keyword with
+      exhaustive pattern matching (no default case needed), rather than class hierarchies
+      or third-party OneOf packages. Check for proper polyfill attributes if needed.
+    why_it_matters: >
+      Union types are a major C# 15 language addition. Using class hierarchies or third-party
+      packages when the language natively supports discriminated unions is a clear signal of
+      missing .NET 11 / C# 15 knowledge.
+    tier: critical
+
+  - name: MediaTypeMap Usage
+    description: Whether built-in MIME type mapping is used instead of manual dictionaries
+    what_to_look_for: >
+      Check if the code uses the built-in MediaTypeMap for MIME type lookups (both
+      extension→MIME and MIME→extension) rather than manual dictionaries or third-party
+      packages. Check for span-based overloads for zero-allocation scenarios.
+    why_it_matters: >
+      MediaTypeMap is a new .NET 11 API that eliminates the need for manual MIME mappings
+      or third-party dependencies for a very common task.
+    tier: medium
+
+  - name: DivisionRounding Modes
+    description: Whether built-in division rounding modes are used instead of manual implementations
+    what_to_look_for: >
+      Check if integer division uses the DivisionRounding enum and IBinaryInteger methods
+      (Divide, Remainder, DivRem with rounding mode) rather than manual floor/ceiling/
+      Euclidean implementations.
+    why_it_matters: >
+      Manual integer division rounding is error-prone (especially for negative numbers).
+      The built-in API is correct, readable, and generic across all integer types.
+    tier: medium
+
+  - name: System.Text.Json New Features
+    description: Whether new JSON serialization features are used correctly
+    what_to_look_for: >
+      Check for use of PascalCase naming policy (built-in, not custom), per-member naming
+      policy attribute overrides, type-level JsonIgnore for null handling, IReadOnlySet
+      serialization without workarounds, and generic GetTypeInfo/TryGetTypeInfo without
+      casting.
+    why_it_matters: >
+      System.Text.Json has several new features in .NET 11 that simplify common
+      serialization patterns. Using workarounds or custom implementations when built-in
+      support exists indicates missing knowledge.
+    tier: critical
+
+  - name: RegexOptions.AnyNewLine
+    description: Whether the AnyNewLine regex option is used for Unicode newline handling
+    what_to_look_for: >
+      Check if regex operations that need to handle mixed newlines use the AnyNewLine option
+      rather than manual preprocessing or character class workarounds for Unicode newline
+      characters (NEL, LS, PS).
+    why_it_matters: >
+      AnyNewLine is a targeted .NET 11 addition for a common text processing need. Its
+      absence when parsing mixed-newline text indicates missing awareness.
+    tier: medium
+
+  - name: File System New APIs
+    description: Whether new file system APIs are used (hard links, null handle, anonymous pipes)
+    what_to_look_for: >
+      Check if the code uses File.CreateHardLink/FileInfo.CreateAsHardLink instead of
+      P/Invoke, File.OpenNullHandle instead of platform-conditional /dev/null or NUL paths,
+      and SafeFileHandle.CreateAnonymousPipe with per-end async configuration and handle
+      type querying.
+    why_it_matters: >
+      These APIs replace platform-specific workarounds and P/Invoke calls with clean,
+      cross-platform BCL methods. Using the old approaches indicates missing .NET 11 knowledge.
+    tier: high
+
+  - name: Base64 Parity APIs
+    description: Whether new Base64 convenience methods are used
+    what_to_look_for: >
+      Check if the code uses Base64.EncodeToString, Base64.DecodeFromChars, and
+      Base64.EncodeToChars rather than going through Convert.ToBase64String/FromBase64String.
+      Also check for length calculation helpers.
+    why_it_matters: >
+      The new Base64 APIs bring parity with Base64Url and are more convenient than the
+      Convert class methods.
+    tier: medium
+
+  - name: Generic Interlocked Operations
+    description: Whether generic Interlocked.And/Or are used directly with enum types
+    what_to_look_for: >
+      Check if atomic bitwise operations on flags enums use generic Interlocked.And/Or
+      directly on the enum type rather than casting to int and back.
+    why_it_matters: >
+      Generic interlocked operations eliminate error-prone casting. Using the old cast-based
+      pattern when generic overloads exist indicates missing .NET 11 knowledge.
+    tier: medium
+
+  - name: BitArray.PopCount
+    description: Whether the built-in PopCount method is used instead of manual counting
+    what_to_look_for: >
+      Check if BitArray set-bit counting uses the PopCount method rather than a manual
+      foreach loop.
+    why_it_matters: >
+      PopCount is a simple but telling .NET 11 addition. Manual counting when a built-in
+      method exists is a clear signal.
+    tier: low
+
+  - name: Native OpenTelemetry Tracing
+    description: Whether ASP.NET Core's built-in tracing is used without external instrumentation packages
+    what_to_look_for: >
+      Check if OpenTelemetry tracing is configured using AddSource("Microsoft.AspNetCore")
+      rather than requiring the OpenTelemetry.Instrumentation.AspNetCore NuGet package.
+    why_it_matters: >
+      .NET 11 has native OpenTelemetry support in ASP.NET Core. Using external instrumentation
+      packages when the framework provides built-in tracing adds unnecessary dependencies.
+    tier: high
+
+  - name: OpenAPI Version
+    description: Whether OpenAPI 3.2.0 is used
+    what_to_look_for: >
+      Check if the OpenAPI document generation is configured for the latest supported
+      OpenAPI spec version available in .NET 11.
+    why_it_matters: >
+      .NET 11 supports OpenAPI 3.2.0 which has improvements over 3.1. Using the latest
+      version demonstrates awareness of the framework update.
+    tier: medium
+
+  - name: Dynamic Output Cache Policy Provider
+    description: Whether output cache policies are resolved dynamically via a provider interface
+    what_to_look_for: >
+      Check if output cache policies are resolved at runtime through a DI-registered policy
+      provider rather than statically defined at startup.
+    why_it_matters: >
+      The dynamic policy provider interface is a new .NET 11 ASP.NET Core feature that
+      enables per-tenant, config-driven, or database-backed cache policies.
+    tier: high
+
+  - name: Zstandard Response Compression
+    description: Whether Zstandard is enabled for ASP.NET Core response and request compression
+    what_to_look_for: >
+      Check if the web API enables Zstandard response compression (enabled by default in
+      .NET 11) and request decompression with quality configuration.
+    why_it_matters: >
+      Zstandard response compression is a built-in .NET 11 feature. Not enabling it or
+      being unaware it's available by default indicates missing knowledge.
+    tier: high
+
+  - name: Blazor EnvironmentBoundary Component
+    description: Whether the declarative EnvironmentBoundary component is used instead of manual checks
+    what_to_look_for: >
+      Check if environment-conditional UI uses the built-in EnvironmentBoundary component
+      with Include/Exclude parameters rather than injecting IHostEnvironment and writing
+      manual if-checks.
+    why_it_matters: >
+      EnvironmentBoundary is a new .NET 11 Blazor component that replaces boilerplate
+      environment checking code with a clean declarative pattern.
+    tier: high
+
+  - name: Blazor Label and DisplayName Components
+    description: Whether the new Label and DisplayName components are used for forms and tables
+    what_to_look_for: >
+      Check if forms use the Label component (both nested and non-nested patterns) that
+      automatically reads Display/DisplayName attributes, and if table headers use the
+      DisplayName component rather than hardcoded strings.
+    why_it_matters: >
+      These components bring parity with MVC's label/display-name helpers to Blazor, reducing
+      hardcoded strings and enabling localization. Using manual label elements indicates
+      missing knowledge of these new components.
+    tier: high
+
+  - name: QuickGrid OnRowClick
+    description: Whether QuickGrid row click uses the built-in event rather than a button column workaround
+    what_to_look_for: >
+      Check if QuickGrid uses the OnRowClick event parameter for row-level click handling
+      rather than adding a button or link column as a workaround.
+    why_it_matters: >
+      OnRowClick is a new .NET 11 QuickGrid feature. Using button column workarounds when
+      the built-in event exists is a clear signal of missing knowledge.
+    tier: high
+
+  - name: RelativeToCurrentUri Navigation
+    description: Whether relative-to-current-URI navigation is used instead of base-relative
+    what_to_look_for: >
+      Check if navigation between related pages uses the RelativeToCurrentUri option in
+      NavigationOptions and NavLink rather than manual URI construction or base-relative paths.
+      Also check for GetUriWithHash usage for hash fragment navigation.
+    why_it_matters: >
+      Relative-to-current-URI navigation is a new .NET 11 Blazor feature that makes nested
+      page navigation intuitive. Manual URI construction is error-prone and verbose.
+    tier: medium
+
+  - name: Blazor TempData Support
+    description: Whether TempData is used for cross-page flash messages
+    what_to_look_for: >
+      Check if cross-page messaging uses the built-in TempData support (ITempData cascading
+      parameter with Get/Peek semantics) rather than custom cookie-based or session-based
+      workarounds.
+    why_it_matters: >
+      TempData support brings Blazor SSR to parity with MVC for flash messaging. Custom
+      workarounds are verbose and error-prone compared to the built-in mechanism.
+    tier: high
+
+  - name: Blazor BasePath Component
+    description: Whether the BasePath component is used instead of hardcoded base href
+    what_to_look_for: >
+      Check if the root layout uses the BasePath component rather than a hardcoded
+      <base href="/" /> tag.
+    why_it_matters: >
+      BasePath automatically resolves the correct base path, making subpath hosting work
+      without manual configuration.
+    tier: medium
+
+  - name: EF Core GetEntriesForState
+    description: Whether efficient state-based entity querying is used
+    what_to_look_for: >
+      Check if change tracker queries use the efficient state-filtering API that skips
+      automatic change detection, rather than the traditional Entries() method that forces
+      a DetectChanges pass on every call.
+    why_it_matters: >
+      The new API avoids unnecessary DetectChanges overhead in long-lived contexts. Using
+      the old pattern when the efficient alternative exists indicates missing knowledge.
+    tier: high
+
+  - name: EF Core RemoveDbContext
+    description: Whether clean DbContext replacement uses the removal API
+    what_to_look_for: >
+      Check if DbContext registration replacement uses the clean removal method before
+      re-registering, rather than relying on DI override behavior or other workarounds.
+    why_it_matters: >
+      Clean removal is a new .NET 11 EF Core feature specifically designed for test scenarios.
+      Using workarounds when the clean API exists indicates missing knowledge.
+    tier: high
+
+  - name: EF Core ExcludeForeignKeyFromMigrations
+    description: Whether the FK migration exclusion API is used
+    what_to_look_for: >
+      Check if foreign key constraints are excluded from migrations using the built-in
+      Fluent API method rather than manual migration editing.
+    why_it_matters: >
+      This is a targeted .NET 11 EF Core feature for legacy schema and application-enforced
+      FK scenarios. Manual migration editing is fragile and error-prone.
+    tier: medium
+
+  - name: EF Core JSON Query Functions
+    description: Whether built-in JSON query functions are used for JSON column queries
+    what_to_look_for: >
+      Check if JSON column queries use the built-in EF.Functions methods for JSON containment
+      and path existence rather than raw SQL or string-based LIKE workarounds.
+    why_it_matters: >
+      Built-in JSON functions are type-safe and composable with LINQ, unlike raw SQL.
+      Using raw SQL when built-in functions exist indicates missing knowledge.
+    tier: high
+
+  - name: Overall .NET 11 API Adoption Rate
+    description: What fraction of available .NET 11 features are correctly used vs. old patterns
+    what_to_look_for: >
+      Count how many .NET 11 features were correctly used versus how many fell back to
+      old patterns, third-party packages, or manual workarounds. Consider both the number
+      of features adopted and the correctness of their usage.
+    why_it_matters: >
+      The overall adoption rate is the primary metric for evaluating whether the skill
+      effectively communicates .NET 11 knowledge to Copilot.
+    tier: critical
+
+output:
+  directory: output
+  reports_directory: reports
+  analysis_file: analysis.md
+  notes_file: build-notes.md

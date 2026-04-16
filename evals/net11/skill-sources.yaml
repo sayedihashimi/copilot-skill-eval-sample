@@ -1,0 +1,4 @@
+sources:
+  - name: dotnet-net11
+    type: local
+    path: C:\data\mycode\skills\net11-auto01\plugins
