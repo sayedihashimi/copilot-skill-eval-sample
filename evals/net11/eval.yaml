@@ -377,6 +377,84 @@ dimensions:
       Using raw SQL when built-in functions exist indicates missing knowledge.
     tier: high
 
+  - name: SignalR ConfigureConnection
+    description: Whether SignalR connection options are configured for interactive server components
+    what_to_look_for: >
+      Check if the Blazor interactive server render mode configures SignalR connection
+      options (authentication expiration, stateful reconnects, buffer sizes) using the
+      built-in configuration callback rather than workarounds or leaving defaults.
+    why_it_matters: >
+      The ConfigureConnection option is a new .NET 11 Blazor feature that provides clean
+      access to SignalR dispatcher options without workarounds.
+    tier: medium
+
+  - name: Blazor Virtualize Variable-Height Items
+    description: Whether virtualization handles variable-height items correctly
+    what_to_look_for: >
+      Check if the Virtualize component is used for lists with variable-height content
+      (e.g., tasks with short vs. long descriptions) and whether the implementation
+      relies on the runtime's adaptive height measurement rather than assuming uniform
+      item sizes.
+    why_it_matters: >
+      .NET 11 Virtualize adapts to actual rendered item heights at runtime. Code that
+      works around this limitation (e.g., forcing fixed heights) indicates missing
+      knowledge of the improvement.
+    tier: medium
+
+  - name: Runtime Async Configuration
+    description: Whether runtime async is enabled correctly without unnecessary preview flags
+    what_to_look_for: >
+      Check if the project enables runtime async using only the feature switch in the
+      project file, without also requiring the preview features flag that was needed in
+      earlier previews.
+    why_it_matters: >
+      Runtime async no longer requires the preview opt-in in .NET 11 Preview 3. Including
+      the unnecessary flag indicates outdated knowledge.
+    tier: medium
+
+  - name: ProcessExitStatus Usage
+    description: Whether rich process exit information is accessed via the new status type
+    what_to_look_for: >
+      Check if process exit handling accesses rich exit information (exit code, cancellation
+      flag, termination signal) through the new structured status type rather than relying
+      solely on the integer ExitCode property.
+    why_it_matters: >
+      The new exit status type provides structured information about why a process terminated,
+      replacing the need to manually decode exit codes on Unix.
+    tier: medium
+
+  - name: OpenAPI Binary File Response
+    description: Whether binary file download endpoints are properly described in OpenAPI
+    what_to_look_for: >
+      Check if file download endpoints properly describe their binary response content type
+      in the OpenAPI schema, generating correct type:string format:binary documentation.
+    why_it_matters: >
+      Proper binary response description in OpenAPI is important for client code generation
+      and API documentation accuracy.
+    tier: medium
+
+  - name: Brotli and Compression Options
+    description: Whether new compression option properties are used
+    what_to_look_for: >
+      Check if Brotli compression configuration uses the new window size property alongside
+      quality, and whether Zstandard compression options demonstrate the full range of
+      configurable properties.
+    why_it_matters: >
+      New compression option properties enable finer-grained control over compression
+      behavior. Missing them indicates incomplete awareness of the API surface.
+    tier: low
+
+  - name: Vector Constants
+    description: Whether SIMD vector mathematical constants are used
+    what_to_look_for: >
+      Check if the code uses the new static constant properties on Vector<T> (Pi, Tau, E,
+      Epsilon, NaN, infinities, negative values) rather than manually constructing vectors
+      from scalar constants.
+    why_it_matters: >
+      Built-in vector constants are more readable and may be optimized by the JIT. Manual
+      construction when constants exist indicates missing knowledge.
+    tier: low
+
   - name: Overall .NET 11 API Adoption Rate
     description: What fraction of available .NET 11 features are correctly used vs. old patterns
     what_to_look_for: >
