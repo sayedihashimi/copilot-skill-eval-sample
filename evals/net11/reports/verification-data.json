@@ -1,0 +1,53 @@
+{
+  "timestamp": "2026-04-16T23:59:38.885195+00:00",
+  "results": [
+    {
+      "config": "no-skills",
+      "run_id": 1,
+      "scenario": "console-bcl",
+      "build_success": true,
+      "run_success": true,
+      "build_warnings": {
+        "naming": 0,
+        "performance": 0,
+        "reliability": 0,
+        "security": 0,
+        "usage": 0,
+        "style": 0,
+        "other": 0,
+        "total": 0
+      },
+      "format_issues": 0,
+      "security_vulnerabilities": {},
+      "session_id": "f7c66703-3f81-49b0-8cdd-f484f9eb5724",
+      "model": "claude-opus-4.6",
+      "loaded_skills": [],
+      "loaded_plugins": [],
+      "asset_match": true
+    },
+    {
+      "config": "dotnet-net11-skill",
+      "run_id": 1,
+      "scenario": "console-bcl",
+      "build_success": true,
+      "run_success": true,
+      "build_warnings": {
+        "naming": 0,
+        "performance": 0,
+        "reliability": 0,
+        "security": 0,
+        "usage": 0,
+        "style": 0,
+        "other": 2,
+        "total": 2
+      },
+      "format_issues": 0,
+      "security_vulnerabilities": {},
+      "session_id": "5dcd99cd-2783-4ac6-8617-9becfb98377e",
+      "model": "claude-opus-4.6",
+      "loaded_skills": [],
+      "loaded_plugins": [],
+      "asset_match": true
+    }
+  ]
+}

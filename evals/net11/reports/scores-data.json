@@ -1,0 +1,166 @@
+{
+  "timestamp": "2026-04-17T00:04:47.704628+00:00",
+  "runs": [
+    {
+      "run_id": 1,
+      "scores": {
+        "Zstandard Compression Usage": {
+          "dotnet-net11-skill": 5.0,
+          "no-skills": 5.0
+        },
+        "BFloat16 Type Usage": {
+          "dotnet-net11-skill": 5.0,
+          "no-skills": 3.0
+        },
+        "Rune-Based String Operations": {
+          "dotnet-net11-skill": 5.0,
+          "no-skills": 3.0
+        },
+        "HMAC Single-Step Verification": {
+          "dotnet-net11-skill": 5.0,
+          "no-skills": 4.0
+        },
+        "FrozenDictionary Collection Expressions": {
+          "dotnet-net11-skill": 2.0,
+          "no-skills": 2.0
+        },
+        "Collection Expression with() Arguments": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Union Type Usage": {
+          "dotnet-net11-skill": 2.0,
+          "no-skills": 1.0
+        },
+        "MediaTypeMap Usage": {
+          "dotnet-net11-skill": 5.0,
+          "no-skills": 2.0
+        },
+        "DivisionRounding Modes": {
+          "dotnet-net11-skill": 5.0,
+          "no-skills": 2.0
+        },
+        "System.Text.Json New Features": {
+          "dotnet-net11-skill": 5.0,
+          "no-skills": 3.0
+        },
+        "RegexOptions.AnyNewLine": {
+          "dotnet-net11-skill": 5.0,
+          "no-skills": 2.0
+        },
+        "File System New APIs": {
+          "dotnet-net11-skill": 5.0,
+          "no-skills": 3.0
+        },
+        "Base64 Parity APIs": {
+          "dotnet-net11-skill": 5.0,
+          "no-skills": 5.0
+        },
+        "Generic Interlocked Operations": {
+          "dotnet-net11-skill": 5.0,
+          "no-skills": 5.0
+        },
+        "BitArray.PopCount": {
+          "dotnet-net11-skill": 5.0,
+          "no-skills": 5.0
+        },
+        "Native OpenTelemetry Tracing": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "OpenAPI Version": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Dynamic Output Cache Policy Provider": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Zstandard Response Compression": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Blazor EnvironmentBoundary Component": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Blazor Label and DisplayName Components": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "QuickGrid OnRowClick": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "RelativeToCurrentUri Navigation": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Blazor TempData Support": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Blazor BasePath Component": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "EF Core GetEntriesForState": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "EF Core RemoveDbContext": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "EF Core ExcludeForeignKeyFromMigrations": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "EF Core JSON Query Functions": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "SignalR ConfigureConnection": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Blazor Virtualize Variable-Height Items": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Runtime Async Configuration": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "ProcessExitStatus Usage": {
+          "dotnet-net11-skill": 2.0,
+          "no-skills": 2.0
+        },
+        "OpenAPI Binary File Response": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Brotli and Compression Options": {
+          "dotnet-net11-skill": 3.0,
+          "no-skills": 3.0
+        },
+        "Vector Constants": {
+          "dotnet-net11-skill": 1.0,
+          "no-skills": 1.0
+        },
+        "Overall .NET 11 API Adoption Rate": {
+          "dotnet-net11-skill": 3.0,
+          "no-skills": 2.0
+        },
+        "Token Efficiency": {
+          "no-skills": 5.0,
+          "dotnet-net11-skill": 2.0
+        }
+      },
+      "weighted_totals": {
+        "no-skills": 120.5,
+        "dotnet-net11-skill": 152.5
+      }
+    }
+  ]
+}
