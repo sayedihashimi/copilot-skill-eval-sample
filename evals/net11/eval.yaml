@@ -1,545 +1,252 @@
-name: ".NET 11 Feature Adoption Evaluation"
-description: >
-  Evaluate how the dotnet-net11 skill improves Copilot's ability to generate code that
-  correctly uses new .NET 11 APIs, C# language features, and framework capabilities
-  instead of falling back to older patterns or third-party packages.
+name: .NET 11 Feature Adoption Evaluation
+description: 'Evaluate how the dotnet-net11 skill improves Copilot''s ability to generate code that correctly uses new .NET
+  11 APIs, C# language features, and framework capabilities instead of falling back to older patterns or third-party packages.
 
+  '
 scenarios:
-  - name: console-bcl
-    prompt: prompts/scenarios/console-bcl.prompt.md
-    description: >
-      Create a console developer toolkit app that exercises new BCL features including
-      Zstandard compression, BFloat16, Rune-based text processing, HMAC verification,
-      frozen collections, MIME type mapping, hard links, division rounding, JSON
-      serialization improvements, Base64 parity, regex enhancements, anonymous pipes,
-      union types, and collection expression arguments.
+- name: console-bcl
+  prompt: prompts/scenarios/console-bcl.prompt.md
+  description: 'Create a console developer toolkit app that exercises new BCL features including Zstandard compression, BFloat16,
+    Rune-based text processing, HMAC verification, frozen collections, MIME type mapping, hard links, division rounding, JSON
+    serialization improvements, Base64 parity, regex enhancements, anonymous pipes, union types, and collection expression
+    arguments.
 
-  - name: webapi
-    prompt: prompts/scenarios/webapi.prompt.md
-    description: >
-      Create a product catalog Web API that exercises new ASP.NET Core features including
-      native OpenTelemetry tracing, OpenAPI 3.2, dynamic output cache policies, Zstandard
-      response compression, and modern JSON serialization (PascalCase, per-member naming,
-      type-level ignore, IReadOnlySet, generic GetTypeInfo).
+    '
+- name: webapi
+  prompt: prompts/scenarios/webapi.prompt.md
+  description: 'Create a product catalog Web API that exercises new ASP.NET Core features including native OpenTelemetry tracing,
+    OpenAPI 3.2, dynamic output cache policies, Zstandard response compression, and modern JSON serialization (PascalCase,
+    per-member naming, type-level ignore, IReadOnlySet, generic GetTypeInfo).
 
-  - name: blazor
-    prompt: prompts/scenarios/blazor.prompt.md
-    description: >
-      Create a Blazor task management app that exercises new Blazor components and
-      navigation features including EnvironmentBoundary, Label, DisplayName, QuickGrid
-      OnRowClick, relative-to-current-URI navigation, hash fragment URIs, TempData,
-      BasePath, variable-height virtualization, and SignalR connection configuration.
+    '
+- name: blazor
+  prompt: prompts/scenarios/blazor.prompt.md
+  description: 'Create a Blazor task management app that exercises new Blazor components and navigation features including
+    EnvironmentBoundary, Label, DisplayName, QuickGrid OnRowClick, relative-to-current-URI navigation, hash fragment URIs,
+    TempData, BasePath, variable-height virtualization, and SignalR connection configuration.
 
-  - name: efcore
-    prompt: prompts/scenarios/efcore.prompt.md
-    description: >
-      Create an EF Core order management demo that exercises new EF Core features
-      including efficient state-based change tracking, clean DbContext replacement for
-      testing, foreign key migration exclusion, and JSON column queries.
+    '
+- name: efcore
+  prompt: prompts/scenarios/efcore.prompt.md
+  description: 'Create an EF Core order management demo that exercises new EF Core features including efficient state-based
+    change tracking, clean DbContext replacement for testing, foreign key migration exclusion, and JSON column queries.
 
+    '
 configurations:
-  - name: no-skills
-    label: "Baseline (default Copilot)"
-    skills: []
-    plugins: []
-
-  - name: dotnet-net11-skill
-    label: "dotnet-net11 Skill"
-    suggest_improvements: true
-    skills: []
-    plugins:
-      - source: dotnet-net11
-        path: dotnet-net11
-
+- name: no-skills
+  label: Baseline (default Copilot)
+  skills: []
+  plugins: []
+- name: dotnet-net11-skill
+  label: dotnet-net11 Skill
+  suggest_improvements: true
+  skills: []
+  plugins:
+  - source: dotnet-net11
+    path: dotnet-net11
 verification:
   build:
     command: dotnet build
   run:
     command: dotnet run
     timeout_seconds: 15
-
 dimensions:
-  - name: Zstandard Compression Usage
-    description: Whether built-in Zstandard compression is used instead of third-party packages
-    what_to_look_for: >
-      CORRECT: `ZstandardStream(stream, CompressionMode.Compress/Decompress)`,
-      `ZstandardCompressionOptions { Quality, WindowLog, AppendChecksum, EnableLongDistanceMatching }`,
-      `ZstandardEncoder`, `ZstandardDecoder`, `DecompressionMethods.Zstandard`.
-      All from `System.IO.Compression`.
-      INCORRECT: Third-party `ZstdSharp`, or separate `System.IO.Compression.Zstandard` NuGet package.
-    why_it_matters: >
-      .NET 11 ships Zstandard compression natively. Using third-party packages when the BCL
-      provides the same functionality is a strong signal that the generator lacks .NET 11 knowledge.
-    tier: critical
-
-  - name: BFloat16 Type Usage
-    description: Whether the native BFloat16 type is used for ML-friendly float operations
-    what_to_look_for: >
-      CORRECT: `System.Numerics.BFloat16`, casting `(BFloat16)3.14f`, arithmetic operators,
-      `BFloat16.Max()`, `BFloat16.IsNaN()`. Serialization: `BinaryPrimitives.WriteBFloat16LittleEndian()`,
-      `ReadBFloat16LittleEndian()`. `BitConverter.BFloat16ToInt16Bits()`, `Int16BitsToBFloat16()`.
-      Implements `INumber<BFloat16>`.
-      INCORRECT: Manual `(ushort)(BitConverter.SingleToInt32Bits(x) >> 16)`, using `float`/`Half` as substitute.
-    why_it_matters: >
-      BFloat16 is a new numeric primitive in .NET 11. Correct usage shows awareness of the
-      new type system additions and their integration with existing numeric interfaces.
-    tier: high
-
-  - name: Rune-Based String Operations
-    description: Whether Rune-based APIs are used for Unicode text processing
-    what_to_look_for: >
-      CORRECT: `string.Contains(Rune)`, `IndexOf(Rune)`, `Replace(Rune, Rune)`, `Split(Rune)`,
-      `StartsWith(Rune)`, `EndsWith(Rune)` with optional `StringComparison`.
-      `StringBuilder.Append(Rune)`, `GetRuneAt(int)`, `Replace(Rune, Rune)`, `EnumerateRunes()`.
-      `RunePosition.EnumerateUtf16(text)` for position-aware enumeration.
-      `char.Equals(char, StringComparison)`.
-      INCORRECT: `char.ConvertFromUtf32()` for supplementary chars, manual surrogate pair handling,
-      string overloads instead of Rune overloads.
-    why_it_matters: >
-      Rune-based APIs are the correct way to handle supplementary Unicode characters in
-      .NET 11. Falling back to string-based workarounds or manual surrogate pair handling
-      indicates missing knowledge of these new APIs.
-    tier: high
-
-  - name: HMAC Single-Step Verification
-    description: Whether single-step HMAC verification is used instead of the two-step pattern
-    what_to_look_for: >
-      CORRECT: `HMACSHA256.Verify(key, data, expectedHash)`, `HMACSHA256.VerifyAsync(key, stream, expectedHash)`.
-      Algorithm-agnostic: `CryptographicOperations.VerifyHmac(HashAlgorithmName.SHA256, key, data, hash)`.
-      Available on all HMAC/KMAC classes. KMAC: `Kmac128.Verify()`, `Kmac256.Verify()`.
-      INCORRECT: Two-step `HMACSHA256.HashData()` + `CryptographicOperations.FixedTimeEquals()`, or worse `SequenceEqual()`.
-    why_it_matters: >
-      The two-step HMAC pattern is error-prone (developers often use non-constant-time
-      comparison). The new single-step API is both safer and simpler.
-    tier: high
-
-  - name: FrozenDictionary Collection Expressions
-    description: Whether FrozenDictionary is created using collection expression syntax
-    what_to_look_for: >
-      CORRECT (.NET 11 / C# 15): `FrozenDictionary<string, int> lookup = ["one":1, "two":2, "three":3];`
-      With comparer: `FrozenDictionary<string, int> lookup = [with(StringComparer.Ordinal), "one":1, "two":2];`
-      Uses `CollectionBuilderAttribute` support added in .NET 11.
-
-      INCORRECT (old pattern): Creating a `Dictionary<K,V>` first and then calling
-      `.ToFrozenDictionary()`, or `dict.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase)`.
-    why_it_matters: >
-      Collection expression support for FrozenDictionary is new in .NET 11 and the with()
-      syntax is a C# 15 feature. Using the old multi-step approach indicates lack of
-      awareness of these improvements.
-    tier: high
-
-  - name: Collection Expression with() Arguments
-    description: Whether the C# 15 with() syntax is used in collection expressions
-    what_to_look_for: >
-      CORRECT (C# 15): `List<string> names = [with(capacity: values.Count * 2), .. values];`
-      `HashSet<string> set = [with(StringComparer.OrdinalIgnoreCase), "a", "b"];`
-      The `with()` clause passes constructor arguments inline within the collection expression.
-
-      INCORRECT (old pattern): `var names = new List<string>(capacity: n); names.AddRange(values);`
-      or `new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "a", "b" }`.
-    why_it_matters: >
-      The with() syntax in collection expressions is a new C# 15 language feature. Using it
-      demonstrates awareness of the latest language capabilities for concise collection creation.
-    tier: high
-
-  - name: Union Type Usage
-    description: Whether discriminated union types are defined using the union keyword
-    what_to_look_for: >
-      CORRECT: `union Shape { Circle(double Radius); Rectangle(double Width, double Height); }`
-      Pattern match: `shape switch { Shape.Circle(var r) => ..., Shape.Rectangle(var w, var h) => ... }` — no default needed.
-      May need polyfill: `UnionAttribute` and `IUnion` in `System.Runtime.CompilerServices`.
-      INCORRECT: `abstract class Shape` hierarchy, `OneOf<T1,T2>` NuGet, switch with `_ => throw` default.
-    why_it_matters: >
-      Union types are a major C# 15 language addition. Using class hierarchies or third-party
-      packages when the language natively supports discriminated unions is a clear signal of
-      missing .NET 11 / C# 15 knowledge.
-    tier: critical
-
-  - name: MediaTypeMap Usage
-    description: Whether built-in MIME type mapping is used instead of manual dictionaries
-    what_to_look_for: >
-      CORRECT (.NET 11): `System.Net.Mime.MediaTypeMap.GetMediaType(".json")` → `"application/json"`,
-      `MediaTypeMap.GetMediaType("image.png")` → `"image/png"`,
-      `MediaTypeMap.GetExtension("application/pdf")` → `".pdf"`.
-      Also accepts `ReadOnlySpan<char>` for zero-allocation lookups.
-
-      INCORRECT (old pattern): Manual `Dictionary<string, string>` mapping extensions to MIME types,
-      or third-party packages like `MimeTypes` or `MimeMapping`.
-    why_it_matters: >
-      MediaTypeMap is a new .NET 11 API that eliminates the need for manual MIME mappings
-      or third-party dependencies for a very common task.
-    tier: medium
-
-  - name: DivisionRounding Modes
-    description: Whether built-in division rounding modes are used instead of manual implementations
-    what_to_look_for: >
-      CORRECT: `int.Divide(-7, 2, DivisionRounding.Floor)`, `int.Remainder(-7, 3, DivisionRounding.Euclidean)`,
-      `int.DivRem(-7, 2, DivisionRounding.Floor)`. Enum values: Truncate, Floor, Ceiling, AwayFromZero, Euclidean.
-      INCORRECT: Manual `int q = a / b; if ((a ^ b) < 0 && q * b != a) q--;` or manual Euclidean remainder.
-    why_it_matters: >
-      Manual integer division rounding is error-prone (especially for negative numbers).
-      The built-in API is correct, readable, and generic across all integer types.
-    tier: medium
-
-  - name: System.Text.Json New Features
-    description: Whether new JSON serialization features are used correctly
-    what_to_look_for: >
-      CORRECT: `JsonNamingPolicy.PascalCase` (built-in, not custom class).
-      `[JsonNamingPolicy(JsonKnownNamingPolicy.CamelCase)]` per-property override.
-      Type-level `[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]` on class (applies to all nullable props).
-      `IReadOnlySet<T>` serializes directly. `options.GetTypeInfo<T>()` and `TryGetTypeInfo<T>()` (no cast).
-      INCORRECT: Custom PascalCase policy class. Per-property `[JsonIgnore]` on each nullable field.
-      Using `ISet<T>`/`HashSet<T>` instead of `IReadOnlySet<T>`. Casting `(JsonTypeInfo<T>)options.GetTypeInfo(typeof(T))`.
-    why_it_matters: >
-      System.Text.Json has several new features in .NET 11 that simplify common
-      serialization patterns. Using workarounds or custom implementations when built-in
-      support exists indicates missing knowledge.
-    tier: critical
-
-  - name: RegexOptions.AnyNewLine
-    description: Whether the AnyNewLine regex option is used for Unicode newline handling
-    what_to_look_for: >
-      CORRECT (.NET 11): `Regex.Matches(text, pattern, RegexOptions.Multiline | RegexOptions.AnyNewLine)`
-      — makes `^`, `$`, and `.` treat all Unicode newline characters as line terminators:
-      `\r\n`, `\n`, `\r`, `\u0085` (NEL), `\u2028` (LS), `\u2029` (PS).
-
-      INCORRECT (old pattern): Only `RegexOptions.Multiline` which only recognizes `\n`,
-      or manual preprocessing to normalize newlines before regex matching,
-      or custom character classes like `[\r\n\u0085\u2028\u2029]`.
-    why_it_matters: >
-      AnyNewLine is a targeted .NET 11 addition for a common text processing need. Its
-      absence when parsing mixed-newline text indicates missing awareness.
-    tier: medium
-
-  - name: File System New APIs
-    description: Whether new file system APIs are used (hard links, null handle, anonymous pipes)
-    what_to_look_for: >
-      CORRECT: Hard links via `File.CreateHardLink()` or `FileInfo.CreateAsHardLink()`.
-      Null handle via `File.OpenNullHandle()` (cross-platform).
-      Pipes via `SafeFileHandle.CreateAnonymousPipe(out readEnd, out writeEnd, asyncReads, asyncWrites)`,
-      `readEnd.Type` for handle type, `RandomAccess.Read/Write` on non-seekable handles.
-      INCORRECT: P/Invoke `CreateHardLink`. Platform-conditional `/dev/null` vs `NUL`.
-      `AnonymousPipeServerStream`/`AnonymousPipeClientStream` without per-end async control.
-    why_it_matters: >
-      These APIs replace platform-specific workarounds and P/Invoke calls with clean,
-      cross-platform BCL methods. Using the old approaches indicates missing .NET 11 knowledge.
-    tier: high
-
-  - name: Base64 Parity APIs
-    description: Whether new Base64 convenience methods are used
-    what_to_look_for: >
-      CORRECT (.NET 11): `System.Buffers.Text.Base64.EncodeToString(data)`,
-      `Base64.DecodeFromChars(encoded)`, `Base64.EncodeToChars(data)`,
-      `Base64.GetEncodedLength(data.Length)`, `Base64.GetMaxDecodedLength(encoded.Length)`,
-      `Base64.DecodeFromChars(span, destination, out charsConsumed, out bytesWritten)`.
-
-      INCORRECT (old pattern): `Convert.ToBase64String(data)`, `Convert.FromBase64String(str)`.
-      These still work but the new APIs have parity with `Base64Url` and are more convenient.
-    why_it_matters: >
-      The new Base64 APIs bring parity with Base64Url and are more convenient than the
-      Convert class methods.
-    tier: medium
-
-  - name: Generic Interlocked Operations
-    description: Whether generic Interlocked.And/Or are used directly with enum types
-    what_to_look_for: >
-      CORRECT (.NET 11): `Interlocked.Or(ref permissions, FilePermissions.Write)` and
-      `Interlocked.And(ref permissions, ~FilePermissions.Execute)` directly on enum variables.
-      Works with all integer-backed types: byte, sbyte, short, ushort, int, uint, long, ulong, nint, nuint, and enums.
-
-      INCORRECT (old pattern): `int permissions = (int)FilePermissions.Read; Interlocked.Or(ref permissions, (int)FilePermissions.Write); var result = (FilePermissions)permissions;`
-      — casting to int and back.
-    why_it_matters: >
-      Generic interlocked operations eliminate error-prone casting. Using the old cast-based
-      pattern when generic overloads exist indicates missing .NET 11 knowledge.
-    tier: medium
-
-  - name: BitArray.PopCount
-    description: Whether the built-in PopCount method is used instead of manual counting
-    what_to_look_for: >
-      CORRECT (.NET 11): `bits.PopCount()` — returns the number of set bits directly.
-
-      INCORRECT (old pattern): `int count = 0; foreach (bool b in bits) { if (b) count++; }` — manual loop.
-    why_it_matters: >
-      PopCount is a simple but telling .NET 11 addition. Manual counting when a built-in
-      method exists is a clear signal.
-    tier: low
-
-  - name: Native OpenTelemetry Tracing
-    description: Whether ASP.NET Core's built-in tracing is used without external instrumentation packages
-    what_to_look_for: >
-      CORRECT: `AddOpenTelemetry().WithTracing(t => t.AddSource("Microsoft.AspNetCore").AddConsoleExporter())`.
-      Framework auto-populates http.request.method, url.path, status_code.
-      INCORRECT: Adding `OpenTelemetry.Instrumentation.AspNetCore` NuGet and `.AddAspNetCoreInstrumentation()`.
-    why_it_matters: >
-      .NET 11 has native OpenTelemetry support in ASP.NET Core. Using external instrumentation
-      packages when the framework provides built-in tracing adds unnecessary dependencies.
-    tier: high
-
-  - name: OpenAPI Version
-    description: Whether OpenAPI 3.2.0 is used
-    what_to_look_for: >
-      CORRECT (.NET 11): `builder.Services.AddOpenApi(options => { options.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_2; });`
-
-      INCORRECT (old pattern): Using `AddOpenApi()` without specifying the version (defaults to older spec),
-      or explicitly setting `OpenApi3_1`.
-    why_it_matters: >
-      .NET 11 supports OpenAPI 3.2.0 which has improvements over 3.1. Using the latest
-      version demonstrates awareness of the framework update.
-    tier: medium
-
-  - name: Dynamic Output Cache Policy Provider
-    description: Whether output cache policies are resolved dynamically via a provider interface
-    what_to_look_for: >
-      CORRECT: `IOutputCachePolicyProvider` with `GetBasePolicies()` and `GetPolicyAsync(policyName)`.
-      Registered via DI: `AddSingleton<IOutputCachePolicyProvider, MyProvider>()`.
-      INCORRECT: `AddOutputCache(options => options.AddPolicy("name", b => b.Expire(...)))` — static only.
-    why_it_matters: >
-      The dynamic policy provider interface is a new .NET 11 ASP.NET Core feature that
-      enables per-tenant, config-driven, or database-backed cache policies.
-    tier: high
-
-  - name: Zstandard Response Compression
-    description: Whether Zstandard is enabled for ASP.NET Core response and request compression
-    what_to_look_for: >
-      CORRECT: `AddResponseCompression()` (Zstd on by default), `AddRequestDecompression()`,
-      `Configure<ZstandardCompressionProviderOptions>(o => o.CompressionOptions = new ZstandardCompressionOptions { Quality = 6 })`.
-      INCORRECT: Only Brotli/Gzip with no Zstandard awareness.
-    why_it_matters: >
-      Zstandard response compression is a built-in .NET 11 feature. Not enabling it or
-      being unaware it's available by default indicates missing knowledge.
-    tier: high
-
-  - name: Blazor EnvironmentBoundary Component
-    description: Whether the declarative EnvironmentBoundary component is used instead of manual checks
-    what_to_look_for: >
-      CORRECT (.NET 11): `<EnvironmentBoundary Include="Development"><div>Debug info</div></EnvironmentBoundary>`,
-      `<EnvironmentBoundary Include="Development,Staging">...</EnvironmentBoundary>`,
-      `<EnvironmentBoundary Exclude="Production">...</EnvironmentBoundary>`.
-      From `Microsoft.AspNetCore.Components.Web` namespace.
-
-      INCORRECT (old pattern): `@inject IHostEnvironment Environment` followed by
-      `@if (Environment.IsDevelopment()) { <div>Debug info</div> }`.
-    why_it_matters: >
-      EnvironmentBoundary is a new .NET 11 Blazor component that replaces boilerplate
-      environment checking code with a clean declarative pattern.
-    tier: high
-
-  - name: Blazor Label and DisplayName Components
-    description: Whether the new Label and DisplayName components are used for forms and tables
-    what_to_look_for: >
-      CORRECT: Nested `<Label For="() => model.Name"><InputText @bind-Value="model.Name" /></Label>`.
-      Non-nested: `<Label For="() => model.Name" />` + `<InputText .../>`.
-      Table headers: `<DisplayName For="() => product.Name" />`.
-      Both auto-read `[Display]`/`[DisplayName]` attributes. From `Microsoft.AspNetCore.Components.Forms`.
-      INCORRECT: Manual `<label for="id">Name</label>` with hardcoded text. Hardcoded `<th>Name</th>` headers.
-    why_it_matters: >
-      These components bring parity with MVC's label/display-name helpers to Blazor, reducing
-      hardcoded strings and enabling localization. Using manual label elements indicates
-      missing knowledge of these new components.
-    tier: high
-
-  - name: QuickGrid OnRowClick
-    description: Whether QuickGrid row click uses the built-in event rather than a button column workaround
-    what_to_look_for: >
-      CORRECT (.NET 11): `<QuickGrid Items="@items.AsQueryable()" OnRowClick="@HandleRowClick">` —
-      automatically applies `cursor:pointer` styling via `row-clickable` CSS class.
-      Handler receives the typed item: `void HandleRowClick(TaskItem item) { ... }`.
-
-      INCORRECT (old pattern): `<TemplateColumn><button @onclick="() => HandleClick(context)">View</button></TemplateColumn>`
-      — adding a button/link column as a workaround for missing row click support.
-    why_it_matters: >
-      OnRowClick is a new .NET 11 QuickGrid feature. Using button column workarounds when
-      the built-in event exists is a clear signal of missing knowledge.
-    tier: high
-
-  - name: RelativeToCurrentUri Navigation
-    description: Whether relative-to-current-URI navigation is used instead of base-relative
-    what_to_look_for: >
-      CORRECT: `NavigationManager.NavigateTo("edit", new NavigationOptions { RelativeToCurrentUri = true })`.
-      `<NavLink href="details" RelativeToCurrentUri="true">`.
-      `NavigationManager.GetUriWithHash("section-id")` for hash fragments.
-      INCORRECT: Manual URI construction or base-relative `NavigateTo("edit")`.
-    why_it_matters: >
-      Relative-to-current-URI navigation is a new .NET 11 Blazor feature that makes nested
-      page navigation intuitive. Manual URI construction is error-prone and verbose.
-    tier: medium
-
-  - name: Blazor TempData Support
-    description: Whether TempData is used for cross-page flash messages
-    what_to_look_for: >
-      CORRECT: `[CascadingParameter] ITempData? TempData`. Read: `TempData?.Get("Key")` (removes after read).
-      Peek: `TempData?.Peek("Key")`. Write: `TempData!["Key"] = "value"`. Keep: `TempData?.Keep("Key")`.
-      INCORRECT: Manual cookie-based flash via `IHttpContextAccessor` with cookie read/delete.
-    why_it_matters: >
-      TempData support brings Blazor SSR to parity with MVC for flash messaging. Custom
-      workarounds are verbose and error-prone compared to the built-in mechanism.
-    tier: high
-
-  - name: Blazor BasePath Component
-    description: Whether the BasePath component is used instead of hardcoded base href
-    what_to_look_for: >
-      CORRECT (.NET 11): `<BasePath />` in the root layout `<head>` — from
-      `Microsoft.AspNetCore.Components.Endpoints`. Automatically resolves from `NavigationManager.BaseUri`.
-
-      INCORRECT (old pattern): `<base href="/" />` hardcoded in the host page.
-      Note: Standalone Blazor WASM apps should still use the static base href.
-    why_it_matters: >
-      BasePath automatically resolves the correct base path, making subpath hosting work
-      without manual configuration.
-    tier: medium
-
-  - name: EF Core GetEntriesForState
-    description: Whether efficient state-based entity querying is used
-    what_to_look_for: >
-      CORRECT (.NET 11): `context.ChangeTracker.GetEntriesForState(added: false, modified: true, deleted: false, unchanged: false)`
-      — skips `DetectChanges()`, returns only entities in the requested states.
-
-      INCORRECT (old pattern): `context.ChangeTracker.Entries().Where(e => e.State == EntityState.Modified).ToList()`
-      — triggers `DetectChanges()` on every call, expensive with many tracked entities.
-    why_it_matters: >
-      The new API avoids unnecessary DetectChanges overhead in long-lived contexts. Using
-      the old pattern when the efficient alternative exists indicates missing knowledge.
-    tier: high
-
-  - name: EF Core RemoveDbContext
-    description: Whether clean DbContext replacement uses the removal API
-    what_to_look_for: >
-      CORRECT (.NET 11): `services.RemoveDbContext<MyContext>()` to cleanly remove the existing registration,
-      then `services.AddDbContext<MyContext>(options => options.UseSqlite("Data Source=test.db"))` to re-register.
-      Also: `services.AddPooledDbContextFactory<MyContext>()` — new parameterless overload when config is provided elsewhere.
-
-      INCORRECT (old pattern): Adding a second `AddDbContext<MyContext>()` call that conflicts with
-      the production registration, or manually removing service descriptors from the IServiceCollection.
-    why_it_matters: >
-      Clean removal is a new .NET 11 EF Core feature specifically designed for test scenarios.
-      Using workarounds when the clean API exists indicates missing knowledge.
-    tier: high
-
-  - name: EF Core ExcludeForeignKeyFromMigrations
-    description: Whether the FK migration exclusion API is used
-    what_to_look_for: >
-      CORRECT (.NET 11): `modelBuilder.Entity<OrderItem>().HasOne(o => o.Product).WithMany().ExcludeForeignKeyFromMigrations(true);`
-
-      INCORRECT (old pattern): Manually editing generated migration files to remove FK constraint creation,
-      or not being able to exclude FKs from migrations at all.
-    why_it_matters: >
-      This is a targeted .NET 11 EF Core feature for legacy schema and application-enforced
-      FK scenarios. Manual migration editing is fragile and error-prone.
-    tier: medium
-
-  - name: EF Core JSON Query Functions
-    description: Whether built-in JSON query functions are used for JSON column queries
-    what_to_look_for: >
-      CORRECT: `EF.Functions.JsonContains(p.Tags, @"""featured""")`,
-      `EF.Functions.JsonPathExists(p.Metadata, "$.pricing.discount")`.
-      Note: SQL Server 2025 functions; SQLite fallback with LIKE is acceptable but EF.Functions should be shown.
-      INCORRECT: `FromSqlRaw("SELECT * FROM Products WHERE JSON_PATH_EXISTS(...)")` or string LIKE workarounds only.
-    why_it_matters: >
-      Built-in JSON functions are type-safe and composable with LINQ, unlike raw SQL.
-      Using raw SQL when built-in functions exist indicates missing knowledge.
-    tier: high
-
-  - name: SignalR ConfigureConnection
-    description: Whether SignalR connection options are configured for interactive server components
-    what_to_look_for: >
-      CORRECT: `AddInteractiveServerRenderMode(o => o.ConfigureConnection = d => { d.CloseOnAuthenticationExpiration = true; d.AllowStatefulReconnects = true; })`.
-      INCORRECT: No clean way to configure SignalR dispatcher options — workarounds required.
-    why_it_matters: >
-      The ConfigureConnection option is a new .NET 11 Blazor feature that provides clean
-      access to SignalR dispatcher options without workarounds.
-    tier: medium
-
-  - name: Blazor Virtualize Variable-Height Items
-    description: Whether virtualization handles variable-height items correctly
-    what_to_look_for: >
-      Check if the Virtualize component is used for lists with variable-height content
-      (e.g., tasks with short vs. long descriptions) and whether the implementation
-      relies on the runtime's adaptive height measurement rather than assuming uniform
-      item sizes.
-    why_it_matters: >
-      .NET 11 Virtualize adapts to actual rendered item heights at runtime. Code that
-      works around this limitation (e.g., forcing fixed heights) indicates missing
-      knowledge of the improvement.
-    tier: medium
-
-  - name: Runtime Async Configuration
-    description: Whether runtime async is enabled correctly without unnecessary preview flags
-    what_to_look_for: >
-      CORRECT (.NET 11 Preview 3): `<PropertyGroup><Features>runtime-async=on</Features></PropertyGroup>`
-      — no other flags needed.
-
-      INCORRECT (outdated): Including `<EnablePreviewFeatures>true</EnablePreviewFeatures>` alongside
-      the feature switch — this was required in Preview 1/2 but is no longer needed in Preview 3.
-    why_it_matters: >
-      Runtime async no longer requires the preview opt-in in .NET 11 Preview 3. Including
-      the unnecessary flag indicates outdated knowledge.
-    tier: medium
-
-  - name: ProcessExitStatus Usage
-    description: Whether rich process exit information is accessed via the new status type
-    what_to_look_for: >
-      CORRECT (.NET 11): `ProcessExitStatus status = process.ExitStatus;`
-      then `status.ExitCode`, `status.Canceled`, `status.Signal` (e.g., SIGTERM, SIGKILL on Unix).
-      Also `PosixSignal.SIGKILL` is now available as an enum value.
-
-      INCORRECT (old pattern): Only using `process.ExitCode` (integer) with no access to
-      cancellation or signal information.
-    why_it_matters: >
-      The new exit status type provides structured information about why a process terminated,
-      replacing the need to manually decode exit codes on Unix.
-    tier: medium
-
-  - name: OpenAPI Binary File Response
-    description: Whether binary file download endpoints are properly described in OpenAPI
-    what_to_look_for: >
-      CORRECT (.NET 11): `app.MapGet("/download", () => TypedResults.File(content)).Produces<FileContentResult>(contentType: MediaTypeNames.Application.Octet);`
-      — generates OpenAPI schema with `type:string, format:binary`.
-
-      INCORRECT (old pattern): Returning `TypedResults.File(content)` without `.Produces<>()`
-      — binary response not properly described in generated OpenAPI docs.
-    why_it_matters: >
-      Proper binary response description in OpenAPI is important for client code generation
-      and API documentation accuracy.
-    tier: medium
-
-  - name: Brotli and Compression Options
-    description: Whether new compression option properties are used
-    what_to_look_for: >
-      CORRECT (.NET 11): `new BrotliCompressionOptions { Quality = 5, WindowLog = 22 }` — `WindowLog` is new.
-      `new ZstandardCompressionOptions { Quality = 5, WindowLog = 22, AppendChecksum = true, EnableLongDistanceMatching = true }`.
-
-      INCORRECT (old pattern): Only setting `Quality` on Brotli with no `WindowLog` property available.
-    why_it_matters: >
-      New compression option properties enable finer-grained control over compression
-      behavior. Missing them indicates incomplete awareness of the API surface.
-    tier: low
-
-  - name: Vector Constants
-    description: Whether SIMD vector mathematical constants are used
-    what_to_look_for: >
-      CORRECT (.NET 11): `Vector<float>.E`, `Vector<float>.Pi`, `Vector<float>.Tau`,
-      `Vector<float>.Epsilon`, `Vector<float>.NaN`, `Vector<float>.NegativeInfinity`,
-      `Vector<float>.PositiveInfinity`, `Vector<float>.NegativeOne`, `Vector<float>.NegativeZero`.
-
-      INCORRECT (old pattern): `new Vector<float>(MathF.PI)` or `Vector.Create(float.Epsilon)` —
-      manually constructing vectors from scalar constants.
-    why_it_matters: >
-      Built-in vector constants are more readable and may be optimized by the JIT. Manual
-      construction when constants exist indicates missing knowledge.
-    tier: low
-
-  - name: Overall .NET 11 API Adoption Rate
-    description: What fraction of available .NET 11 features are correctly used vs. old patterns
-    what_to_look_for: >
-      Count how many .NET 11 features were correctly used versus how many fell back to
-      old patterns, third-party packages, or manual workarounds. Consider both the number
-      of features adopted and the correctness of their usage.
-    why_it_matters: >
-      The overall adoption rate is the primary metric for evaluating whether the skill
-      effectively communicates .NET 11 knowledge to Copilot.
-    tier: critical
-
+- name: Zstandard Compression Usage
+  description: Whether built-in Zstandard compression is used instead of third-party packages
+  what_to_look_for: 'CORRECT: ZstandardStream, ZstandardCompressionOptions, ZstandardEncoder/Decoder, DecompressionMethods.Zstandard.
+    INCORRECT: ZstdSharp or separate NuGet.'
+  why_it_matters: Third-party packages signal missing .NET 11 knowledge.
+  tier: critical
+- name: BFloat16 Type Usage
+  description: Whether the native BFloat16 type is used for ML-friendly float operations
+  what_to_look_for: 'CORRECT: System.Numerics.BFloat16, BinaryPrimitives.WriteBFloat16LittleEndian, BitConverter.BFloat16ToInt16Bits.
+    INCORRECT: Manual bit manipulation.'
+  why_it_matters: Shows awareness of new .NET 11 numeric type additions.
+  tier: high
+- name: Rune-Based String Operations
+  description: Whether Rune-based APIs are used for Unicode text processing
+  what_to_look_for: 'CORRECT: string.Contains/IndexOf/Replace/Split(Rune), StringBuilder Rune methods, RunePosition.EnumerateUtf16,
+    char.Equals with StringComparison. INCORRECT: char.ConvertFromUtf32, manual surrogates.'
+  why_it_matters: Manual surrogate handling signals missing Rune API knowledge.
+  tier: high
+- name: HMAC Single-Step Verification
+  description: Whether single-step HMAC verification is used instead of the two-step pattern
+  what_to_look_for: 'CORRECT: HMACSHA256.Verify, CryptographicOperations.VerifyHmac, Kmac128/256.Verify. INCORRECT: HashData
+    + FixedTimeEquals two-step.'
+  why_it_matters: Two-step pattern is error-prone; single-step is safer.
+  tier: high
+- name: FrozenDictionary Collection Expressions
+  description: Whether FrozenDictionary is created using collection expression syntax
+  what_to_look_for: 'CORRECT: FrozenDictionary<K,V> lookup = ["key":val]; with comparer via with(). INCORRECT: Dictionary
+    + ToFrozenDictionary().'
+  why_it_matters: Old multi-step approach signals missing .NET 11 awareness.
+  tier: high
+- name: Collection Expression with() Arguments
+  description: Whether the C# 15 with() syntax is used in collection expressions
+  what_to_look_for: 'CORRECT: [with(capacity: n), .. values] inline. INCORRECT: Separate constructor + AddRange.'
+  why_it_matters: Demonstrates C# 15 collection expression awareness.
+  tier: high
+- name: Union Type Usage
+  description: Whether discriminated union types are defined using the union keyword
+  what_to_look_for: 'CORRECT: union keyword, exhaustive switch, no default. May need polyfill. INCORRECT: abstract class hierarchy
+    or OneOf NuGet.'
+  why_it_matters: Class hierarchies signal missing C# 15 union support knowledge.
+  tier: critical
+- name: MediaTypeMap Usage
+  description: Whether built-in MIME type mapping is used instead of manual dictionaries
+  what_to_look_for: 'CORRECT: MediaTypeMap.GetMediaType/GetExtension. INCORRECT: Manual Dictionary or third-party.'
+  why_it_matters: Eliminates manual MIME mappings or third-party packages.
+  tier: medium
+- name: DivisionRounding Modes
+  description: Whether built-in division rounding modes are used instead of manual implementations
+  what_to_look_for: 'CORRECT: int.Divide/Remainder/DivRem with DivisionRounding enum. INCORRECT: Manual implementations.'
+  why_it_matters: Manual rounding is error-prone; built-in API is correct.
+  tier: medium
+- name: System.Text.Json New Features
+  description: Whether new JSON serialization features are used correctly
+  what_to_look_for: 'CORRECT: JsonNamingPolicy.PascalCase, [JsonNamingPolicy] per-property, type-level [JsonIgnore], IReadOnlySet<T>,
+    GetTypeInfo<T>(). INCORRECT: Custom policy, per-property ignore, ISet workaround, cast.'
+  why_it_matters: Workarounds signal missing .NET 11 JSON knowledge.
+  tier: critical
+- name: RegexOptions.AnyNewLine
+  description: Whether the AnyNewLine regex option is used for Unicode newline handling
+  what_to_look_for: 'CORRECT: RegexOptions.AnyNewLine for Unicode newlines. INCORRECT: Only Multiline or manual preprocessing.'
+  why_it_matters: Missing AnyNewLine for mixed-newline text signals missing awareness.
+  tier: medium
+- name: File System New APIs
+  description: Whether new file system APIs are used (hard links, null handle, anonymous pipes)
+  what_to_look_for: 'CORRECT: File.CreateHardLink, File.OpenNullHandle, SafeFileHandle.CreateAnonymousPipe, RandomAccess on
+    pipes. INCORRECT: P/Invoke, platform-conditional paths.'
+  why_it_matters: Clean cross-platform APIs replace P/Invoke workarounds.
+  tier: high
+- name: Base64 Parity APIs
+  description: Whether new Base64 convenience methods are used
+  what_to_look_for: 'CORRECT: Base64.EncodeToString/DecodeFromChars/GetEncodedLength. INCORRECT: Convert.ToBase64String.'
+  why_it_matters: New APIs are more convenient than Convert class methods.
+  tier: medium
+- name: Generic Interlocked Operations
+  description: Whether generic Interlocked.And/Or are used directly with enum types
+  what_to_look_for: 'CORRECT: Interlocked.Or/And directly on enum. INCORRECT: Cast to int and back.'
+  why_it_matters: Eliminates error-prone casting to int and back.
+  tier: medium
+- name: BitArray.PopCount
+  description: Whether the built-in PopCount method is used instead of manual counting
+  what_to_look_for: 'CORRECT: bits.PopCount(). INCORRECT: Manual foreach loop.'
+  why_it_matters: Manual counting signals missing PopCount knowledge.
+  tier: low
+- name: Native OpenTelemetry Tracing
+  description: Whether ASP.NET Core's built-in tracing is used without external instrumentation packages
+  what_to_look_for: 'CORRECT: AddSource("Microsoft.AspNetCore"). INCORRECT: External instrumentation NuGet.'
+  why_it_matters: Eliminates external instrumentation package dependency.
+  tier: high
+- name: OpenAPI Version
+  description: Whether OpenAPI 3.2.0 is used
+  what_to_look_for: 'CORRECT: OpenApiSpecVersion.OpenApi3_2. INCORRECT: Default or 3_1.'
+  why_it_matters: Using latest OpenAPI version demonstrates framework awareness.
+  tier: medium
+- name: Dynamic Output Cache Policy Provider
+  description: Whether output cache policies are resolved dynamically via a provider interface
+  what_to_look_for: 'CORRECT: IOutputCachePolicyProvider + DI. INCORRECT: Static AddPolicy.'
+  why_it_matters: Enables per-tenant and config-driven cache policies.
+  tier: high
+- name: Zstandard Response Compression
+  description: Whether Zstandard is enabled for ASP.NET Core response and request compression
+  what_to_look_for: 'CORRECT: AddResponseCompression (Zstd default), Configure<ZstandardCompressionProviderOptions>. INCORRECT:
+    Only Brotli/Gzip.'
+  why_it_matters: Built-in by default in .NET 11.
+  tier: high
+- name: Blazor EnvironmentBoundary Component
+  description: Whether the declarative EnvironmentBoundary component is used instead of manual checks
+  what_to_look_for: 'CORRECT: <EnvironmentBoundary Include/Exclude>. INCORRECT: @inject IHostEnvironment + manual if.'
+  why_it_matters: Replaces boilerplate environment checking code.
+  tier: high
+- name: Blazor Label and DisplayName Components
+  description: Whether the new Label and DisplayName components are used for forms and tables
+  what_to_look_for: 'CORRECT: <Label For>, <DisplayName For>, auto-reads attributes. INCORRECT: Manual <label> with hardcoded
+    text.'
+  why_it_matters: Brings MVC label/display-name parity to Blazor.
+  tier: high
+- name: QuickGrid OnRowClick
+  description: Whether QuickGrid row click uses the built-in event rather than a button column workaround
+  what_to_look_for: 'CORRECT: OnRowClick parameter. INCORRECT: Button column workaround.'
+  why_it_matters: Replaces button column workarounds.
+  tier: high
+- name: RelativeToCurrentUri Navigation
+  description: Whether relative-to-current-URI navigation is used instead of base-relative
+  what_to_look_for: 'CORRECT: NavigationOptions.RelativeToCurrentUri, NavLink, GetUriWithHash. INCORRECT: Manual URI construction.'
+  why_it_matters: Replaces manual URI construction.
+  tier: medium
+- name: Blazor TempData Support
+  description: Whether TempData is used for cross-page flash messages
+  what_to_look_for: 'CORRECT: [CascadingParameter] ITempData with Get/Peek/Keep. INCORRECT: Manual cookie flash.'
+  why_it_matters: Brings Blazor SSR to parity with MVC flash messaging.
+  tier: high
+- name: Blazor BasePath Component
+  description: Whether the BasePath component is used instead of hardcoded base href
+  what_to_look_for: 'CORRECT: <BasePath />. INCORRECT: Hardcoded <base href>.'
+  why_it_matters: Auto-resolves base path for subpath hosting.
+  tier: medium
+- name: EF Core GetEntriesForState
+  description: Whether efficient state-based entity querying is used
+  what_to_look_for: 'CORRECT: GetEntriesForState (skips DetectChanges). INCORRECT: Entries().Where (forces DetectChanges).'
+  why_it_matters: Avoids DetectChanges overhead in long-lived contexts.
+  tier: high
+- name: EF Core RemoveDbContext
+  description: Whether clean DbContext replacement uses the removal API
+  what_to_look_for: 'CORRECT: RemoveDbContext<T>() + re-register, parameterless AddPooledDbContextFactory. INCORRECT: Conflicting
+    registrations.'
+  why_it_matters: Clean removal designed for test scenarios.
+  tier: high
+- name: EF Core ExcludeForeignKeyFromMigrations
+  description: Whether the FK migration exclusion API is used
+  what_to_look_for: 'CORRECT: .ExcludeForeignKeyFromMigrations(true). INCORRECT: Manual migration editing.'
+  why_it_matters: For legacy schema / application-enforced FK scenarios.
+  tier: medium
+- name: EF Core JSON Query Functions
+  description: Whether built-in JSON query functions are used for JSON column queries
+  what_to_look_for: 'CORRECT: EF.Functions.JsonContains/JsonPathExists. INCORRECT: FromSqlRaw or LIKE only.'
+  why_it_matters: Type-safe JSON functions composable with LINQ.
+  tier: high
+- name: SignalR ConfigureConnection
+  description: Whether SignalR connection options are configured for interactive server components
+  what_to_look_for: 'CORRECT: ConfigureConnection callback on AddInteractiveServerRenderMode. INCORRECT: No clean access.'
+  why_it_matters: Clean access to SignalR dispatcher options.
+  tier: medium
+- name: Blazor Virtualize Variable-Height Items
+  description: Whether virtualization handles variable-height items correctly
+  what_to_look_for: 'CORRECT: <Virtualize> adapts to variable heights, OverscanCount=15. INCORRECT: Fixed heights.'
+  why_it_matters: Adapts to actual rendered item heights at runtime.
+  tier: medium
+- name: Runtime Async Configuration
+  description: Whether runtime async is enabled correctly without unnecessary preview flags
+  what_to_look_for: 'CORRECT: <Features>runtime-async=on</Features> only. INCORRECT: Also EnablePreviewFeatures.'
+  why_it_matters: No longer requires preview opt-in.
+  tier: medium
+- name: ProcessExitStatus Usage
+  description: Whether rich process exit information is accessed via the new status type
+  what_to_look_for: 'CORRECT: process.ExitStatus (ExitCode, Canceled, Signal). INCORRECT: Only ExitCode int.'
+  why_it_matters: Structured exit info replaces manual exit code decoding.
+  tier: medium
+- name: OpenAPI Binary File Response
+  description: Whether binary file download endpoints are properly described in OpenAPI
+  what_to_look_for: 'CORRECT: .Produces<FileContentResult>(contentType: Octet). INCORRECT: No Produces metadata.'
+  why_it_matters: Proper binary response improves API documentation.
+  tier: medium
+- name: Brotli and Compression Options
+  description: Whether new compression option properties are used
+  what_to_look_for: 'CORRECT: BrotliCompressionOptions.WindowLog (new). INCORRECT: Only Quality.'
+  why_it_matters: Finer-grained compression control.
+  tier: low
+- name: Vector Constants
+  description: Whether SIMD vector mathematical constants are used
+  what_to_look_for: 'CORRECT: Vector<float>.Pi/E/Tau/Epsilon/NaN etc. INCORRECT: Manual Vector.Create.'
+  why_it_matters: More readable and potentially JIT-optimized.
+  tier: low
+- name: Overall .NET 11 API Adoption Rate
+  description: What fraction of available .NET 11 features are correctly used vs. old patterns
+  what_to_look_for: Count features correctly used vs old patterns. Consider count and correctness.
+  why_it_matters: Primary metric for skill effectiveness.
+  tier: critical
 output:
   directory: output
   reports_directory: reports
