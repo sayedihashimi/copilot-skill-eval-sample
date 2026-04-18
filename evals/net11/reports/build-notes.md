@@ -1,28 +1,32 @@
 # Build & Run Verification Report
 
 **Evaluation:** .NET 11 Feature Adoption Evaluation
-**Date:** 2026-04-17 05:42 UTC
-**Configurations:** 2
+**Date:** 2026-04-17 20:30 UTC
+**Configurations:** 1
 **Scenarios:** 4
-**Total projects:** 2
+**Total projects:** 6
 
 ## Results
 
 | Configuration | Run | Scenario | Build | Run | Format | Security | Notes |
 |---|---|---|---|---|---|---|---|
-| no-skills | 1 | efcore | ✅ Pass | ✅ Pass | ⏭️ Skipped | ⏭️ Skipped |  |
-| dotnet-net11-skill | 1 | blazor | ❌ Fail | ⏭️ Skipped | ⏭️ Skipped | ⏭️ Skipped |   Determining projects to restore...   Restored C:\data\mycode\copilot-skill-eval-sample\_main\evals |
+| dotnet-net11-skill | 1 | console-bcl | ❌ Fail | ⏭️ Skipped | ⏭️ Skipped | ⏭️ Skipped | MSBUILD : error MSB1003: Specify a project or solution file. The current working directory does not  |
+| dotnet-net11-skill | 1 | webapi | ❌ Fail | ⏭️ Skipped | ⏭️ Skipped | ⏭️ Skipped | MSBUILD : error MSB1003: Specify a project or solution file. The current working directory does not  |
+| dotnet-net11-skill | 1 | blazor | ❌ Fail | ⏭️ Skipped | ⏭️ Skipped | ⏭️ Skipped | MSBUILD : error MSB1003: Specify a project or solution file. The current working directory does not  |
+| dotnet-net11-skill | 1 | efcore | ✅ Pass | ✅ Pass | ⏭️ Skipped | ⏭️ Skipped |  |
+| dotnet-net11-skill | 2 | console-bcl | ✅ Pass | ✅ Pass | ⏭️ Skipped | ⏭️ Skipped |  |
+| dotnet-net11-skill | 3 | webapi | ✅ Pass | ✅ Pass | ⏭️ Skipped | ⏭️ Skipped |  |
 
 ## Asset Usage Per Run
 
 | Configuration | Run | Session ID | Model | Skills Loaded | Plugins | Match? |
 |---|---|---|---|---|---|---|
-| no-skills | 1 | 55554d8c…c97c | claude-opus-4.6 | — | — | ✅ |
-| dotnet-net11-skill | 1 | c9a6c88a…0157 | claude-opus-4.6 | — | — | ✅ |
+| dotnet-net11-skill | 1 | f050d290…e4cf | claude-opus-4.6 | — | — | ✅ |
+| dotnet-net11-skill | 2 | c1add1c3…2cfc | claude-opus-4.6 | — | — | ✅ |
+| dotnet-net11-skill | 3 | 66727453…6720 | claude-opus-4.6 | — | — | ✅ |
 
 ## Skill Configurations
 
 | Configuration | Label | Skills | Plugins |
 |---|---|---|---|
-| no-skills | Baseline (default Copilot) | None | None |
 | dotnet-net11-skill | dotnet-net11 Skill | None | dotnet-net11:dotnet-net11 |

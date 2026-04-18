@@ -6,6 +6,7 @@ sources:
     url: https://github.com/dotnet/skills
     path: plugins
 
-  - name: dotnet-skills-improved
+  - name: dotnet-diag-auto-improve
     type: local
-    path: C:\data\mycode\skills\update-dotnet-diag\plugins
+    path: C:\data\mycode\skills\dotnet-diag-auto-improve\plugins\dotnet-diag
+    suggest_improvements: true

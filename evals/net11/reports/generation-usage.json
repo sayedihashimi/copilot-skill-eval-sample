@@ -1,13 +1,13 @@
 [
   {
-    "api_calls": 19,
-    "input_tokens": 706369,
-    "output_tokens": 12720,
-    "cache_read_tokens": 633515,
-    "api_duration_ms": 181368,
-    "wall_time_seconds": 310.9,
-    "session_id": "55554d8c-7405-445d-adb4-37b970e8c97c",
-    "config": "no-skills",
+    "api_calls": 34,
+    "input_tokens": 1756752,
+    "output_tokens": 31342,
+    "cache_read_tokens": 1639598,
+    "api_duration_ms": 442434,
+    "wall_time_seconds": 651.6,
+    "session_id": "f050d290-6a17-4578-a2a7-74f887dee4cf",
+    "config": "dotnet-net11-skill",
     "run_id": 1,
     "scenario": "efcore",
     "model": "claude-opus-4.6",
@@ -16,23 +16,50 @@
     "resource_comparison": {
       "expected_skills": [],
       "actual_skills": [],
-      "expected_plugins": [],
+      "expected_plugins": [
+        "dotnet-net11"
+      ],
       "actual_plugins": [],
       "contaminated": [],
       "match": true
     }
   },
   {
-    "api_calls": 16,
-    "input_tokens": 594941,
-    "output_tokens": 18884,
-    "cache_read_tokens": 515352,
-    "api_duration_ms": 276342,
-    "wall_time_seconds": 363.4,
-    "session_id": "c9a6c88a-ce9e-422b-8bcd-1abe5ff40157",
+    "api_calls": 41,
+    "input_tokens": 2368679,
+    "output_tokens": 54336,
+    "cache_read_tokens": 2175961,
+    "api_duration_ms": 653498,
+    "wall_time_seconds": 817.9,
+    "session_id": "c1add1c3-a8ba-495f-9d87-13eaa9022cfc",
     "config": "dotnet-net11-skill",
-    "run_id": 1,
-    "scenario": "blazor",
+    "run_id": 2,
+    "scenario": "console-bcl",
+    "model": "claude-opus-4.6",
+    "copilot_version": null,
+    "loaded_resources": [],
+    "resource_comparison": {
+      "expected_skills": [],
+      "actual_skills": [],
+      "expected_plugins": [
+        "dotnet-net11"
+      ],
+      "actual_plugins": [],
+      "contaminated": [],
+      "match": true
+    }
+  },
+  {
+    "api_calls": 60,
+    "input_tokens": 3468079,
+    "output_tokens": 30878,
+    "cache_read_tokens": 3382389,
+    "api_duration_ms": 484972,
+    "wall_time_seconds": 785.2,
+    "session_id": "66727453-9dbf-4108-8991-b5696ffe6720",
+    "config": "dotnet-net11-skill",
+    "run_id": 3,
+    "scenario": "webapi",
     "model": "claude-opus-4.6",
     "copilot_version": null,
     "loaded_resources": [],

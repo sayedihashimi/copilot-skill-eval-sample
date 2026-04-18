@@ -4,7 +4,11 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 
+**/auto-improve-history.json
+**/auto-improve-issues.md
 **/.auto-improve-backups/
+**/lessons-learned-dotnet-net11-skill.json
+**/analysis-run-*.md
 **/output/
 # User-specific files
 *.rsuser
