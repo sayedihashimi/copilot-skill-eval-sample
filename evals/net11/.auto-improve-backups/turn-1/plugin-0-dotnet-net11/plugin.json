@@ -1,6 +1,0 @@
-{
-  "name": "dotnet-net11",
-  "version": "0.1.0",
-  "description": ".NET 11 features and APIs. Provides guidance on new C#, BCL, ASP.NET Core, Blazor, and EF Core capabilities introduced in .NET 11.",
-  "skills": ["./skills/"]
-}
