@@ -1,0 +1,682 @@
+--- a/dotnet-net11/agents\net11-adoption-reviewer.agent.md
++++ b/dotnet-net11/agents\net11-adoption-reviewer.agent.md
+@@ -8,7 +8,7 @@
+ 
+ You are a strict .NET 11 adoption reviewer.
+ 
+-1. Check for required usage of priority APIs: BFloat16, Rune APIs, HMAC verify, FrozenDictionary expressions, collection with(), union, DivisionRounding, JsonNamingPolicy attribute.
+-2. Flag fallback patterns: HashData+FixedTimeEquals, ToFrozenDictionary conversion flow, manual MIME maps, custom PascalCase policy classes.
+-3. Produce concise remediation instructions with exact files and replacement snippets.
+-4. End with a pass/fail checklist by dimension.
++1. Evaluate all scored dimensions for the current scenario family (console-bcl, webapi, blazor, efcore), and require at least one concrete API call per required dimension.
++2. Flag fallback patterns and score-limiting substitutions (annotation-string EF flags, LIKE-for-JSON when JSON funcs are available, button-column QuickGrid row click, manual URI concatenation, custom policy classes for PascalCase, etc.).
++3. Produce file-level remediation with before/after snippets that compile.
++4. End with a pass/fail checklist covering every dimension in scope and a weighted-risk summary (CRITICAL first).
+
+--- a/dotnet-net11/agents\net11-web-blazor-ef-reviewer.agent.md
++++ b/dotnet-net11/agents\net11-web-blazor-ef-reviewer.agent.md
+@@ -1,25 +0,0 @@
+----
+-name: net11-web-blazor-ef-reviewer
+-description: Reviews .NET 11 Web API, Blazor, EF Core, and runtime adoption coverage, then outputs targeted remediation with file-level code replacements.
+-model: claude-sonnet-4.5
+-maxTurns: 10
+-tools: [Read, Grep, Glob]
+----
+-
+-You are a strict .NET 11 web/blazor/ef adoption reviewer.
+-
+-1. Verify Web API features:
+-   - `AddSource("Microsoft.AspNetCore")`
+-   - `OpenApiSpecVersion.OpenApi3_2`
+-   - `IOutputCachePolicyProvider`
+-   - Zstandard compression provider options
+-   - Binary response `.Produces<FileContentResult>(contentType: "application/octet-stream")`
+-2. Verify Blazor features:
+-   - `EnvironmentBoundary`, `Label`, `DisplayName`, `QuickGrid OnRowClick`,
+-     `RelativeToCurrentUri`, TempData, `BasePath`, variable-height `Virtualize`, SignalR `ConfigureConnection`.
+-3. Verify EF Core features:
+-   - `GetEntriesForState`, `RemoveDbContext<T>()`,
+-     `.ExcludeForeignKeyFromMigrations(true)`, JSON query functions.
+-4. Verify runtime extras:
+-   - `<Features>runtime-async=on</Features>`, `process.ExitStatus`.
+-5. Return a pass/fail checklist with exact file paths and minimal patch-style snippets.
+
+--- a/dotnet-net11/hooks\hooks.json
++++ b/dotnet-net11/hooks\hooks.json
+@@ -1,35 +1,25 @@
+ {
+   "hooks": {
+-      "SessionStart": [
+-        {
+-          "hooks": [
+-            {
+-              "type": "command",
+-              "command": "pwsh -NoProfile -Command \"Write-Host '[dotnet-net11] Enforcing full .NET 11 matrix: BCL + JSON + Web API + Blazor + EF Core + runtime APIs.'\""
+-            }
+-          ]
+-        }
+-      ],
++    "SessionStart": [
++      {
++        "hooks": [
++          {
++            "type": "command",
++            "command": "pwsh -NoProfile -Command \"Write-Host '[dotnet-net11] Priority dimensions enforced: BFloat16, Rune, HMAC.Verify, FrozenDictionary expr, with(), union, DivisionRounding, JsonNamingPolicy.'\""
++          }
++        ]
++      }
++    ],
+     "PostToolUse": [
+       {
+         "matcher": "Write|Edit|MultiEdit",
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "pwsh -NoProfile -File \"${CLAUDE_PLUGIN_ROOT}\\scripts\\net11-pattern-guard.ps1\" -RepoRoot \"${PWD}\""
++            "command": "pwsh -NoProfile -File \"${CLAUDE_PLUGIN_ROOT}\\scripts\\net11-pattern-guard.ps1\""
+           }
+         ]
+       }
+-    ],
+-      "Stop": [
+-        {
+-          "hooks": [
+-            {
+-              "type": "command",
+-              "command": "pwsh -NoProfile -File \"${CLAUDE_PLUGIN_ROOT}\\scripts\\net11-finalize-check.ps1\" -RepoRoot \"${PWD}\""
+-            }
+-          ]
+-        }
+-      ]
++    ]
+   }
+ }
+
+--- a/dotnet-net11/plugin.json
++++ b/dotnet-net11/plugin.json
+@@ -1,7 +1,7 @@
+ {
+   "name": "dotnet-net11",
+   "version": "0.2.0",
+-  "description": "Generates and verifies net11.0-first solutions across console-bcl, webapi, blazor, and efcore scenarios, enforcing .NET 11 API coverage and buildable outputs with no legacy fallbacks.",
++  "description": "Generates net11.0-first code that adopts new C# 15, BCL, ASP.NET Core, Blazor, and EF Core APIs while avoiding legacy fallbacks.",
+   "author": { "name": "net11-auto01" },
+   "license": "MIT",
+   "keywords": [
+@@ -12,12 +12,7 @@
+     "efcore",
+     "blazor",
+     "system-text-json",
+-    "zstandard",
+-    "openapi-3.2",
+-    "opentelemetry",
+-    "output-cache",
+-    "quickgrid",
+-    "feature-coverage"
++    "zstandard"
+   ],
+   "skills": ["./skills/"]
+ }
+
+--- a/dotnet-net11/README.md
++++ b/dotnet-net11/README.md
+@@ -6,23 +6,18 @@
+ - `net11-features`
+ - `net11-bcl-core`
+ - `net11-json-webapi`
++- `net11-blazor-ui`
++- `net11-efcore-advanced`
+ - `net11-csharp15`
+ - `net11-focus-dimensions`
+-- `net11-cross-scenario-coverage`
+ 
+ ## Included agents
+ - `net11-adoption-reviewer` (post-generation audit for priority dimensions)
+-- `net11-web-blazor-ef-reviewer` (web/blazor/ef/runtime coverage audit)
+ 
+ ## Coverage policy
+ This plugin must demonstrate the priority dimensions even when a scenario does not
+ naturally require them. Add small, isolated demo helpers (for example
+ `FeatureCoverage/Net11PriorityApiDemo.cs`) instead of marking features "not applicable".
+ 
+-Required completion contract for evaluations:
+-1. Produce buildable coverage for `console-bcl`, `webapi`, `blazor`, and `efcore` (main app or tiny sibling projects).
+-2. Run `dotnet build` for all generated `.csproj` files before finalizing.
+-3. Emit a checklist: `dimension -> file path -> concrete API symbol`.
+-
+ ## Usage intent
+ Use this plugin when creating or refactoring code to target `net11.0` and prioritize built-in .NET 11 APIs over legacy/third-party alternatives.
+
+--- a/dotnet-net11/scripts\net11-finalize-check.ps1
++++ b/dotnet-net11/scripts\net11-finalize-check.ps1
+@@ -1,33 +0,0 @@
+-param(
+-    [string]$RepoRoot = (Get-Location).Path
+-)
+-
+-$ErrorActionPreference = "Stop"
+-
+-$requiredDomains = @("console-bcl", "webapi", "blazor", "efcore")
+-$missing = @()
+-
+-foreach ($d in $requiredDomains) {
+-    if (-not (Test-Path (Join-Path $RepoRoot $d))) {
+-        $missing += $d
+-    }
+-}
+-
+-if ($missing.Count -gt 0) {
+-    Write-Error "Missing required domain project directories: $($missing -join ', ')"
+-    exit 1
+-}
+-
+-$projects = Get-ChildItem -Path $RepoRoot -Recurse -Filter *.csproj | Select-Object -ExpandProperty FullName
+-if (-not $projects) {
+-    Write-Error "No .csproj files found for final validation."
+-    exit 1
+-}
+-
+-foreach ($proj in $projects) {
+-    dotnet build $proj -nologo | Out-Host
+-    if ($LASTEXITCODE -ne 0) {
+-        Write-Error "Build failed: $proj"
+-        exit 1
+-    }
+-}
+
+--- a/dotnet-net11/scripts\net11-pattern-guard.ps1
++++ b/dotnet-net11/scripts\net11-pattern-guard.ps1
+@@ -1,22 +1,13 @@
+ param(
+-    [string]$RepoRoot = (Get-Location).Path,
+-    [string[]]$ProjectRoots = @("src", "app", "console-bcl", "webapi", "blazor", "efcore", "FeatureCoverage")
++    [string]$RepoRoot = (Get-Location).Path
+ )
+ 
+ $ErrorActionPreference = "Stop"
+ 
+-$candidateRoots = $ProjectRoots |
+-    ForEach-Object { Join-Path $RepoRoot $_ } |
+-    Where-Object { Test-Path $_ }
+-
+-if (-not $candidateRoots) {
+-    Write-Error "No generated project roots found. Expected one of: $($ProjectRoots -join ', ')"
+-    exit 1
+-}
+-
+ $checks = @(
++    # Core/BCL/C#15
+     @{ Name = "Missing BFloat16"; Must = "BFloat16"; Scope = "*.cs" },
+-    @{ Name = "Missing Rune APIs"; Must = "Rune|Contains\(.*Rune|Replace\(.*Rune"; Scope = "*.cs" },
++    @{ Name = "Missing Rune APIs"; Must = "Rune|Contains\(new Rune|IndexOf\(new Rune|Replace\(new Rune"; Scope = "*.cs" },
+     @{ Name = "Missing HMAC verify"; Must = "HMACSHA256.Verify|VerifyHmac"; Scope = "*.cs" },
+     @{ Name = "Legacy hash+compare"; Ban = "HashData\(|FixedTimeEquals\("; Scope = "*.cs" },
+     @{ Name = "Missing FrozenDictionary expression"; Must = "FrozenDictionary<.*>\s+\w+\s*=\s*\["; Scope = "*.cs" },
+@@ -24,24 +15,22 @@
+     @{ Name = "Missing collection with()"; Must = "with\(capacity:|with\(comparer:"; Scope = "*.cs" },
+     @{ Name = "Missing union"; Must = "\bunion\b"; Scope = "*.cs" },
+     @{ Name = "Missing DivisionRounding"; Must = "DivisionRounding\."; Scope = "*.cs" },
+-    @{ Name = "Missing JsonNamingPolicy attribute"; Must = "\[JsonNamingPolicy\("; Scope = "*.cs" },
+-    @{ Name = "Missing Regex AnyNewLine"; Must = "RegexOptions\.AnyNewLine"; Scope = "*.cs" },
++    @{ Name = "Missing MediaTypeMap"; Must = "MediaTypeMap\.GetMediaType|MediaTypeMap\.GetExtension"; Scope = "*.cs" },
+     @{ Name = "Missing Base64 parity APIs"; Must = "Base64\.EncodeToString|Base64\.DecodeFromChars|Base64\.GetEncodedLength"; Scope = "*.cs" },
++    @{ Name = "Missing RegexOptions.AnyNewLine"; Must = "RegexOptions\.AnyNewLine"; Scope = "*.cs" },
+     @{ Name = "Missing generic Interlocked enum ops"; Must = "Interlocked\.(Or|And)\("; Scope = "*.cs" },
+-    @{ Name = "Missing BitArray.PopCount"; Must = "PopCount\("; Scope = "*.cs" },
++    # Web API / ASP.NET Core
+     @{ Name = "Missing OpenAPI 3.2"; Must = "OpenApiSpecVersion\.OpenApi3_2"; Scope = "*.cs" },
+-    @{ Name = "Missing dynamic output cache provider"; Must = "IOutputCachePolicyProvider"; Scope = "*.cs" },
+-    @{ Name = "Missing ASP.NET native tracing source"; Must = 'AddSource\("Microsoft\.AspNetCore"\)'; Scope = "*.cs" },
+-    @{ Name = "Missing Zstandard response compression"; Must = "ZstandardCompressionProviderOptions|AddResponseCompression"; Scope = "*.cs" },
+-    @{ Name = "Missing EF JSON query functions"; Must = "EF\.Functions\.(JsonContains|JsonPathExists)"; Scope = "*.cs" },
+-    @{ Name = "Missing runtime-async feature flag"; Must = "runtime-async=on"; Scope = "*.csproj" },
+-    @{ Name = "Missing ProcessExitStatus"; Must = "ExitStatus"; Scope = "*.cs" }
++    @{ Name = "Missing output cache provider"; Must = "IOutputCachePolicyProvider"; Scope = "*.cs" },
++    @{ Name = "Missing native ASP.NET tracing source"; Must = "AddSource\(""Microsoft\.AspNetCore""\)"; Scope = "*.cs" },
++    @{ Name = "Missing zstd response compression"; Must = "AddResponseCompression|ZstandardCompressionProviderOptions"; Scope = "*.cs" },
++    # EF Core
++    @{ Name = "Missing ExcludeForeignKeyFromMigrations"; Must = "ExcludeForeignKeyFromMigrations\(true\)"; Scope = "*.cs" },
++    @{ Name = "Missing EF JSON query function"; Must = "EF\.Functions\.(JsonContains|JsonPathExists)\("; Scope = "*.cs" },
++    @{ Name = "Disallowed not-applicable note"; Ban = "Not applicable"; Scope = "*.md" }
+ )
+ 
+-$files = foreach ($root in $candidateRoots) {
+-    Get-ChildItem -Path $root -Recurse -File |
+-        Where-Object { $_.Extension -in @(".cs", ".csproj") }
+-}
++$files = Get-ChildItem -Path $RepoRoot -Recurse -File | Where-Object { $_.Extension -in @(".cs", ".md") }
+ $issues = @()
+ 
+ foreach ($check in $checks) {
+
+--- a/dotnet-net11/skills\net11-bcl-core\examples\bcl-core-golden.md
++++ b/dotnet-net11/skills\net11-bcl-core\examples\bcl-core-golden.md
+@@ -2,9 +2,4 @@
+ FrozenDictionary<string,int> status = ["ok": 200];
+ var pageCount = int.Divide(total, size, DivisionRounding.ToPositiveInfinity);
+ var verified = HMACSHA256.Verify(key, data, mac);
+-
+-File.CreateHardLink("copy.bin", "source.bin", overwrite: true);
+-using var nullHandle = File.OpenNullHandle();
+-SafeFileHandle.CreateAnonymousPipe(out var readHandle, out var writeHandle);
+-RandomAccess.Write(writeHandle, [0x1, 0x2, 0x3], 0);
+ ```
+
+--- a/dotnet-net11/skills\net11-bcl-core\reference\bcl-core-patterns.md
++++ b/dotnet-net11/skills\net11-bcl-core\reference\bcl-core-patterns.md
+@@ -6,4 +6,3 @@
+ - HMAC single-step verification helper
+ - FrozenDictionary expression lookup table
+ - DivisionRounding pagination helper
+-- File-system probe with `File.CreateHardLink`, `File.OpenNullHandle`, and anonymous pipe `RandomAccess`
+
+--- a/dotnet-net11/skills\net11-bcl-core\SKILL.md
++++ b/dotnet-net11/skills\net11-bcl-core\SKILL.md
+@@ -8,21 +8,14 @@
+ 1. Confirm target framework is `net11.0` and avoid third-party substitutes for built-in .NET 11 APIs.
+    Success: project uses built-in APIs only unless user explicitly requests otherwise.
+ 
+-2. Implement a minimal BCL/runtime probe module (`FeatureCoverage/BclCoreProbe.cs`) with all required APIs:
+-   - `System.Numerics.BFloat16` conversion + bit helpers (`BinaryPrimitives.WriteBFloat16LittleEndian` where relevant)
+-   - Rune-aware string methods (`Contains/IndexOf/Replace/Split(Rune)`)
+-   - `HMACSHA256.Verify` (or `CryptographicOperations.VerifyHmac`)
+-   - `FrozenDictionary<K,V> map = ["k": v]`
++2. Implement a minimal BCL feature probe module (`FeatureCoverage/BclCoreProbe.cs`) with all required APIs:
++   - `System.Numerics.BFloat16` conversion method
++   - Rune-aware string method using `string.Contains(Rune)` and `string.Replace(Rune, Rune)`
++   - `HMACSHA256.Verify` (or `CryptographicOperations.VerifyHmac`) in a verification method
++   - `FrozenDictionary<K,V> map = ["k": v]` static lookup
+    - `MediaTypeMap.GetMediaType/GetExtension`
+-   - `int.Divide/DivRem(..., DivisionRounding.ToPositiveInfinity)`
+-   - `RegexOptions.AnyNewLine` in a `GeneratedRegex` example
+-   - `Base64.EncodeToString` + `Base64.DecodeFromChars`
+-   - generic `Interlocked.Or/And` on enum flags
+-   - `BitArray.PopCount()`
+-   - `File.CreateHardLink`, `File.OpenNullHandle`, and `SafeFileHandle.CreateAnonymousPipe` (+ `RandomAccess` where relevant)
+-   - `process.ExitStatus` usage in one process wrapper
+-   - `Vector<float>.Pi/Tau/E` constants in a small SIMD helper
+-   Success: each bullet maps to one compilable method and is referenced in a coverage checklist.
++   - `int.Divide(..., DivisionRounding.ToPositiveInfinity)` pagination helper
++   Success: each bullet corresponds to one compilable method with unit-testable return values.
+ 
+ 3. Ban legacy fallbacks unless explicitly requested:
+    - No `ZstdSharp`, no manual surrogate handling, no two-step `HashData + FixedTimeEquals`,
+
+--- a/dotnet-net11/skills\net11-blazor-ui\SKILL.md
++++ b/dotnet-net11/skills\net11-blazor-ui\SKILL.md
+@@ -0,0 +1,28 @@
++---
++name: net11-blazor-ui
++description: Build Blazor net11.0 apps using EnvironmentBoundary, Label/DisplayName, QuickGrid OnRowClick, TempData, BasePath, variable-height Virtualize, and SignalR ConfigureConnection. Use when creating or updating Blazor pages/components.
++---
++
++# .NET 11 Blazor UI Workflow
++
++1. Add at least one component/page that uses `<EnvironmentBoundary>` and `<BasePath />`.
++   Success: both tags appear in `.razor` files.
++
++2. Use `<Label For>` and `<DisplayName For>` in form/table UI instead of hardcoded labels.
++   Success: generated markup includes both components with strongly typed `For`.
++
++3. Use `QuickGrid` with `OnRowClick` and no button-column workaround.
++   Success: `OnRowClick` is bound directly on `QuickGrid`.
++
++4. Use relative navigation APIs (`NavigationOptions.RelativeToCurrentUri`) and `GetUriWithHash`.
++   Success: navigation code avoids manual URI string concatenation.
++
++5. Configure TempData and SignalR in interactive server mode.
++   Success: includes `[CascadingParameter] ITempData` and `AddInteractiveServerRenderMode(... ConfigureConnection ...)`.
++
++6. Use `<Virtualize>` for variable-height lists with `OverscanCount="15"`.
++   Success: virtualized component compiles and includes overscan setting.
++
++Example:
++Input: "Build a task board in Blazor."
++Output includes `QuickGrid OnRowClick`, `EnvironmentBoundary`, and TempData flash messaging.
+
+--- a/dotnet-net11/skills\net11-cross-scenario-coverage\examples\console-plus-coverage-golden.md
++++ b/dotnet-net11/skills\net11-cross-scenario-coverage\examples\console-plus-coverage-golden.md
+@@ -1,12 +0,0 @@
+-# Golden Example: console-bcl + coverage siblings
+-
+-Input: "Create a console toolkit"
+-
+-Expected output structure:
+-- `console-bcl/` (primary app)
+-- `WebApiCoverage/`
+-- `BlazorCoverage/`
+-- `EfCoverage/`
+-
+-Expected evidence row example:
+-`OpenAPI Version | WebApiCoverage/Program.cs | OpenApiSpecVersion.OpenApi3_2 | Pass`
+
+--- a/dotnet-net11/skills\net11-cross-scenario-coverage\reference\cross-scenario-scaffolds.md
++++ b/dotnet-net11/skills\net11-cross-scenario-coverage\reference\cross-scenario-scaffolds.md
+@@ -1,10 +0,0 @@
+-# Cross-Scenario Minimal Scaffolds
+-
+-Use these minimum snippets when a domain is missing from the main scenario.
+-
+-- `WebApiCoverage/Program.cs`: includes `AddSource("Microsoft.AspNetCore")`, `OpenApiSpecVersion.OpenApi3_2`, output-cache provider DI, zstd response compression.
+-- `WebApiCoverage/DownloadEndpoints.cs`: includes `.Produces<FileContentResult>(contentType: "application/octet-stream")`.
+-- `BlazorCoverage/Pages/Tasks.razor`: includes `<EnvironmentBoundary>`, `<Label For>`, `<DisplayName For>`, `QuickGrid OnRowClick`, `<Virtualize OverscanCount="15">`.
+-- `BlazorCoverage/Program.cs`: includes `ConfigureConnection`, TempData registration, and `<BasePath />` usage path.
+-- `EfCoverage/AppDbContext.cs`: includes `GetEntriesForState`, `.ExcludeForeignKeyFromMigrations(true)`.
+-- `EfCoverage/OrderQueryService.cs`: includes `EF.Functions.JsonContains/JsonPathExists`.
+
+--- a/dotnet-net11/skills\net11-cross-scenario-coverage\SKILL.md
++++ b/dotnet-net11/skills\net11-cross-scenario-coverage\SKILL.md
+@@ -1,43 +0,0 @@
+----
+-name: net11-cross-scenario-coverage
+-description: Ensure .NET 11 evaluation breadth by adding minimal, compilable coverage modules for Web API, Blazor, EF Core, and runtime APIs when a scenario does not naturally include them. Use when scorecard coverage across mixed .NET 11 dimensions is required.
+----
+-
+-# .NET 11 Cross-Scenario Coverage Workflow
+-
+-1. Detect missing domains from the current request and repository.
+-   - Domains: Web API, Blazor, EF Core, runtime/process.
+-   Success: output lists which domains are missing from the primary scenario.
+-
+-2. For each missing domain, scaffold one minimal compilable artifact with fixed file targets:
+-   - Web API: `WebApiCoverage/Program.cs`, `WebApiCoverage/DownloadEndpoints.cs`
+-   - Blazor: `BlazorCoverage/Pages/Tasks.razor`, `BlazorCoverage/Program.cs`
+-   - EF Core: `EfCoverage/AppDbContext.cs`, `EfCoverage/OrderQueryService.cs`
+-   - Runtime: `FeatureCoverage/RuntimeCoverage.cs`
+-   Success: each missing domain produces at least one concrete file above.
+-
+-3. Required API coverage by domain:
+-   - Web API: `AddSource("Microsoft.AspNetCore")`, `OpenApiSpecVersion.OpenApi3_2`,
+-     `IOutputCachePolicyProvider`, Zstandard response compression options,
+-     `.Produces<FileContentResult>(contentType: "application/octet-stream")`
+-   - Blazor: `<EnvironmentBoundary>`, `<Label For>`, `<DisplayName For>`, `QuickGrid OnRowClick`,
+-     `NavigationOptions.RelativeToCurrentUri`, `ITempData`, `<BasePath />`,
+-     `<Virtualize OverscanCount="15">`, `ConfigureConnection`
+-   - EF Core: `GetEntriesForState`, `RemoveDbContext<T>()`,
+-     `.ExcludeForeignKeyFromMigrations(true)`, `EF.Functions.JsonContains/JsonPathExists`
+-   - Runtime/BCL extras: `RegexOptions.AnyNewLine`, `Base64.EncodeToString/DecodeFromChars`,
+-     generic `Interlocked.Or/And` with enum, `BitArray.PopCount()`,
+-     `<Features>runtime-async=on</Features>`, `process.ExitStatus`, vector constants.
+-   Success: each item maps to concrete code in generated output.
+-
+-4. Emit evidence lines in final output using exact format:
+-   `Dimension | File | API Symbol | Build Status`
+-   Success: every scored dimension has one row; no blank File/API entries.
+-
+-5. Build-gate completion.
+-   - Run `dotnet build` on every generated `.csproj`; if any fail, continue fixing.
+-   Success: all builds pass and evidence table references compiling files.
+-
+-Example:
+-Input: "Create a console toolkit."
+-Output: console app + small `FeatureCoverage/` modules showing Web API, Blazor, EF Core, and runtime APIs required by the scorecard.
+
+--- a/dotnet-net11/skills\net11-efcore-advanced\SKILL.md
++++ b/dotnet-net11/skills\net11-efcore-advanced\SKILL.md
+@@ -0,0 +1,21 @@
++---
++name: net11-efcore-advanced
++description: Generate EF Core net11.0 demos using GetEntriesForState, RemoveDbContext, ExcludeForeignKeyFromMigrations, and EF JSON query functions. Use when building EF Core data/model workflows.
++---
++
++# .NET 11 EF Core Advanced Workflow
++
++1. Use state-based change tracking via `GetEntriesForState(...)`.
++   Success: no fallback to `Entries().Where(...)` for the same use case.
++
++2. Use framework removal API for context replacement.
++   Success: code uses `RemoveDbContext<TContext>()` and re-registers cleanly.
++
++3. Use dedicated FK migration exclusion API.
++   Success: code uses `.ExcludeForeignKeyFromMigrations(true)`; no annotation-string fallback.
++
++4. Use built-in JSON query functions.
++   Success: includes `EF.Functions.JsonContains(...)` or `EF.Functions.JsonPathExists(...)` in executable query code.
++
++5. If provider limitations exist, keep primary demo on provider supporting these APIs and add a concise note.
++   Success: generated project still demonstrates real API invocations, not text-only mentions.
+
+--- a/dotnet-net11/skills\net11-features\SKILL.md
++++ b/dotnet-net11/skills\net11-features\SKILL.md
+@@ -5,13 +5,21 @@
+ 
+ # .NET 11 Feature Adoption Workflow
+ 
+-1. Confirm applicability and enforce full-matrix coverage.
+-   - Apply this guidance when target is `net11.0`.
+-   - Never output "not applicable" for scored dimensions when a minimal compilable demo module can be added.
+-   - If the main scenario does not naturally use a scored API, create `FeatureCoverage/` modules (or tiny sibling projects) and wire them into startup/tests.
+-   Success: every scored dimension has at least one concrete API use in compiling code.
++1. Confirm applicability and build a scenario matrix.
++   - Apply this guidance only when target is `net11.0`.
++   - Build a matrix of `Scenario family -> required dimensions -> file path`.
++   - Scenario families: `console-bcl`, `webapi`, `blazor`, `efcore`.
++   Success: every required dimension in the active family has a planned file target before coding begins.
+ 
+-2. Use these APIs by default (priority list).
++2. Enforce runnable coverage, not mention-only coverage.
++   - Never output "not applicable" for required dimensions.
++   - If a dimension is outside the main architecture, place it in `FeatureCoverage/*Probe.cs` and execute via startup/tests.
++   Success: each dimension has an executable symbol reference and invocation path.
++
++3. Emit a final matrix-backed checklist.
++   Success: checklist entries map 1:1 to generated files and API symbols.
++
++4. Use these APIs by default (priority list).
+    - Compression: `ZstandardStream`, `ZstandardCompressionOptions`
+    - Numeric: `System.Numerics.BFloat16`
+    - Unicode: `string.Contains/IndexOf/Replace/Split(Rune)` and Rune-aware APIs
+@@ -24,22 +32,6 @@
+    - JSON: `JsonNamingPolicy.PascalCase`, `[JsonNamingPolicy]`, type-level `[JsonIgnore]`, `IReadOnlySet<T>`, `GetTypeInfo<T>()`
+    Success: generated code references concrete API names above where relevant.
+ 
+-3. Avoid legacy fallback patterns unless explicitly requested.
+-   - Do not use: `ZstdSharp`, manual surrogate handling, `HashData + FixedTimeEquals`,
+-     `Dictionary + ToFrozenDictionary()`, manual MIME dictionaries, manual division rounding helpers,
+-     custom JSON naming policy classes for PascalCase.
+-   Success: no prohibited fallback appears when equivalent .NET 11 API exists.
+-
+-4. Include a strict verification checklist in the response.
+-   - List each priority dimension with file path + API symbol.
+-   - If any priority dimension is missing, continue implementation instead of finalizing.
+-   Success: checklist is complete and contains zero missing priority dimensions.
+-
+-5. Add completion gates before final output.
+-   - Ensure all generated projects build.
+-   - Emit a checklist mapping every scored dimension -> file path -> API symbol.
+-   Success: no missing dimensions and no build failures.
+-
+ ## Applicability Rules
+ 
+ - Always prioritize .NET 11 APIs that naturally fit the requested scenario.
+
+--- a/dotnet-net11/skills\net11-focus-dimensions\examples\focus-dimensions-complete.md
++++ b/dotnet-net11/skills\net11-focus-dimensions\examples\focus-dimensions-complete.md
+@@ -0,0 +1,7 @@
++~~~csharp
++// FeatureCoverage/Net11PriorityApiDemo.cs
++FrozenDictionary<string,int> map = ["ok": 200];
++var pages = int.Divide(totalItems, pageSize, DivisionRounding.ToPositiveInfinity);
++var hasRocket = text.Contains(new Rune(0x1F680));
++var verified = HMACSHA256.Verify(key, data, mac);
++~~~
+
+--- a/dotnet-net11/skills\net11-focus-dimensions\examples\full-coverage-checklist-example.md
++++ b/dotnet-net11/skills\net11-focus-dimensions\examples\full-coverage-checklist-example.md
+@@ -1,7 +0,0 @@
+-# Example: Full Coverage Checklist Output
+-
+-- RegexOptions.AnyNewLine -> `FeatureCoverage/RegexCoverage.cs` (`TokenizerRegex`)
+-- Base64 parity APIs -> `FeatureCoverage/Base64Coverage.cs`
+-- OpenAPI 3.2 -> `WebApiCoverage/Program.cs`
+-- Blazor Label/DisplayName -> `BlazorCoverage/Pages/Tasks.razor`
+-- EF JSON query functions -> `EfCoverage/OrderQueryService.cs`
+
+--- a/dotnet-net11/skills\net11-focus-dimensions\reference\full-dimension-matrix.md
++++ b/dotnet-net11/skills\net11-focus-dimensions\reference\full-dimension-matrix.md
+@@ -1,8 +0,0 @@
+-# Full .NET 11 Dimension Matrix
+-
+-Map every score dimension to at least one concrete API symbol and expected file location.
+-
+-- BCL/Core: BFloat16, Rune APIs, HMAC verify, FrozenDictionary expr, with(), union, DivisionRounding, Regex AnyNewLine, Base64 parity, Interlocked generic enum, PopCount, File APIs, ProcessExitStatus, vector constants.
+-- Web API: OpenTelemetry native source, OpenAPI 3.2, dynamic output cache provider, Zstd compression, binary download OpenAPI metadata.
+-- Blazor: EnvironmentBoundary, Label/DisplayName, QuickGrid OnRowClick, RelativeToCurrentUri navigation, TempData, BasePath, variable-height Virtualize, SignalR ConfigureConnection.
+-- EF Core: GetEntriesForState, RemoveDbContext, ExcludeForeignKeyFromMigrations, JSON query functions.
+
+--- a/dotnet-net11/skills\net11-focus-dimensions\reference\priority-dimensions-matrix.md
++++ b/dotnet-net11/skills\net11-focus-dimensions\reference\priority-dimensions-matrix.md
+@@ -0,0 +1,12 @@
++# Priority Dimensions Matrix
++
++| Dimension | Required API | Forbidden fallback |
++|---|---|---|
++| BFloat16 | `System.Numerics.BFloat16` | manual bit packing |
++| Rune operations | `string.Contains/IndexOf/Replace/Split(Rune)` | surrogate-pair manual logic |
++| HMAC verify | `HMACSHA256.Verify` / `VerifyHmac` | `HashData` + `FixedTimeEquals` |
++| FrozenDictionary | `FrozenDictionary<K,V> map = ["k": v]` | `Dictionary` + `ToFrozenDictionary()` |
++| Collection with() | `[with(capacity: n), ..values]` | constructor + add loop |
++| Union | `union` + exhaustive `switch` | abstract-class hierarchy for simple DU |
++| DivisionRounding | `int.Divide/DivRem(..., DivisionRounding.*)` | manual remainder rounding |
++| JSON | `JsonNamingPolicy.PascalCase`, `[JsonNamingPolicy]`, `GetTypeInfo<T>()` | custom PascalCase policy class |
+
+--- a/dotnet-net11/skills\net11-focus-dimensions\SKILL.md
++++ b/dotnet-net11/skills\net11-focus-dimensions\SKILL.md
+@@ -1,35 +1,22 @@
+ ---
+ name: net11-focus-dimensions
+-description: Enforce full .NET 11 scorecard coverage (BCL, JSON, ASP.NET Core, Blazor, EF Core, and runtime APIs) with minimal compilable modules when features are missing from the primary scenario. Use when evaluation-grade coverage is required.
++description: Enforce demonstration of net11 priority dimensions (BFloat16, Rune APIs, HMAC verify, FrozenDictionary expressions, collection with(), union, DivisionRounding, and JSON features) using isolated helper modules when needed. Use when evaluation coverage is required across mixed scenarios.
+ ---
+ 
+-# .NET 11 Full Dimension Enforcement
++# .NET 11 Priority Dimension Enforcement
+ 
+-1. Build a dimension checklist before coding.
+-   - Include: BCL, JSON, Web API, Blazor, EF Core, runtime/process dimensions.
+-   Success: checklist enumerates all target dimensions and marks "native" vs "coverage module needed".
++1. Build a dimension matrix first (`Dimension`, `Required API`, `File`).
++   Success: matrix includes every priority dimension before code generation starts.
+ 
+-2. For every missing dimension, add a small `FeatureCoverage/` module (or sibling mini-project) and invoke it from startup/tests.
+-   Success: no dimension remains "not applicable" when a minimal safe demo can be added.
++2. For each missing dimension, add one focused helper in `FeatureCoverage/` and wire it into runtime entry points.
++   Success: every helper is actually executed by endpoint/command/test; no "dead demo" files.
+ 
+-3. Required additional APIs (beyond current priority set):
+-   - `RegexOptions.AnyNewLine`
+-   - `Base64.EncodeToString`, `Base64.DecodeFromChars`, `Base64.GetEncodedLength`
+-   - generic `Interlocked.Or/And` with enum types
+-   - `BitArray.PopCount()`
+-   - `OpenApiSpecVersion.OpenApi3_2`
+-   - `IOutputCachePolicyProvider`
+-   - `AddSource("Microsoft.AspNetCore")`
+-   - Zstandard response compression options
+-   - Blazor components (`EnvironmentBoundary`, `Label`, `DisplayName`, `QuickGrid OnRowClick`, `BasePath`, TempData, `RelativeToCurrentUri`)
+-   - EF Core APIs (`GetEntriesForState`, `RemoveDbContext`, `ExcludeForeignKeyFromMigrations`, JSON query functions)
+-   - runtime async flag and `process.ExitStatus`
+-   Success: output includes concrete symbols above with file paths.
++3. Use only required APIs from `reference/priority-dimensions-matrix.md` and forbid fallback patterns listed there.
++   Success: each matrix row points to an exact symbol used in code.
+ 
+-4. Enforce buildability and evidence.
+-   - Do not finalize until build succeeds and each checklist item references a compiling file.
+-   Success: checklist has no "missing" entries and no placeholder-only mentions.
++4. Emit a final checklist grouped by CRITICAL/HIGH/MEDIUM/LOW with file paths.
++   Success: checklist has zero missing rows and no "not applicable" for priority dimensions.
+ 
+ Example:
+-Input: "Create a console toolkit."
+-Output includes console logic + `FeatureCoverage/` modules for Web API, Blazor, EF Core, and runtime APIs.
++Input: "Create EF Core order demo."
++Output: EF demo + `FeatureCoverage` helpers for missing BCL/Web/Blazor priority dimensions.
+
+--- a/dotnet-net11/skills\net11-json-webapi\examples\webapi-golden.md
++++ b/dotnet-net11/skills\net11-json-webapi\examples\webapi-golden.md
+@@ -1,17 +1,5 @@
+ ```csharp
+-builder.Services.AddOpenApi(options => options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_2);
+-builder.Services.AddOpenTelemetry().WithTracing(t => t.AddSource("Microsoft.AspNetCore"));
+ builder.Services.AddOutputCache();
+ builder.Services.AddSingleton<IOutputCachePolicyProvider, CatalogOutputCachePolicyProvider>();
+-builder.Services.AddResponseCompression();
+-builder.Services.Configure<ZstandardCompressionProviderOptions>(o => o.Level = 3);
+-
+-builder.Services.ConfigureHttpJsonOptions(options =>
+-{
+-    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.PascalCase;
+-    _ = options.SerializerOptions.TypeInfoResolver.GetTypeInfo<MyDto>();
+-});
+-
+-app.MapGet("/download", () => Results.File(data, "application/octet-stream", "export.bin"))
+-   .Produces<FileContentResult>(contentType: "application/octet-stream");
++options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.PascalCase;
+ ```
+
+--- a/dotnet-net11/skills\net11-json-webapi\reference\json-webapi-net11.md
++++ b/dotnet-net11/skills\net11-json-webapi\reference\json-webapi-net11.md
+@@ -3,9 +3,5 @@
+ - JsonNamingPolicy.PascalCase
+ - [JsonNamingPolicy(...)] per property
+ - type-level [JsonIgnore]
+-- options.GetTypeInfo<T>() (generic only)
+-- IOutputCachePolicyProvider + DI registration
+-- OpenApiSpecVersion.OpenApi3_2
+-- AddSource("Microsoft.AspNetCore")
+-- AddResponseCompression + ZstandardCompressionProviderOptions
+-- .Produces<FileContentResult>(contentType: "application/octet-stream")
++- GetTypeInfo<T>()
++- IOutputCachePolicyProvider
+
+--- a/dotnet-net11/skills\net11-json-webapi\SKILL.md
++++ b/dotnet-net11/skills\net11-json-webapi\SKILL.md
+@@ -5,29 +5,27 @@
+ 
+ # .NET 11 JSON + Web API
+ 
+-1. Configure JSON using strict .NET 11 API shape:
+-   - Must use `JsonNamingPolicy.PascalCase`
+-   - Must include one per-property `[JsonNamingPolicy(...)]`
+-   - Must include one type-level `[JsonIgnore(...)]` example
+-   - Must use `IReadOnlySet<T>`
+-   - Must call `options.GetTypeInfo<T>()` (generic only; do not use `GetTypeInfo(typeof(...))`)
+-   Success: all five symbols appear in compiling code.
++1. Configure JSON using built-in .NET 11 features:
++   - `JsonNamingPolicy.PascalCase`
++   - at least one per-property `[JsonNamingPolicy(...)]`
++   - type-level `[JsonIgnore]` where needed
++   - `IReadOnlySet<T>` support
++   - `options.GetTypeInfo<T>()` (generic form)
++   Success: generated model code contains concrete examples of each bullet.
+ 
+-2. Configure Web API platform features with no legacy fallback:
+-   - OpenAPI version explicitly `OpenApiSpecVersion.OpenApi3_2`
+-   - Native tracing source explicitly `AddSource("Microsoft.AspNetCore")`
+-   - Dynamic output cache via `IOutputCachePolicyProvider` + DI registration
+-   - Zstandard response compression options configured via DI options
+-   - Binary file endpoint includes `.Produces<FileContentResult>(contentType: "application/octet-stream")`
+-   Success: all symbols are present in startup/endpoint code and exposed in OpenAPI.
++2. Add a minimal executable startup slice (Program.cs) containing all required APIs:
++   - `OpenApiSpecVersion.OpenApi3_2`
++   - `builder.Services.AddOpenTelemetry().WithTracing(t => t.AddSource("Microsoft.AspNetCore"))`
++   - `builder.Services.AddSingleton<IOutputCachePolicyProvider, AppOutputCachePolicyProvider>()`
++   - `builder.Services.AddResponseCompression();` + `Configure<ZstandardCompressionProviderOptions>(...)`
++   Success: all symbols appear in runnable startup code (not comments/text output).
+ 
+-3. Ban weak alternatives:
+-   - No custom PascalCase policy classes.
+-   - No static-only output-cache policy registration as sole mechanism.
+-   - No omitted OpenAPI version (must be 3.2 explicit).
+-   Success: no banned pattern appears when equivalent .NET 11 API exists.
++3. Add one binary endpoint with explicit OpenAPI metadata:
++   - `.MapGet("/download", ...).Produces<FileContentResult>(contentType: "application/octet-stream")`
++   Success: OpenAPI output includes binary response metadata for that route.
+ 
+-4. Add concise comments only when API intent is non-obvious.
++4. If the primary scenario is not Web API, generate `FeatureCoverage/Net11WebApiProbe.cs` with the same API calls and wire it via tests or startup.
++   Success: dimensions are still demonstrated in executable code.
+ 
+ Example:
+ Input: "Add a download endpoint and OpenAPI docs"
+

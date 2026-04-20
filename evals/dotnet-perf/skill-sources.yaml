@@ -8,5 +8,4 @@ sources:
 
   - name: dotnet-diag-auto-improve
     type: local
-    path: C:\data\mycode\skills\dotnet-diag-auto-improve\plugins\dotnet-diag
-    suggest_improvements: true
+    path: C:\data\mycode\skills\dotnet-diag-auto-improve\plugins

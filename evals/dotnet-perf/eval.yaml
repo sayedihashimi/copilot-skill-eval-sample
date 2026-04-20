@@ -26,11 +26,12 @@ configurations:
     plugins:
       - source: dotnet-skills
         path: dotnet-diag
-  - name: dotnet-perf-skills-improved
+  - name: dotnet-diag-auto-improve
     label: "dotnet/skills Performance Skills (improved)"
+    suggest_improvements: true
     skills: []
     plugins:
-      - source: dotnet-skills-improved
+      - source: dotnet-diag-auto-improve
         path: dotnet-diag
 
 dimensions:

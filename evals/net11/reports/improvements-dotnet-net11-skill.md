@@ -1,402 +1,435 @@
 # Improvement Suggestions: dotnet-net11-skill
 
 ## Executive Summary
-`dotnet-net11-skill` scored **159.0/297.5 (53%)**, with strong Web API adoption (OpenAPI 3.2, dynamic output cache provider, Zstandard compression) but major coverage gaps in Blazor/EF/console-focused dimensions and only partial native tracing quality (**4/5**). The largest root cause is structural: guidance exists, but activation/coverage enforcement is not reliably translating into generated artifacts across all surfaces.
+`dotnet-net11-skill` scored **72.5/297.5 (24%)** and only showed strong behavior in one EF Core dimension (`GetEntriesForState = 4`). Most dimensions scored `1` because the generated run only covered `efcore` and missed BCL/WebAPI/Blazor features expected by the plugin’s stated purpose (`reports/analysis.md`, lines 952-963).
 
-Top opportunities are: **(1)** add missing reference/examples for `net11-aspnet-observability` and `net11-blazor-ui`, **(2)** strengthen hook guardrails for the five priority dimensions, and **(3)** tighten SKILL instructions to force scenario-complete, compilable demos when a feature is otherwise absent.
+The highest-impact opportunities are mostly **plugin-structure changes** (add missing scenario-focused skills and stronger guardrails), followed by **targeted SKILL.md improvements** (net11-focus-dimensions, net11-json-webapi, net11-features).
 
-**Comparative note:** this evaluation includes only one configuration, so baseline/top-config deltas are unavailable in this run. Recommendations are therefore tied to absolute score gaps and stated plugin purpose.
+Top 5 opportunities:
+1. Add a dedicated **Blazor net11 skill** (currently no Blazor-focused skill exists).
+2. Add a dedicated **EF Core net11 advanced skill** for the dimensions currently stuck at 2/3.
+3. Expand the **hook guard + reviewer agent** from an 8-dimension check to full rubric coverage.
+4. Fill missing `reference/` + `examples/` for `net11-focus-dimensions`.
+5. Tighten `net11-json-webapi` and `net11-features` instructions so they force demonstrable APIs, not narrative claims.
 
 ## Current Performance Snapshot
+Only one configuration/run exists in this dataset, so baseline/top-config comparisons are unavailable. The table below uses the observed run and marks scores `<4` as trailing.
 
-| Dimension | Score | Gap to 5 | Status |
-|---|---:|---:|---|
-| Zstandard Compression Usage | 5.0 | 0.0 | ✅ |
-| BFloat16 Type Usage | 4.0 | 1.0 | ⚠️ |
-| Rune-Based String Operations | 5.0 | 0.0 | ✅ |
-| HMAC Single-Step Verification | 5.0 | 0.0 | ✅ |
-| FrozenDictionary Collection Expressions | 3.0 | 2.0 | ⚠️ |
-| Collection Expression with() Arguments | 5.0 | 0.0 | ✅ |
-| Union Type Usage | 2.0 | 3.0 | ❌ |
-| MediaTypeMap Usage | 5.0 | 0.0 | ✅ |
-| DivisionRounding Modes | 2.0 | 3.0 | ❌ |
-| System.Text.Json New Features | 5.0 | 0.0 | ✅ |
-| RegexOptions.AnyNewLine | 1.0 | 4.0 | ❌ |
-| File System New APIs | 1.0 | 4.0 | ❌ |
-| Base64 Parity APIs | 1.0 | 4.0 | ❌ |
-| Generic Interlocked Operations | 1.0 | 4.0 | ❌ |
-| BitArray.PopCount | 1.0 | 4.0 | ❌ |
-| Native OpenTelemetry Tracing | 4.0 | 1.0 | ⚠️ |
-| OpenAPI Version | 5.0 | 0.0 | ✅ |
-| Dynamic Output Cache Policy Provider | 5.0 | 0.0 | ✅ |
-| Zstandard Response Compression | 5.0 | 0.0 | ✅ |
-| Blazor EnvironmentBoundary Component | 1.0 | 4.0 | ❌ |
-| Blazor Label and DisplayName Components | 1.0 | 4.0 | ❌ |
-| QuickGrid OnRowClick | 1.0 | 4.0 | ❌ |
-| RelativeToCurrentUri Navigation | 1.0 | 4.0 | ❌ |
-| Blazor TempData Support | 1.0 | 4.0 | ❌ |
-| Blazor BasePath Component | 1.0 | 4.0 | ❌ |
-| EF Core GetEntriesForState | 1.0 | 4.0 | ❌ |
-| EF Core RemoveDbContext | 1.0 | 4.0 | ❌ |
-| EF Core ExcludeForeignKeyFromMigrations | 1.0 | 4.0 | ❌ |
-| EF Core JSON Query Functions | 1.0 | 4.0 | ❌ |
-| SignalR ConfigureConnection | 1.0 | 4.0 | ❌ |
-| Blazor Virtualize Variable-Height Items | 1.0 | 4.0 | ❌ |
-| Runtime Async Configuration | 1.0 | 4.0 | ❌ |
-| ProcessExitStatus Usage | 1.0 | 4.0 | ❌ |
-| OpenAPI Binary File Response | 5.0 | 0.0 | ✅ |
-| Brotli and Compression Options | 2.0 | 3.0 | ❌ |
-| Vector Constants | 1.0 | 4.0 | ❌ |
-| Overall .NET 11 API Adoption Rate | 2.0 | 3.0 | ❌ |
+| Dimension | Score | Status |
+|---|---:|---|
+| Zstandard Compression Usage | 1 | ❌ trailing |
+| BFloat16 Type Usage | 1 | ❌ trailing |
+| Rune-Based String Operations | 1 | ❌ trailing |
+| HMAC Single-Step Verification | 1 | ❌ trailing |
+| FrozenDictionary Collection Expressions | 1 | ❌ trailing |
+| Collection Expression with() Arguments | 1 | ❌ trailing |
+| Union Type Usage | 1 | ❌ trailing |
+| MediaTypeMap Usage | 1 | ❌ trailing |
+| DivisionRounding Modes | 1 | ❌ trailing |
+| System.Text.Json New Features | 1 | ❌ trailing |
+| RegexOptions.AnyNewLine | 1 | ❌ trailing |
+| File System New APIs | 1 | ❌ trailing |
+| Base64 Parity APIs | 1 | ❌ trailing |
+| Generic Interlocked Operations | 1 | ❌ trailing |
+| BitArray.PopCount | 1 | ❌ trailing |
+| Native OpenTelemetry Tracing | 1 | ❌ trailing |
+| OpenAPI Version | 1 | ❌ trailing |
+| Dynamic Output Cache Policy Provider | 1 | ❌ trailing |
+| Zstandard Response Compression | 1 | ❌ trailing |
+| Blazor EnvironmentBoundary Component | 1 | ❌ trailing |
+| Blazor Label and DisplayName Components | 1 | ❌ trailing |
+| QuickGrid OnRowClick | 1 | ❌ trailing |
+| RelativeToCurrentUri Navigation | 1 | ❌ trailing |
+| Blazor TempData Support | 1 | ❌ trailing |
+| Blazor BasePath Component | 1 | ❌ trailing |
+| EF Core GetEntriesForState | 4 | ✅ strongest |
+| EF Core RemoveDbContext | 3 | ⚠️ partial |
+| EF Core ExcludeForeignKeyFromMigrations | 2 | ❌ trailing |
+| EF Core JSON Query Functions | 2 | ❌ trailing |
+| SignalR ConfigureConnection | 1 | ❌ trailing |
+| Blazor Virtualize Variable-Height Items | 1 | ❌ trailing |
+| Runtime Async Configuration | 1 | ❌ trailing |
+| ProcessExitStatus Usage | 1 | ❌ trailing |
+| OpenAPI Binary File Response | 1 | ❌ trailing |
+| Brotli and Compression Options | 1 | ❌ trailing |
+| Vector Constants | 1 | ❌ trailing |
+| Overall .NET 11 API Adoption Rate | 1 | ❌ trailing |
 
 ## Plugin Structure Assessment
-
 ### Plugin: `dotnet-net11`
-- **Inventory:** 7 skills, 1 agent, hooks enabled, no MCP/LSP.
-- **Manifest quality:** Strong (`name`, `version`, clear long description, rich keywords).
-- **Key structural gaps:**
-  1. `net11-aspnet-observability` has no `reference/` or `examples/`.
-  2. `net11-blazor-ui` has no `reference/` or `examples/`.
-  3. Hook guard script is global and binary (must-match patterns) but does not enforce the **specific anti-patterns** that caused priority-dimension deductions (e.g., external ASP.NET instrumentation package usage).
-  4. Single reviewer agent exists; no dedicated scenario-completeness agent to force missing surface generation (Blazor/EF/console).
+- **Inventory**: 5 skills, 1 agent, hooks configured, no MCP/LSP.
+- **Manifest quality**: `plugin.json` is valid and has strong base metadata (`name`, `version`, `description`, `keywords`), but keywords do not explicitly advertise Blazor/OpenAPI/output-cache dimensions that are currently underperforming.
+- **Key structural gaps**:
+  1. No dedicated Blazor skill (yet 8 Blazor/SignalR dimensions are scored and all at 1).
+  2. No dedicated EF Core advanced skill (current EF scores show partial modernization, especially FK exclusion and JSON functions).
+  3. Guardrails check only a subset of dimensions (`scripts/net11-pattern-guard.ps1`), so many rubric failures are not prevented.
+  4. `net11-focus-dimensions` lacks `reference/` and `examples/`, reducing activation clarity and instruction quality under best-practice rubric.
 
 ## Improvement Suggestions
 
 ### Plugin-Level Improvements
 
-#### P1. Add missing reference and golden examples for priority-dimension skills
-- **Type**: Documentation + supporting files
-- **Dimensions affected**: Native OpenTelemetry Tracing, OpenAPI Version, Dynamic Output Cache Policy Provider, Zstandard Response Compression, Blazor EnvironmentBoundary Component
-- **Problem**: Two core skills (`net11-aspnet-observability`, `net11-blazor-ui`) lack `reference/` and `examples/`, reducing activation quality and concrete output guidance.
+#### P1. Add a dedicated Blazor net11 skill
+- **Type**: New skill
+- **Dimensions affected**: Blazor EnvironmentBoundary, Label/DisplayName, QuickGrid OnRowClick, RelativeToCurrentUri Navigation, TempData, BasePath, Virtualize variable height, SignalR ConfigureConnection, Overall adoption.
+- **Problem**: Plugin has no Blazor-focused skill despite many Blazor dimensions. Current run shows all Blazor dimensions at `1` with “no Blazor app generated” evidence (`reports/analysis.md`, lines 587-594, 607-614, 827-834).
 - **Suggested changes**:
 
-**New File** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-aspnet-observability\reference\aspnet-observability-net11.md`):
-```md
-# .NET 11 ASP.NET Observability + Pipeline Reference
+  **Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\README.md`):
+  ```md
+  ## Included skills
+  - `net11-features`
+  - `net11-bcl-core`
+  - `net11-json-webapi`
+  - `net11-csharp15`
+  - `net11-focus-dimensions`
+  ```
 
-Required startup shape:
+  **After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\README.md`):
+  ```md
+  ## Included skills
+  - `net11-features`
+  - `net11-bcl-core`
+  - `net11-json-webapi`
+  - `net11-blazor-ui`
+  - `net11-csharp15`
+  - `net11-focus-dimensions`
+  ```
 
-```csharp
-builder.Services.AddOpenApi(o => o.OpenApiVersion = OpenApiSpecVersion.OpenApi3_2);
+  **New File** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-blazor-ui\SKILL.md`):
+  ```md
+  ---
+  name: net11-blazor-ui
+  description: Build Blazor net11.0 apps using EnvironmentBoundary, Label/DisplayName, QuickGrid OnRowClick, TempData, BasePath, variable-height Virtualize, and SignalR ConfigureConnection. Use when creating or updating Blazor pages/components.
+  ---
+  
+  # .NET 11 Blazor UI Workflow
+  
+  1. Add at least one component/page that uses `<EnvironmentBoundary>` and `<BasePath />`.
+     Success: both tags appear in `.razor` files.
+  
+  2. Use `<Label For>` and `<DisplayName For>` in form/table UI instead of hardcoded labels.
+     Success: generated markup includes both components with strongly typed `For`.
+  
+  3. Use `QuickGrid` with `OnRowClick` and no button-column workaround.
+     Success: `OnRowClick` is bound directly on `QuickGrid`.
+  
+  4. Use relative navigation APIs (`NavigationOptions.RelativeToCurrentUri`) and `GetUriWithHash`.
+     Success: navigation code avoids manual URI string concatenation.
+  
+  5. Configure TempData and SignalR in interactive server mode.
+     Success: includes `[CascadingParameter] ITempData` and `AddInteractiveServerRenderMode(... ConfigureConnection ...)`.
+  
+  6. Use `<Virtualize>` for variable-height lists with `OverscanCount="15"`.
+     Success: virtualized component compiles and includes overscan setting.
+  
+  Example:
+  Input: "Build a task board in Blazor."
+  Output includes `QuickGrid OnRowClick`, `EnvironmentBoundary`, and TempData flash messaging.
+  ```
 
-builder.Services.AddOpenTelemetry()
-    .WithTracing(t => t.AddSource("Microsoft.AspNetCore"));
+- **Expected impact**: High (HIGH+MEDIUM tiers), roughly **+30 to +45 weighted points** when Blazor scenarios are sampled.
 
-builder.Services.AddOutputCache();
-builder.Services.AddSingleton<IOutputCachePolicyProvider, CatalogOutputCachePolicyProvider>();
-
-builder.Services.AddResponseCompression(o =>
-{
-    o.Providers.Add<ZstandardCompressionProvider>();
-});
-builder.Services.Configure<ZstandardCompressionProviderOptions>(o =>
-{
-    o.CompressionOptions = new ZstandardCompressionOptions { Quality = 3 };
-});
-```
-
-Hard bans:
-- `AddAspNetCoreInstrumentation()`
-- OpenAPI versions lower than `OpenApi3_2`
-- static-only output cache policy registration
-- Brotli/Gzip-only compression setup for scenarios requiring zstd
-```
-
-**New File** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-aspnet-observability\examples\webapi-observability-golden.md`):
-```md
-```csharp
-// Program.cs
-builder.Services.AddOpenApi(o => o.OpenApiVersion = OpenApiSpecVersion.OpenApi3_2);
-builder.Services.AddOpenTelemetry().WithTracing(t => t.AddSource("Microsoft.AspNetCore"));
-builder.Services.AddOutputCache();
-builder.Services.AddSingleton<IOutputCachePolicyProvider, CatalogOutputCachePolicyProvider>();
-builder.Services.AddResponseCompression(o => o.Providers.Add<ZstandardCompressionProvider>());
-builder.Services.Configure<ZstandardCompressionProviderOptions>(o =>
-    o.CompressionOptions = new ZstandardCompressionOptions { Quality = 3 });
-```
-```
-
-**New File** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-blazor-ui\reference\blazor-ui-net11.md`):
-```md
-# .NET 11 Blazor UI Reference
-
-Priority requirement:
-- Always include at least one `<EnvironmentBoundary Include/Exclude>` example in a compilable `.razor` file.
-
-Core patterns:
-- `<Label For>` and `<DisplayName For>`
-- `QuickGrid` with `OnRowClick`
-- `NavigationOptions.RelativeToCurrentUri`
-- `[CascadingParameter] ITempData`
-- `<BasePath />`
-- `<Virtualize OverscanCount="15">` for variable-height lists
-- `AddInteractiveServerRenderMode(o => o.ConfigureConnection(...))`
-```
-
-**New File** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-blazor-ui\examples\blazor-ui-golden.md`):
-```md
-```razor
-<EnvironmentBoundary Include="Development">
-    <Label For="() => Model.Title" />
-    <InputText @bind-Value="Model.Title" />
-</EnvironmentBoundary>
-
-<QuickGrid Items="Rows" OnRowClick="OnRowClick">
-    <PropertyColumn Property="x => x.Title" Title="@<DisplayName For='() => Model.Title' />" />
-</QuickGrid>
-```
-```
-
-- **Expected impact**: Better deterministic generation for priority surfaces; estimated **+8 to +18 weighted points**, primarily HIGH-tier dimensions.
-
-#### P2. Make hook guardrails scenario-aware and priority-dimension specific
-- **Type**: Hook improvement
-- **Dimensions affected**: Native OpenTelemetry Tracing, OpenAPI Version, Dynamic Output Cache Policy Provider, Zstandard Response Compression, Blazor EnvironmentBoundary Component
-- **Problem**: Current hook runs global generic checks; it does not explicitly block the observed tracing downgrade pattern nor verify exact focus-dimension patterns per scenario.
+#### P2. Add a dedicated EF Core advanced net11 skill
+- **Type**: New skill
+- **Dimensions affected**: EF Core RemoveDbContext, EF Core ExcludeForeignKeyFromMigrations, EF Core JSON Query Functions, Overall adoption.
+- **Problem**: EF Core dimensions are partially modernized (`3`, `2`, `2`), with explicit old-pattern evidence (`HasAnnotation("Relational:ForeignKeyIsExcludedFromMigrations", true)` and `EF.Functions.Like(...)`) in `reports/analysis.md` lines 758-767 and 783-790.
 - **Suggested changes**:
 
-**Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\hooks\hooks.json`):
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "pwsh -NoProfile -Command \"Write-Host '[dotnet-net11] Priority dimensions enforced: BFloat16, Rune, HMAC.Verify, FrozenDictionary expr, with(), union, DivisionRounding, JsonNamingPolicy, OpenAPI3.2, ASP.NET native tracing, output-cache provider, zstd HTTP compression, EnvironmentBoundary.'\""
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "pwsh -NoProfile -File \"${CLAUDE_PLUGIN_ROOT}\\scripts\\net11-pattern-guard.ps1\""
-          }
-        ]
-      }
-    ]
-  }
-}
-```
+  **Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\README.md`):
+  ```md
+  ## Included skills
+  - `net11-features`
+  - `net11-bcl-core`
+  - `net11-json-webapi`
+  - `net11-csharp15`
+  - `net11-focus-dimensions`
+  ```
 
-**After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\hooks\hooks.json`):
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "pwsh -NoProfile -Command \"Write-Host '[dotnet-net11] Enforcing focus dimensions: AddSource(Microsoft.AspNetCore), OpenAPI3.2, IOutputCachePolicyProvider, zstd HTTP compression, EnvironmentBoundary.'\""
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "pwsh -NoProfile -File \"${CLAUDE_PLUGIN_ROOT}\\scripts\\net11-pattern-guard.ps1\" -Mode FocusDimensions"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
+  **After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\README.md`):
+  ```md
+  ## Included skills
+  - `net11-features`
+  - `net11-bcl-core`
+  - `net11-json-webapi`
+  - `net11-blazor-ui`
+  - `net11-efcore-advanced`
+  - `net11-csharp15`
+  - `net11-focus-dimensions`
+  ```
 
-**Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\scripts\net11-pattern-guard.ps1`):
-```powershell
-$checks = @(
-    @{ Name = "Missing native ASP.NET tracing source"; Must = "AddSource\(""Microsoft\.AspNetCore""\)"; Scope = "*.cs" },
-    @{ Name = "Missing output cache provider"; Must = "IOutputCachePolicyProvider"; Scope = "*.cs" },
-    @{ Name = "Missing zstd HTTP compression"; Must = "ZstandardCompressionProviderOptions|Zstandard"; Scope = "*.cs" },
-    @{ Name = "Missing EnvironmentBoundary"; Must = "<EnvironmentBoundary"; Scope = "*.razor" }
-)
-```
+  **New File** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-efcore-advanced\SKILL.md`):
+  ```md
+  ---
+  name: net11-efcore-advanced
+  description: Generate EF Core net11.0 demos using GetEntriesForState, RemoveDbContext, ExcludeForeignKeyFromMigrations, and EF JSON query functions. Use when building EF Core data/model workflows.
+  ---
+  
+  # .NET 11 EF Core Advanced Workflow
+  
+  1. Use state-based change tracking via `GetEntriesForState(...)`.
+     Success: no fallback to `Entries().Where(...)` for the same use case.
+  
+  2. Use framework removal API for context replacement.
+     Success: code uses `RemoveDbContext<TContext>()` and re-registers cleanly.
+  
+  3. Use dedicated FK migration exclusion API.
+     Success: code uses `.ExcludeForeignKeyFromMigrations(true)`; no annotation-string fallback.
+  
+  4. Use built-in JSON query functions.
+     Success: includes `EF.Functions.JsonContains(...)` or `EF.Functions.JsonPathExists(...)` in executable query code.
+  
+  5. If provider limitations exist, keep primary demo on provider supporting these APIs and add a concise note.
+     Success: generated project still demonstrates real API invocations, not text-only mentions.
+  ```
 
-**After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\scripts\net11-pattern-guard.ps1`):
-```powershell
-param(
-    [string]$RepoRoot = (Get-Location).Path,
-    [ValidateSet("Full","FocusDimensions")] [string]$Mode = "Full"
-)
+- **Expected impact**: Medium-high, about **+10 to +18 weighted points** on EF-heavy runs.
 
-$focusChecks = @(
-    @{ Name = "Missing native ASP.NET tracing source"; Must = 'AddSource\("Microsoft\.AspNetCore"\)'; Scope = "*.cs" },
-    @{ Name = "Disallowed ASP.NET instrumentation package usage"; Ban = "AddAspNetCoreInstrumentation\("; Scope = "*.cs" },
-    @{ Name = "Missing OpenAPI 3.2"; Must = "OpenApiSpecVersion\.OpenApi3_2"; Scope = "*.cs" },
-    @{ Name = "Missing output cache provider"; Must = "IOutputCachePolicyProvider"; Scope = "*.cs" },
-    @{ Name = "Missing zstd HTTP compression"; Must = "ZstandardCompressionProviderOptions|ZstandardCompressionProvider"; Scope = "*.cs" },
-    @{ Name = "Missing EnvironmentBoundary"; Must = "<EnvironmentBoundary"; Scope = "*.razor" }
-)
-
-$checks = if ($Mode -eq "FocusDimensions") { $focusChecks } else { $focusChecks + $fullChecks }
-```
-
-- **Expected impact**: closes the remaining tracing quality gap and reduces false-positive “covered but wrong pattern” output; estimated **+2 to +6 weighted points**.
-
-#### P3. Add a scenario-completeness reviewer agent
-- **Type**: New agent
-- **Dimensions affected**: Blazor EnvironmentBoundary Component, Overall .NET 11 API Adoption Rate (plus all missing Blazor/EF dimensions)
-- **Problem**: Current reviewer is adoption-focused but not strict enough about missing scenario surfaces; run output lacked Blazor/EF implementations and scored many dimensions at 1.
+#### P3. Expand guardrails (hook script + reviewer agent) to full rubric coverage
+- **Type**: New hook behavior + Agent enhancement
+- **Dimensions affected**: Most trailing dimensions, especially CRITICAL/HIGH.
+- **Problem**: Existing guard script only checks a narrow subset and misses many scored dimensions (OpenAPI 3.2, output cache provider, Blazor APIs, EF JSON funcs, etc.). Existing reviewer agent scope is also limited to priority subset.
 - **Suggested changes**:
 
-**New File** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\agents\net11-scenario-completeness.agent.md`):
-```md
----
-name: net11-scenario-completeness
-description: Ensures generated net11 output includes all required scenario surfaces or compilable FeatureCoverage fallbacks for missing dimensions.
-model: claude-sonnet-4.5
-maxTurns: 8
-tools: [Read, Grep, Glob]
----
+  **Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\scripts\net11-pattern-guard.ps1`):
+  ```powershell
+  $checks = @(
+      @{ Name = "Missing BFloat16"; Must = "BFloat16"; Scope = "*.cs" },
+      @{ Name = "Missing Rune APIs"; Must = "Rune"; Scope = "*.cs" },
+      @{ Name = "Missing HMAC verify"; Must = "HMACSHA256.Verify|VerifyHmac"; Scope = "*.cs" },
+      @{ Name = "Legacy hash+compare"; Ban = "HashData\(|FixedTimeEquals\("; Scope = "*.cs" },
+      @{ Name = "Legacy FrozenDictionary pattern"; Ban = "ToFrozenDictionary\("; Scope = "*.cs" },
+      @{ Name = "Missing collection with()"; Must = "with\(capacity:|with\(comparer:"; Scope = "*.cs" },
+      @{ Name = "Missing union"; Must = "\bunion\b"; Scope = "*.cs" },
+      @{ Name = "Missing DivisionRounding"; Must = "DivisionRounding\."; Scope = "*.cs" },
+      @{ Name = "Missing JsonNamingPolicy attribute"; Must = "\[JsonNamingPolicy\("; Scope = "*.cs" },
+      @{ Name = "Disallowed not-applicable note"; Ban = "Not applicable"; Scope = "*.md" }
+  )
+  ```
 
-You enforce scenario completeness before finalizing.
+  **After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\scripts\net11-pattern-guard.ps1`):
+  ```powershell
+  $checks = @(
+      # Core/BCL/C#15
+      @{ Name = "Missing BFloat16"; Must = "BFloat16"; Scope = "*.cs" },
+      @{ Name = "Missing Rune APIs"; Must = "Rune|Contains\(new Rune|IndexOf\(new Rune|Replace\(new Rune"; Scope = "*.cs" },
+      @{ Name = "Missing HMAC verify"; Must = "HMACSHA256.Verify|VerifyHmac"; Scope = "*.cs" },
+      @{ Name = "Legacy hash+compare"; Ban = "HashData\(|FixedTimeEquals\("; Scope = "*.cs" },
+      @{ Name = "Missing FrozenDictionary expression"; Must = "FrozenDictionary<.*>\s+\w+\s*=\s*\["; Scope = "*.cs" },
+      @{ Name = "Legacy FrozenDictionary pattern"; Ban = "ToFrozenDictionary\("; Scope = "*.cs" },
+      @{ Name = "Missing collection with()"; Must = "with\(capacity:|with\(comparer:"; Scope = "*.cs" },
+      @{ Name = "Missing union"; Must = "\bunion\b"; Scope = "*.cs" },
+      @{ Name = "Missing DivisionRounding"; Must = "DivisionRounding\."; Scope = "*.cs" },
+      @{ Name = "Missing MediaTypeMap"; Must = "MediaTypeMap\.GetMediaType|MediaTypeMap\.GetExtension"; Scope = "*.cs" },
+      @{ Name = "Missing Base64 parity APIs"; Must = "Base64\.EncodeToString|Base64\.DecodeFromChars|Base64\.GetEncodedLength"; Scope = "*.cs" },
+      @{ Name = "Missing RegexOptions.AnyNewLine"; Must = "RegexOptions\.AnyNewLine"; Scope = "*.cs" },
+      @{ Name = "Missing generic Interlocked enum ops"; Must = "Interlocked\.(Or|And)\("; Scope = "*.cs" },
+      # Web API / ASP.NET Core
+      @{ Name = "Missing OpenAPI 3.2"; Must = "OpenApiSpecVersion\.OpenApi3_2"; Scope = "*.cs" },
+      @{ Name = "Missing output cache provider"; Must = "IOutputCachePolicyProvider"; Scope = "*.cs" },
+      @{ Name = "Missing native ASP.NET tracing source"; Must = "AddSource\(\""Microsoft\.AspNetCore\""\)"; Scope = "*.cs" },
+      @{ Name = "Missing zstd response compression"; Must = "AddResponseCompression|ZstandardCompressionProviderOptions"; Scope = "*.cs" },
+      # EF Core
+      @{ Name = "Missing ExcludeForeignKeyFromMigrations"; Must = "ExcludeForeignKeyFromMigrations\(true\)"; Scope = "*.cs" },
+      @{ Name = "Missing EF JSON query function"; Must = "EF\.Functions\.(JsonContains|JsonPathExists)\("; Scope = "*.cs" },
+      @{ Name = "Disallowed not-applicable note"; Ban = "Not applicable"; Scope = "*.md" }
+  )
+  ```
 
-1. Detect expected surfaces: console-bcl, webapi, blazor, efcore.
-2. For any missing surface, require a compilable `FeatureCoverage/` substitute that demonstrates the missing APIs.
-3. For focus dimensions, require exact symbols:
-   - `AddSource("Microsoft.AspNetCore")`
-   - `OpenApiSpecVersion.OpenApi3_2`
-   - `IOutputCachePolicyProvider`
-   - `ZstandardCompressionProviderOptions` or `ZstandardCompressionProvider`
-   - `<EnvironmentBoundary ...>`
-4. Reject “not applicable” without concrete replacement implementation.
-5. Output pass/fail checklist mapped by dimension -> file -> symbol.
-```
+  **Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\agents\net11-adoption-reviewer.agent.md`):
+  ```md
+  You are a strict .NET 11 adoption reviewer.
+  
+  1. Check for required usage of priority APIs: BFloat16, Rune APIs, HMAC verify, FrozenDictionary expressions, with(), union, DivisionRounding, JsonNamingPolicy attribute.
+  2. Flag fallback patterns: HashData+FixedTimeEquals, ToFrozenDictionary conversion flow, manual MIME maps, custom PascalCase policy classes.
+  3. Produce concise remediation instructions with exact files and replacement snippets.
+  4. End with a pass/fail checklist by dimension.
+  ```
 
-- **Expected impact**: biggest lever on low-scoring dimensions by forcing complete coverage behavior; estimated **+20 to +45 weighted points**.
+  **After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\agents\net11-adoption-reviewer.agent.md`):
+  ```md
+  You are a strict .NET 11 adoption reviewer.
+  
+  1. Evaluate all scored dimensions for the current scenario family (console-bcl, webapi, blazor, efcore), and require at least one concrete API call per required dimension.
+  2. Flag fallback patterns and score-limiting substitutions (annotation-string EF flags, LIKE-for-JSON when JSON funcs are available, button-column QuickGrid row click, manual URI concatenation, custom policy classes for PascalCase, etc.).
+  3. Produce file-level remediation with before/after snippets that compile.
+  4. End with a pass/fail checklist covering every dimension in scope and a weighted-risk summary (CRITICAL first).
+  ```
+
+- **Expected impact**: High for consistency and prevention; likely **+20 to +35 weighted points** by reducing missed dimensions before final output.
 
 ### Skill-Level Improvements
 
-### S1. Tighten native tracing + startup focus patterns in `net11-json-webapi`
-- **Dimensions affected**: Native OpenTelemetry Tracing, OpenAPI Version, Dynamic Output Cache Policy Provider, Zstandard Response Compression
-- **Current score → Target score**: 4.0 → 5.0 (tracing), maintain 5.0 on the other three
-- **Problem**: Generated output still looked “package-heavy” for tracing quality despite correct `AddSource`.
-- **Root cause**: The skill requires startup patterns but does not explicitly ban common fallback instrumentation calls at code level.
+### S1. Upgrade `net11-focus-dimensions` into a complete skill package
+- **Dimensions affected**: Cross-cutting (especially CRITICAL/HIGH dimensions with score `1`).
+- **Current score → Target score**: Many `1` → `3-4`.
+- **Problem**: The skill exists but has no `reference/` or `examples/` directories, and instructions are broad.
+- **Root cause**: Missing supporting artifacts weakens activation and leaves too much interpretation for model output.
 - **Suggested changes**:
 
-**Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-json-webapi\SKILL.md`):
-```md
-2. Program.cs must include these exact startup patterns:
-   - `builder.Services.AddOpenApi(... OpenApiSpecVersion.OpenApi3_2 ...)`
-   - `builder.Services.AddOpenTelemetry().WithTracing(t => t.AddSource("Microsoft.AspNetCore"))`
-   - `builder.Services.AddSingleton<IOutputCachePolicyProvider, <YourProvider>>()`
-   Success: all three patterns appear verbatim in startup code.
-```
+  **Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-focus-dimensions\SKILL.md`):
+  ```md
+  # .NET 11 Priority Dimension Enforcement
+  
+  1. Identify which of the priority dimensions are not naturally present in the requested app.
+     Success: list each missing priority dimension explicitly.
+  
+  2. For every missing priority dimension, add a minimal demo module under `FeatureCoverage/`
+     that compiles and is invoked by at least one endpoint, command, or test.
+     Success: no priority dimension is left as "not applicable".
+  
+  3. Use only target APIs:
+     - `System.Numerics.BFloat16`
+     - Rune overloads (`string.Contains/IndexOf/Replace/Split(Rune)`)
+     - `HMACSHA256.Verify` / `CryptographicOperations.VerifyHmac`
+     - `FrozenDictionary<K,V> map = ["k": v]`
+     - Collection expression `with(...)`
+     - `union` with exhaustive `switch`
+     - `int.Divide/DivRem(..., DivisionRounding.*)`
+     - JSON features: `JsonNamingPolicy.PascalCase`, `[JsonNamingPolicy]`, type-level `[JsonIgnore]`, `IReadOnlySet<T>`, `GetTypeInfo<T>()`
+     Success: generated code contains these concrete API names where expected.
+  ```
 
-**After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-json-webapi\SKILL.md`):
-```md
-2. Program.cs must include these exact startup patterns and bans:
-   - `builder.Services.AddOpenApi(... OpenApiSpecVersion.OpenApi3_2 ...)`
-   - `builder.Services.AddOpenTelemetry().WithTracing(t => t.AddSource("Microsoft.AspNetCore"))`
-   - `builder.Services.AddSingleton<IOutputCachePolicyProvider, <YourProvider>>()`
-   - ban `AddAspNetCoreInstrumentation(...)` for this workflow
-   Success: all required patterns appear and banned pattern does not appear.
-```
+  **After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-focus-dimensions\SKILL.md`):
+  ```md
+  # .NET 11 Priority Dimension Enforcement
+  
+  1. Build a dimension matrix first (`Dimension`, `Required API`, `File`).
+     Success: matrix includes every priority dimension before code generation starts.
+  
+  2. For each missing dimension, add one focused helper in `FeatureCoverage/` and wire it into runtime entry points.
+     Success: every helper is actually executed by endpoint/command/test; no “dead demo” files.
+  
+  3. Use only required APIs from `reference/priority-dimensions-matrix.md` and forbid fallback patterns listed there.
+     Success: each matrix row points to an exact symbol used in code.
+  
+  4. Emit a final checklist grouped by CRITICAL/HIGH/MEDIUM/LOW with file paths.
+     Success: checklist has zero missing rows and no “not applicable” for priority dimensions.
+  
+  Example:
+  Input: "Create EF Core order demo."
+  Output: EF demo + `FeatureCoverage` helpers for missing BCL/Web/Blazor priority dimensions.
+  ```
 
-- **Expected impact**: removes residual tracing-quality deduction and reduces regressions in startup wiring.
+  **New File** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-focus-dimensions\reference\priority-dimensions-matrix.md`):
+  ```md
+  # Priority Dimensions Matrix
+  
+  | Dimension | Required API | Forbidden fallback |
+  |---|---|---|
+  | BFloat16 | `System.Numerics.BFloat16` | manual bit packing |
+  | Rune operations | `string.Contains/IndexOf/Replace/Split(Rune)` | surrogate-pair manual logic |
+  | HMAC verify | `HMACSHA256.Verify` / `VerifyHmac` | `HashData` + `FixedTimeEquals` |
+  | FrozenDictionary | `FrozenDictionary<K,V> map = ["k": v]` | `Dictionary` + `ToFrozenDictionary()` |
+  | Collection with() | `[with(capacity: n), ..values]` | constructor + add loop |
+  | Union | `union` + exhaustive `switch` | abstract-class hierarchy for simple DU |
+  | DivisionRounding | `int.Divide/DivRem(..., DivisionRounding.*)` | manual remainder rounding |
+  | JSON | `JsonNamingPolicy.PascalCase`, `[JsonNamingPolicy]`, `GetTypeInfo<T>()` | custom PascalCase policy class |
+  ```
 
-### S2. Make EnvironmentBoundary coverage mandatory and compilable in `net11-blazor-ui`
-- **Dimensions affected**: Blazor EnvironmentBoundary Component (priority), plus Label/DisplayName, QuickGrid OnRowClick, TempData, BasePath, SignalR ConfigureConnection, Virtualize
-- **Current score → Target score**: 1.0 → 4.0–5.0
-- **Problem**: Blazor dimensions scored 1 because no Blazor surface appeared in generated artifacts.
-- **Root cause**: Skill guidance is descriptive but does not require a concrete fallback artifact when the main scenario is not a Blazor app.
+  **New File** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-focus-dimensions\examples\focus-dimensions-complete.md`):
+  ```md
+  ~~~csharp
+  // FeatureCoverage/Net11PriorityApiDemo.cs
+  FrozenDictionary<string,int> map = ["ok": 200];
+  var pages = int.Divide(totalItems, pageSize, DivisionRounding.ToPositiveInfinity);
+  var hasRocket = text.Contains(new Rune(0x1F680));
+  var verified = HMACSHA256.Verify(key, data, mac);
+  ~~~
+  ```
+
+- **Expected impact**: Medium-high; improved instruction quality and support files should raise coverage reliability and reduce `1` scores.
+
+### S2. Tighten `net11-json-webapi` to force executable API usage
+- **Dimensions affected**: System.Text.Json New Features, Native OpenTelemetry Tracing, OpenAPI Version, Dynamic Output Cache Policy Provider, Zstandard Response Compression, OpenAPI Binary File Response.
+- **Current score → Target score**: `1` → `4`.
+- **Problem**: Current run had no Web API generation and no OpenAPI/tracing/cache evidence (`reports/analysis.md`, lines 527-535, 547-554, 567-574, 892-899).
+- **Root cause**: SKILL instructions are clear but still allow non-executable mention-style coverage and don’t prescribe a minimal startup template for guaranteed inclusion.
 - **Suggested changes**:
 
-**Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-blazor-ui\SKILL.md`):
-```md
-1. Use declarative environment gating with `<EnvironmentBoundary>`.
-   Success: no manual `IHostEnvironment` branching for environment-specific rendering.
-```
+  **Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-json-webapi\SKILL.md`):
+  ```md
+  2. Configure OpenAPI, telemetry, and output cache provider architecture:
+     - OpenAPI: `OpenApiSpecVersion.OpenApi3_2`
+     - Native tracing source: `AddSource("Microsoft.AspNetCore")`
+     - Output cache: implement `IOutputCachePolicyProvider` + DI registration (avoid static-only `AddPolicy(...)`).
+     Success: startup code registers provider type and resolves policies dynamically.
+  
+  3. Prefer built-in compression and metadata:
+     - Response/request compression with Zstandard provider options
+     - Binary endpoint docs with `.Produces<FileContentResult>(contentType: "application/octet-stream")`
+  ```
 
-**After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-blazor-ui\SKILL.md`):
-```md
-1. Use declarative environment gating with `<EnvironmentBoundary>`.
-   - If the primary app is not Blazor, create `FeatureCoverage/BlazorEnvironmentBoundaryDemo.razor` in a minimal compilable Blazor/Razor component project.
-   - Reference that component from at least one page/test to prevent dead-code omission.
-   Success: generated output always contains at least one compiled `.razor` file with `<EnvironmentBoundary Include/Exclude>`.
-```
+  **After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-json-webapi\SKILL.md`):
+  ```md
+  2. Add a minimal executable startup slice (Program.cs) containing all required APIs:
+     - `OpenApiSpecVersion.OpenApi3_2`
+     - `builder.Services.AddOpenTelemetry().WithTracing(t => t.AddSource("Microsoft.AspNetCore"))`
+     - `builder.Services.AddSingleton<IOutputCachePolicyProvider, AppOutputCachePolicyProvider>()`
+     - `builder.Services.AddResponseCompression();` + `Configure<ZstandardCompressionProviderOptions>(...)`
+     Success: all symbols appear in runnable startup code (not comments/text output).
+  
+  3. Add one binary endpoint with explicit OpenAPI metadata:
+     - `.MapGet("/download", ...).Produces<FileContentResult>(contentType: "application/octet-stream")`
+     Success: OpenAPI output includes binary response metadata for that route.
+  
+  4. If the primary scenario is not Web API, generate `FeatureCoverage/Net11WebApiProbe.cs` with the same API calls and wire it via tests or startup.
+     Success: dimensions are still demonstrated in executable code.
+  ```
 
-- **Expected impact**: directly addresses the largest focus-dimension miss; strong HIGH-tier score recovery.
+- **Expected impact**: High for Web API scenarios; likely **+25 to +35 weighted points** in those runs.
 
-### S3. Strengthen explicit “no omission” requirement in `net11-focus-dimensions`
-- **Dimensions affected**: Blazor EnvironmentBoundary Component, Overall .NET 11 API Adoption Rate, and all scenario-missing dimensions
-- **Current score → Target score**: 2.0 → 3.5–4.5 (overall adoption)
-- **Problem**: Many dimensions stayed at 1 because missing surfaces were not replaced by concrete demos.
-- **Root cause**: The skill says to add `FeatureCoverage/`, but does not require each demo to be **compiled and referenced** by build graph with explicit project-path expectations.
+### S3. Expand `net11-features` from “priority list” to scenario matrix execution
+- **Dimensions affected**: Overall .NET 11 API Adoption Rate plus many dimension-specific scores.
+- **Current score → Target score**: Overall adoption `1` → `3-4`.
+- **Problem**: Current guidance focuses mostly on priority APIs but does not map required APIs by scenario family (console/webapi/blazor/efcore), which contributed to broad missing coverage when only `efcore` was generated.
+- **Root cause**: Missing scenario-to-dimension execution contract in the skill body.
 - **Suggested changes**:
 
-**Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-focus-dimensions\SKILL.md`):
-```md
-2. For every missing priority dimension, add a minimal demo module under `FeatureCoverage/`
-   that compiles and is invoked by at least one endpoint, command, or test.
-   Success: no priority dimension is left as "not applicable".
-```
+  **Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-features\SKILL.md`):
+  ```md
+  1. Confirm applicability and enforce priority coverage.
+     - Apply this guidance only when target is `net11.0`.
+     - For the priority dimensions, never output "not applicable" without adding a minimal demo helper.
+     - If the main scenario does not naturally use a priority API, create `FeatureCoverage/Net11PriorityApiDemo.cs` and wire it into startup/tests.
+     Success: every priority dimension is represented by at least one concrete API use in code.
+  ```
 
-**After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-focus-dimensions\SKILL.md`):
-```md
-2. For every missing priority dimension, add a minimal demo module under `FeatureCoverage/` that is part of the solution build graph.
-   - Required: each module must be referenced by an endpoint, startup registration, command handler, or test assertion.
-   - Required output section: `Dimension -> File -> Symbol -> Invocation point`.
-   Success: no priority dimension is left as "not applicable", and every demo is build-reachable.
-```
+  **After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-features\SKILL.md`):
+  ```md
+  1. Confirm applicability and build a scenario matrix.
+     - Apply this guidance only when target is `net11.0`.
+     - Build a matrix of `Scenario family -> required dimensions -> file path`.
+     - Scenario families: `console-bcl`, `webapi`, `blazor`, `efcore`.
+     Success: every required dimension in the active family has a planned file target before coding begins.
+  
+  2. Enforce runnable coverage, not mention-only coverage.
+     - Never output "not applicable" for required dimensions.
+     - If a dimension is outside the main architecture, place it in `FeatureCoverage/*Probe.cs` and execute via startup/tests.
+     Success: each dimension has an executable symbol reference and invocation path.
+  
+  3. Emit a final matrix-backed checklist.
+     Success: checklist entries map 1:1 to generated files and API symbols.
+  ```
 
-- **Expected impact**: prevents “present in prose, absent in artifact” failures and raises overall adoption consistency.
-
-### S4. Add explicit anti-regression checks in `net11-aspnet-observability`
-- **Dimensions affected**: Native OpenTelemetry Tracing, OpenAPI Version, Dynamic Output Cache Policy Provider, Zstandard Response Compression
-- **Current score → Target score**: 4.0/5.0/5.0/5.0 → sustained 5.0s
-- **Problem**: Focus dimensions are instructed, but failure modes (wrong tracing instrumentation style) are not codified as banned output patterns.
-- **Root cause**: “Do not add external instrumentation packages” is present, but no concrete anti-pattern list or final checklist row for each focus dimension.
-- **Suggested changes**:
-
-**Before** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-aspnet-observability\SKILL.md`):
-```md
-1. Configure native tracing only.
-   - Register OpenTelemetry tracing with `AddSource("Microsoft.AspNetCore")`.
-   - Do not add external ASP.NET instrumentation packages.
-   Success: startup code contains `AddSource("Microsoft.AspNetCore")` and no external instrumentation package usage.
-```
-
-**After** (`C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-aspnet-observability\SKILL.md`):
-```md
-1. Configure native tracing only.
-   - Register tracing with `AddSource("Microsoft.AspNetCore")`.
-   - Ban: `AddAspNetCoreInstrumentation(...)` and package references that only provide legacy ASP.NET instrumentation.
-   - Emit final checklist row: `Native tracing -> Program.cs -> AddSource("Microsoft.AspNetCore")`.
-   Success: required symbol exists and banned tracing calls do not exist.
-```
-
-- **Expected impact**: closes remaining tracing gap and protects already-strong focus dimensions from regression.
+- **Expected impact**: High cross-scenario reliability; expected **+20+ weighted points** over multiple random scenario runs.
 
 ## Summary of Recommended Changes
+### Modified files
+- `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\README.md`
+- `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\scripts\net11-pattern-guard.ps1`
+- `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\agents\net11-adoption-reviewer.agent.md`
+- `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-focus-dimensions\SKILL.md`
+- `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-json-webapi\SKILL.md`
+- `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-features\SKILL.md`
 
 ### New files
-1. `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-aspnet-observability\reference\aspnet-observability-net11.md`
-2. `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-aspnet-observability\examples\webapi-observability-golden.md`
-3. `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-blazor-ui\reference\blazor-ui-net11.md`
-4. `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-blazor-ui\examples\blazor-ui-golden.md`
-5. `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\agents\net11-scenario-completeness.agent.md`
-
-### Modified files
-1. `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\hooks\hooks.json`
-2. `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\scripts\net11-pattern-guard.ps1`
-3. `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-json-webapi\SKILL.md`
-4. `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-blazor-ui\SKILL.md`
-5. `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-focus-dimensions\SKILL.md`
-6. `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-aspnet-observability\SKILL.md`
+- `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-blazor-ui\SKILL.md`
+- `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-efcore-advanced\SKILL.md`
+- `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-focus-dimensions\reference\priority-dimensions-matrix.md`
+- `C:\data\mycode\skills\net11-auto01\plugins\dotnet-net11\skills\net11-focus-dimensions\examples\focus-dimensions-complete.md`
 
 ## Risks and Trade-offs
-- Enforcing all priority dimensions in every run can increase token usage and code volume; mitigate with isolated, minimal `FeatureCoverage/` modules.
-- Stronger hook checks can create false positives if scenario context is ignored; use the proposed scenario-aware mode.
-- Adding mandatory fallback demos may slightly reduce architectural purity for narrow tasks, but it materially improves measurable adoption coverage in this evaluation framework.
+- Stronger “must-have dimension” guardrails can increase false positives for narrowly scoped tasks; mitigate by making checks scenario-aware.
+- Adding multiple focused skills improves activation precision but can increase selection complexity if descriptions overlap; keep descriptions trigger-specific.
+- Forcing cross-scenario probe modules can improve scores while risking architectural noise; keep probe code isolated under `FeatureCoverage/` and clearly documented.

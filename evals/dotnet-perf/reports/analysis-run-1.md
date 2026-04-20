@@ -1,186 +1,163 @@
-# Comparative Analysis: dotnet-perf-skills, dotnet-perf-skills-improved, no-skills
+# Comparative Analysis: dotnet-diag-auto-improve
 
-This report compares **3 configurations** on the single `analyze-perf-issues` scenario at `output/{config}/run-1/analyze-perf-issues/`. Configuration mapping came from `gen-notes.md` plus directory naming: `dotnet-perf-skills` and `dotnet-perf-skills-improved` both explicitly report using the `analyzing-dotnet-performance` skill; `no-skills` is baseline/default Copilot (its notes list work performed but no skill usage section).
+This run contains **1 configuration directory**: `output/dotnet-diag-auto-improve/run-1/`. It includes the expected scenario `analyze-perf-issues/`, and configuration evidence is provided in `performance-analysis.md` and `gen-notes.md` (skill: `analyzing-dotnet-performance`). Because only one configuration is present, scoring is absolute against the rubric rather than relative across multiple variants.
 
 ## Executive Summary
 
-| Dimension [Tier] | dotnet-perf-skills | dotnet-perf-skills-improved | no-skills |
-|---|---:|---:|---:|
-| Regex Anti-Pattern Detection [CRITICAL] | 4 | 5 | 4 |
-| String Allocation Detection [CRITICAL] | 4 | 5 | 4 |
-| Collection and LINQ Efficiency [CRITICAL] | 4 | 5 | 3 |
-| Async and IO Pattern Detection [CRITICAL] | 4 | 5 | 4 |
-| Reflection and Serialization Overhead [HIGH] | 4 | 5 | 4 |
-| Structural Optimization Detection [HIGH] | 4 | 5 | 4 |
-| Severity Classification Accuracy [HIGH] | 3 | 5 | 3 |
-| Fix Recommendation Quality [HIGH] | 4 | 5 | 3 |
+| Dimension [Tier] | dotnet-diag-auto-improve |
+|---|---|
+| Regex Anti-Pattern Detection [CRITICAL] | 5 |
+| String Allocation Detection [CRITICAL] | 5 |
+| Collection and LINQ Efficiency [CRITICAL] | 5 |
+| Async and IO Pattern Detection [CRITICAL] | 5 |
+| Reflection and Serialization Overhead [HIGH] | 5 |
+| Structural Optimization Detection [HIGH] | 5 |
+| Aggregate and Replace Chain Detection [HIGH] | 5 |
+| Span Usage Consistency [HIGH] | 5 |
+| Inheritance Sealing Accuracy [HIGH] | 5 |
+| Params Overload Optimization [MODERATE] | 5 |
+| Severity Classification Accuracy [HIGH] | 4 |
+| Fix Recommendation Quality [HIGH] | 5 |
 
 ## 1. Regex Anti-Pattern Detection [CRITICAL]
 
-**dotnet-perf-skills — `output/dotnet-perf-skills/run-1/analyze-perf-issues/performance-analysis.md`**
-> #### 1. Per-Call `new Regex()` in Hot Paths (8 instances)  
-> **Impact:** ... `LogAnalyzer.TryParseLine`, this runs per log line — potentially millions of times.
+**dotnet-diag-auto-improve** (`output/dotnet-diag-auto-improve/run-1/analyze-perf-issues/performance-analysis.md`):
+> | `RegexOptions.Compiled` | 48 (all in MarkdownStripper) |
+> | `[GeneratedRegex]` | 0 |
+> | `new Regex(` (uncached, per-call) | 8 (...) |
+> **Fix:** Hoist to `private static readonly Regex` fields or use `[GeneratedRegex]` (preferred on .NET 8).
 
-**dotnet-perf-skills-improved — `output/dotnet-perf-skills-improved/run-1/analyze-perf-issues/performance-analysis.md`**
-> | Regex: `RegexOptions.Compiled` | startup budget | **48** in MarkdownStripper.cs |  
-> **Fix:** Convert each to `[GeneratedRegex]` on a `partial class`.
-
-**no-skills — `output/no-skills/run-1/analyze-perf-issues/performance-analysis.md`**
-> 2. `LogAnalyzer.TryParseLine` — `new Regex()` per log line in hot loop (🔴)  
-> 5. `MarkdownStripper` — 45+ `RegexOptions.Compiled` instances bloating JIT startup (🟡)
-
-**Scores:** dotnet-perf-skills **4/5** (good detection + GeneratedRegex guidance), dotnet-perf-skills-improved **5/5** (most complete and explicit on startup budget + source-gen), no-skills **4/5** (covers core regex issues well but less systematic than improved).
-
-**Verdict:** **dotnet-perf-skills-improved** is best due to strongest regex breadth and precise remediation.
+**Score:** dotnet-diag-auto-improve = **5/5** (detects per-call instantiation, compiled overuse, and gives .NET 8+ GeneratedRegex guidance).  
+**Verdict:** **dotnet-diag-auto-improve** is comprehensive and precise.
 
 ## 2. String Allocation Detection [CRITICAL]
 
-**dotnet-perf-skills**
-> #### 4. String `+=` Concatenation in Loops — O(n²) Allocation (6 sites)  
-> **Fix:** Use `StringBuilder`.
+**dotnet-diag-auto-improve**:
+> #### 6. String Concatenation `+=` in Loops — O(n²) Allocation (7 sites)
+> #### 9. `.ToLower()`/`.ToUpper()` Without Culture or `StringComparison` (17 instances)
+> #### 12. Sequential `.Replace()` Chain in SlugGenerator (...)
+> **Fix:** Use `StringBuilder` ... `StringComparison.OrdinalIgnoreCase` ... `ToLowerInvariant()`.
 
-**dotnet-perf-skills-improved**
-> #### 16. Chained `.Replace()` calls in loop — N×9 intermediate string allocations (1 site)  
-> ... a single `GenerateSlug` call creates ~23 intermediate strings.
-
-**no-skills**
-> 3. `TemplateEngine.ProcessLoops` — O(n²) string concatenation (🔴)  
-> 4. `CsvParser.ParseLine` — char-by-char string concatenation (🔴)
-
-**Scores:** dotnet-perf-skills **4/5**, dotnet-perf-skills-improved **5/5**, no-skills **4/5**.
-
-**Verdict:** **dotnet-perf-skills-improved** best captures both loop concatenation and compound replacement-allocation chains.
+**Score:** dotnet-diag-auto-improve = **5/5** (covers all requested string categories with counts and fixes).  
+**Verdict:** **dotnet-diag-auto-improve** clearly addresses high-impact string allocation issues.
 
 ## 3. Collection and LINQ Efficiency [CRITICAL]
 
-**dotnet-perf-skills**
-> #### 6. `List.Contains()` in Loop — O(n²) Lookup ...  
-> #### 16. `Skip(i).Take(5).ToList()` in Loop — O(n²) LINQ
+**dotnet-diag-auto-improve**:
+> #### 7. `ContainsKey` + Indexer Double-Lookup (10+ sites)
+> #### 16. `.ToList()` + `.Contains()` for Key Lookups — O(n²) (2 instances)
+> #### 17. `Skip(i).Take(5).ToList()` in Loop — Sliding Window Allocation (1 instance)
+> #### 18. `Distinct().ToList()` Allocation (1 instance)
 
-**dotnet-perf-skills-improved**
-> #### 7. `Keys.ToList()` + `.Contains()` for O(n) lookups ...  
-> | Collections: `.Distinct().ToList()` | dedup materialization | **2** in DataPipeline.cs |
-
-**no-skills**
-> | 7 | 🟡 Moderate | 75 | `.ToList()` + `.Contains()` (O(n)) in loop ... |  
-> | 8 | 🔴 Critical | 157 | `Skip(i).Take(5).ToList()` in loop | O(n²) sliding window |
-
-**Scores:** dotnet-perf-skills **4/5**, dotnet-perf-skills-improved **5/5**, no-skills **3/5** (good findings, but less coherent prioritization and consistency across collection patterns).
-
-**Verdict:** **dotnet-perf-skills-improved** is strongest on both detection breadth and prioritization quality.
+**Score:** dotnet-diag-auto-improve = **5/5** (captures the full LINQ/collection hot-path set, including explicit Distinct/Skip+Take counts).  
+**Verdict:** **dotnet-diag-auto-improve** provides excellent collection/LINQ coverage.
 
 ## 4. Async and IO Pattern Detection [CRITICAL]
 
-**dotnet-perf-skills**
-> #### 2. `new HttpClient()` Per Call — Socket Exhaustion (3 instances)  
-> #### 8. Unbounded Parallelism in SendBatchParallelAsync
+**dotnet-diag-auto-improve**:
+> #### 1. `new HttpClient()` Per Call — Socket Exhaustion (3 instances)
+> #### 19. Sequential `await` in Loop — No Parallelism
+> #### 20. Unbounded Parallelism in `SendBatchParallelAsync`
+> #### 21. Missing Cancellation Tokens in Async Methods
 
-**dotnet-perf-skills-improved**
-> #### 11. Sequential awaits in loop — no parallelism (1 instance)  
-> #### 13. Missing cancellation tokens on async operations
-
-**no-skills**
-> | 1 | 🔴 Critical | 163, 179, 191 | `new HttpClient()` per call ... |  
-> | 5 | 🔴 Critical | 132 | Unbounded parallelism |
-
-**Scores:** dotnet-perf-skills **4/5**, dotnet-perf-skills-improved **5/5**, no-skills **4/5**.
-
-**Verdict:** **dotnet-perf-skills-improved** best combines socket-risk, latency, throttling, and cancellation coverage.
+**Score:** dotnet-diag-auto-improve = **5/5** (identifies all required async/IO anti-patterns and includes mitigation patterns).  
+**Verdict:** **dotnet-diag-auto-improve** is strong and production-relevant in async/IO analysis.
 
 ## 5. Reflection and Serialization Overhead [HIGH]
 
-**dotnet-perf-skills**
-> #### 3. Uncached `new JsonSerializerOptions` Per Call (5 instances)  
-> #### 11. Uncached Reflection in EntityMapper (6 calls)
+**dotnet-diag-auto-improve**:
+> #### 2. Uncached `new JsonSerializerOptions` Per Call (5 instances)
+> #### 8. Uncached Reflection — `GetProperties()`/`GetProperty()`/`SetValue()` Per Call
+> - Full `Deserialize*` hot-path hits: **4**
+> - `Utf8JsonReader`/`JsonDocument` usage sites: **0** — partial parsing ... is a valid optimization
 
-**dotnet-perf-skills-improved**
-> #### 3. Uncached `new JsonSerializerOptions` per call (4 instances) ... 592x slower  
-> #### 8. Uncached reflection `GetProperties()` / `GetProperty()` in hot paths
-
-**no-skills**
-> | 1 | 🟡 Moderate | 74, 117, 135, 142 | `new JsonSerializerOptions` per call |  
-> | 4 | 🟡 Moderate | 77 | Uncached `GetProperties()` per call |
-
-**Scores:** dotnet-perf-skills **4/5**, dotnet-perf-skills-improved **5/5**, no-skills **4/5**.
-
-**Verdict:** **dotnet-perf-skills-improved** provides the clearest impact framing and best implementation guidance.
+**Score:** dotnet-diag-auto-improve = **5/5** (matches all reflection/serialization targets, including partial-parse guidance).  
+**Verdict:** **dotnet-diag-auto-improve** is complete and actionable here.
 
 ## 6. Structural Optimization Detection [HIGH]
 
-**dotnet-perf-skills**
-> #### 19. 0 of 17 Classes Are Sealed  
-> #### 21. `static readonly Dictionary<>` — FrozenDictionary Candidates (2 instances)
+**dotnet-diag-auto-improve**:
+> #### 23. Unsealed Leaf Classes — 0 of 26 Non-Abstract Classes Are Sealed
+> #### 24. Structs Without `IEquatable<T>` — 0 of 3 Structs Implement It
+> #### 27. `static readonly Dictionary<>` — FrozenDictionary Candidates (3 instances)
 
-**dotnet-perf-skills-improved**
-> | Structural: unsealed classes | devirtualization | **17** classes, **0** sealed |  
-> | Structural: `IEquatable<T>` on structs | boxing avoidance | **0** of **2** structs implement it |
+**Score:** dotnet-diag-auto-improve = **5/5** (covers sealing, struct equality, and FrozenDictionary opportunities).  
+**Verdict:** **dotnet-diag-auto-improve** provides strong structural optimization detection.
 
-**no-skills**
-> | 1 | ℹ️ Info | 11 | `Dictionary` could be `FrozenDictionary` |  
-> ### 6. Unsealed Leaf Classes (3 files)
+## 7. Aggregate and Replace Chain Detection [HIGH]
 
-**Scores:** dotnet-perf-skills **4/5**, dotnet-perf-skills-improved **5/5**, no-skills **4/5**.
+**dotnet-diag-auto-improve**:
+> #### 11. `.Aggregate()` with `.Replace()` — 16 Intermediate String Allocations
+> #### 22. `char.ToString()` Allocation in Loop
+> **Files:** UnitFormatter.cs:L60-L66 ... UnitFormatter.cs:L64
 
-**Verdict:** **dotnet-perf-skills-improved** is most complete on the exact structural criteria in the rubric.
+**Score:** dotnet-diag-auto-improve = **5/5** (explicitly catches both aggregate-replace chaining and per-iteration `char.ToString()` allocations).  
+**Verdict:** **dotnet-diag-auto-improve** handles this subtle pattern very well.
 
-## 7. Severity Classification Accuracy [HIGH]
+## 8. Span Usage Consistency [HIGH]
 
-**dotnet-perf-skills**
-> #### 7. `ContainsKey` + Indexer Double-Lookup (~12 instances)  
-> **Impact:** ~2× slower per lookup ... (listed under 🔴 Critical)
+**dotnet-diag-auto-improve**:
+> #### 14. `value[..n].TrimEnd()` Double Allocation
+> #### 15. Cross-File Inconsistency: `Substring` vs `AsSpan` in Truncators
+> #### 13. `List<char>` Where `ReadOnlySpan<char>` or String Would Suffice
 
-**dotnet-perf-skills-improved**
-> #### 20. `ContainsKey` + indexer double-lookup pattern (~12 instances)  
-> **Impact:** ~2x per-lookup overhead. Minor unless in proven hot path.
+**Score:** dotnet-diag-auto-improve = **5/5** (detects double-allocation, inconsistent Span adoption, and static char-set storage inefficiency).  
+**Verdict:** **dotnet-diag-auto-improve** is comprehensive on Span-related consistency issues.
 
-**no-skills**
-> - 🔴 **Critical**: 7 — socket exhaustion, O(n²) string concatenation in hot paths, regex allocation per log line  
-> - 🟡 **Moderate**: 24 — per-call regex instantiation, uncached reflection...
+## 9. Inheritance Sealing Accuracy [HIGH]
 
-**Scores:** dotnet-perf-skills **3/5** (some over-escalation), dotnet-perf-skills-improved **5/5** (best hot-path vs moderate/info separation), no-skills **3/5** (reasonable top priorities but less consistently tiered).
+**dotnet-diag-auto-improve**:
+> **Fix:** Add `sealed` keyword to all leaf classes. Leave `Ordinalizer` and `DefaultOrdinalizer` unsealed (they are base classes).
+> - Did **not** suggest sealing `Ordinalizer` or `DefaultOrdinalizer` (they are base classes with subclasses)
 
-**Verdict:** **dotnet-perf-skills-improved** has the most accurate severity ranking.
+**Score:** dotnet-diag-auto-improve = **5/5** (correctly identifies leaf classes while avoiding base-class false positives).  
+**Verdict:** **dotnet-diag-auto-improve** shows high precision in inheritance-aware sealing advice.
 
-## 8. Fix Recommendation Quality [HIGH]
+## 10. Params Overload Optimization [MODERATE]
 
-**dotnet-perf-skills**
-> **Fix:** Inject `IHttpClientFactory` or use a `static readonly HttpClient` with `PooledConnectionLifetime`.  
-> **Fix:** ... use `[GeneratedRegex]` source generator (preferred on .NET 7+).
+**dotnet-diag-auto-improve**:
+> #### 26. `params` Without Single-Argument Fast-Path Overloads (3 methods)
+> **Impact:** Always allocates a `params` array even for the common 1-argument case.
+> **Fix:** Add 1-argument and 2-argument overloads ...
 
-**dotnet-perf-skills-improved**
-> | 1 | Replace `new HttpClient()` with static/injected client | 🔴 ... |  
-> | 2 | Cache regex instances in `LogAnalyzer.TryParseLine` as `[GeneratedRegex]` | 🔴 >10x speedup |
+**Score:** dotnet-diag-auto-improve = **5/5** (finds exactly the expected params allocation pattern and recommends the standard fix).  
+**Verdict:** **dotnet-diag-auto-improve** fully satisfies this dimension.
 
-**no-skills**
-> 1. `NotificationService` — `new HttpClient()` per call → socket exhaustion (🔴)  
-> 5. `MarkdownStripper` — 45+ `RegexOptions.Compiled` instances bloating JIT startup (🟡)
+## 11. Severity Classification Accuracy [HIGH]
 
-**Scores:** dotnet-perf-skills **4/5**, dotnet-perf-skills-improved **5/5**, no-skills **3/5**.
+**dotnet-diag-auto-improve**:
+> | 🔴 Critical | 8 | `new HttpClient()` per call ... per-line `new Regex()` ... uncached `JsonSerializerOptions` |
+> | 🟡 Moderate | 14 | `+=` ... `RegexOptions.Compiled` ... `ContainsKey` + indexer ... |
+> | ℹ️ Info | 8 | Missing `sealed` ... `List` without capacity hints ... `params` ... |
 
-**Verdict:** **dotnet-perf-skills-improved** gives the most specific, API-correct, and execution-ready recommendations.
+**Score:** dotnet-diag-auto-improve = **4/5** (mostly well-prioritized with strong hot-path emphasis; minor over-severity risk where `ContainsKey+indexer` is promoted to critical in some contexts).  
+**Verdict:** **dotnet-diag-auto-improve** is strong overall, with small prioritization calibration room.
+
+## 12. Fix Recommendation Quality [HIGH]
+
+**dotnet-diag-auto-improve**:
+> **Fix:** Inject `IHttpClientFactory` or use a single `static readonly HttpClient`...
+> **Fix:** ... use `[GeneratedRegex]` ...
+> **Fix:** ... `StringComparison.OrdinalIgnoreCase` ...
+> **Fix:** ... `.ToFrozenDictionary()` ... `using System.Collections.Frozen;`
+
+**Score:** dotnet-diag-auto-improve = **5/5** (specific APIs, concrete patterns, and no unsafe/incorrect recommendations).  
+**Verdict:** **dotnet-diag-auto-improve** delivers highly actionable, technically correct fixes.
 
 ## Weighted Summary
 
-Weights: **Critical ×3**, **High ×2**.
+Weights used: Critical ×3, High ×2, Moderate ×1, Low ×0.5.
 
-| Configuration | Critical subtotal | High subtotal | Total weighted score |
-|---|---:|---:|---:|
-| dotnet-perf-skills | (4+4+4+4)×3 = 48 | (4+4+3+4)×2 = 30 | **78** |
-| dotnet-perf-skills-improved | (5+5+5+5)×3 = 60 | (5+5+5+5)×2 = 40 | **100** |
-| no-skills | (4+4+3+4)×3 = 45 | (4+4+3+3)×2 = 28 | **73** |
+| Configuration | Critical subtotal | High subtotal | Moderate subtotal | Total weighted score |
+|---|---:|---:|---:|---:|
+| dotnet-diag-auto-improve | 60 | 68 | 5 | **133** |
 
 ## What All Versions Get Right
 
-- They all identify the top production-risk issues: `new HttpClient()` per call and per-call/hot-path regex allocation.
-- They all flag startup/perf concerns around heavy `RegexOptions.Compiled` usage in `MarkdownStripper`.
-- They all detect O(n²)-style string-building patterns and recommend `StringBuilder`.
-- They all include actionable .NET-specific fixes (e.g., `GeneratedRegex`, `IHttpClientFactory`, `HashSet`, `TryGetValue`).
+- With only one discovered configuration in this run, there are no cross-version commonalities to compare.
+- The available output consistently provides exact hit counts, file/line evidence, and concrete fix directions.
 
 ## Summary: Impact of Skills
 
-**Ranking by weighted score:**  
-1. **dotnet-perf-skills-improved (100)**  
-2. **dotnet-perf-skills (78)**  
-3. **no-skills (73)**
-
-Most impactful differences were (1) better severity calibration, (2) stronger cross-cutting synthesis, and (3) more precise fix ordering in the improved skill output. Baseline (`no-skills`) is still substantial, but it is less consistent in prioritization and recommendation quality. The original skill configuration improves structure and actionability; the improved skill version is clearly the strongest overall.
+Ranked by impact, the strongest differentiators in this output are: **(1)** broad critical-pattern coverage with exact counts, **(2)** high-quality API-level remediation guidance, and **(3)** precision safeguards that avoid key false positives (not sealing base classes, not misusing GeneratedRegex on dynamic patterns).  
+Overall, `dotnet-diag-auto-improve` performs at an **excellent** level (133 weighted), with only minor severity-ranking tuning needed.
