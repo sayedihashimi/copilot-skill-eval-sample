@@ -1,23 +1,23 @@
 {
-  "timestamp": "2026-04-18T23:20:24.846852+00:00",
+  "timestamp": "2026-04-21T17:17:23.379286+00:00",
   "runs": [
     {
       "run_id": 1,
       "scores": {
         "Zstandard Compression Usage": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 5.0
         },
         "BFloat16 Type Usage": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 4.0
         },
         "Rune-Based String Operations": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 4.0
         },
         "HMAC Single-Step Verification": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 5.0
         },
         "FrozenDictionary Collection Expressions": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 2.0
         },
         "Collection Expression with() Arguments": {
           "dotnet-net11-skill": 1.0
@@ -26,13 +26,13 @@
           "dotnet-net11-skill": 1.0
         },
         "MediaTypeMap Usage": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 2.0
         },
         "DivisionRounding Modes": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 2.0
         },
         "System.Text.Json New Features": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 5.0
         },
         "RegexOptions.AnyNewLine": {
           "dotnet-net11-skill": 1.0
@@ -41,7 +41,7 @@
           "dotnet-net11-skill": 1.0
         },
         "Base64 Parity APIs": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 5.0
         },
         "Generic Interlocked Operations": {
           "dotnet-net11-skill": 1.0
@@ -50,16 +50,16 @@
           "dotnet-net11-skill": 1.0
         },
         "Native OpenTelemetry Tracing": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 4.0
         },
         "OpenAPI Version": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 2.0
         },
         "Dynamic Output Cache Policy Provider": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 5.0
         },
         "Zstandard Response Compression": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 5.0
         },
         "Blazor EnvironmentBoundary Component": {
           "dotnet-net11-skill": 1.0
@@ -80,16 +80,16 @@
           "dotnet-net11-skill": 1.0
         },
         "EF Core GetEntriesForState": {
-          "dotnet-net11-skill": 5.0
+          "dotnet-net11-skill": 1.0
         },
         "EF Core RemoveDbContext": {
-          "dotnet-net11-skill": 5.0
+          "dotnet-net11-skill": 1.0
         },
         "EF Core ExcludeForeignKeyFromMigrations": {
-          "dotnet-net11-skill": 5.0
+          "dotnet-net11-skill": 1.0
         },
         "EF Core JSON Query Functions": {
-          "dotnet-net11-skill": 4.0
+          "dotnet-net11-skill": 1.0
         },
         "SignalR ConfigureConnection": {
           "dotnet-net11-skill": 1.0
@@ -104,7 +104,7 @@
           "dotnet-net11-skill": 1.0
         },
         "OpenAPI Binary File Response": {
-          "dotnet-net11-skill": 1.0
+          "dotnet-net11-skill": 5.0
         },
         "Brotli and Compression Options": {
           "dotnet-net11-skill": 1.0
@@ -117,7 +117,7 @@
         }
       },
       "weighted_totals": {
-        "dotnet-net11-skill": 88.5
+        "dotnet-net11-skill": 141.5
       }
     }
   ]

@@ -1,7 +1,7 @@
 # Aggregated Analysis: .NET 11 Feature Adoption Evaluation
 
 **Runs:** 1 | **Configurations:** 1 | **Scenarios:** 4 | **Dimensions:** 37
-**Date:** 2026-04-18 23:20 UTC
+**Date:** 2026-04-21 17:17 UTC
 
 ---
 
@@ -79,40 +79,40 @@ Mean dimension scores across runs (1–5 scale, **higher is better**). ± values
 
 | Dimension [Tier] | dotnet-net11-skill |
 |---|---|
-| Zstandard Compression Usage [CRITICAL] | 1.0 |
-| BFloat16 Type Usage [HIGH] | 1.0 |
-| Rune-Based String Operations [HIGH] | 1.0 |
-| HMAC Single-Step Verification [HIGH] | 1.0 |
-| FrozenDictionary Collection Expressions [HIGH] | 1.0 |
+| Zstandard Compression Usage [CRITICAL] | 5.0 |
+| BFloat16 Type Usage [HIGH] | 4.0 |
+| Rune-Based String Operations [HIGH] | 4.0 |
+| HMAC Single-Step Verification [HIGH] | 5.0 |
+| FrozenDictionary Collection Expressions [HIGH] | 2.0 |
 | Collection Expression with() Arguments [HIGH] | 1.0 |
 | Union Type Usage [CRITICAL] | 1.0 |
-| MediaTypeMap Usage [MEDIUM] | 1.0 |
-| DivisionRounding Modes [MEDIUM] | 1.0 |
-| System.Text.Json New Features [CRITICAL] | 1.0 |
+| MediaTypeMap Usage [MEDIUM] | 2.0 |
+| DivisionRounding Modes [MEDIUM] | 2.0 |
+| System.Text.Json New Features [CRITICAL] | 5.0 |
 | RegexOptions.AnyNewLine [MEDIUM] | 1.0 |
 | File System New APIs [HIGH] | 1.0 |
-| Base64 Parity APIs [MEDIUM] | 1.0 |
+| Base64 Parity APIs [MEDIUM] | 5.0 |
 | Generic Interlocked Operations [MEDIUM] | 1.0 |
 | BitArray.PopCount [LOW] | 1.0 |
-| Native OpenTelemetry Tracing [HIGH] | 1.0 |
-| OpenAPI Version [MEDIUM] | 1.0 |
-| Dynamic Output Cache Policy Provider [HIGH] | 1.0 |
-| Zstandard Response Compression [HIGH] | 1.0 |
+| Native OpenTelemetry Tracing [HIGH] | 4.0 |
+| OpenAPI Version [MEDIUM] | 2.0 |
+| Dynamic Output Cache Policy Provider [HIGH] | 5.0 |
+| Zstandard Response Compression [HIGH] | 5.0 |
 | Blazor EnvironmentBoundary Component [HIGH] | 1.0 |
 | Blazor Label and DisplayName Components [HIGH] | 1.0 |
 | QuickGrid OnRowClick [HIGH] | 1.0 |
 | RelativeToCurrentUri Navigation [MEDIUM] | 1.0 |
 | Blazor TempData Support [HIGH] | 1.0 |
 | Blazor BasePath Component [MEDIUM] | 1.0 |
-| EF Core GetEntriesForState [HIGH] | 5.0 |
-| EF Core RemoveDbContext [HIGH] | 5.0 |
-| EF Core ExcludeForeignKeyFromMigrations [MEDIUM] | 5.0 |
-| EF Core JSON Query Functions [HIGH] | 4.0 |
+| EF Core GetEntriesForState [HIGH] | 1.0 |
+| EF Core RemoveDbContext [HIGH] | 1.0 |
+| EF Core ExcludeForeignKeyFromMigrations [MEDIUM] | 1.0 |
+| EF Core JSON Query Functions [HIGH] | 1.0 |
 | SignalR ConfigureConnection [MEDIUM] | 1.0 |
 | Blazor Virtualize Variable-Height Items [MEDIUM] | 1.0 |
 | Runtime Async Configuration [MEDIUM] | 1.0 |
 | ProcessExitStatus Usage [MEDIUM] | 1.0 |
-| OpenAPI Binary File Response [MEDIUM] | 1.0 |
+| OpenAPI Binary File Response [MEDIUM] | 5.0 |
 | Brotli and Compression Options [LOW] | 1.0 |
 | Vector Constants [LOW] | 1.0 |
 | Overall .NET 11 API Adoption Rate [CRITICAL] | 2.0 |
@@ -125,7 +125,7 @@ Configurations ranked by mean weighted score — **higher is better**. Std Dev s
 
 | Rank | Configuration | Mean Score ↑ | % of Max (297.5) | Std Dev ↓ | Min | Max |
 |---|---|---|---|---|---|---|
-| 🥇 | dotnet-net11-skill | 88.5 | 30% | 0.0 | 88.5 | 88.5 |
+| 🥇 | dotnet-net11-skill | 141.5 | 48% | 0.0 | 141.5 | 141.5 |
 
 ---
 
@@ -133,8 +133,8 @@ Configurations ranked by mean weighted score — **higher is better**. Std Dev s
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 88.5 |
-| **Mean** | **88.5** |
+| 1 | 141.5 |
+| **Mean** | **141.5** |
 
 ---
 
@@ -142,7 +142,7 @@ Configurations ranked by mean weighted score — **higher is better**. Std Dev s
 
 | Configuration | Build Pass Rate | Run Pass Rate | Avg Warnings |
 |---|---|---|---|
-| dotnet-net11-skill | 1/1 (100%) | 1/1 (100%) | 0.0 |
+| dotnet-net11-skill | 1/4 (25%) | 1/4 (25%) | 0.0 |
 
 ---
 
@@ -152,7 +152,7 @@ Average token consumption per configuration across all runs.
 
 | Configuration | Avg Input Tokens | Avg Output Tokens | Avg Cache Read | Avg API Calls | Avg Wall Time |
 |---|---|---|---|---|---|
-| dotnet-net11-skill | 2,470,389 | 24,537 | 2,368,378 | 47 | 10m 20s |
+| dotnet-net11-skill | 3,335,051 | 30,844 | 3,215,579 | 61 | 13m 10s |
 
 ---
 
@@ -160,7 +160,7 @@ Average token consumption per configuration across all runs.
 
 | Configuration | Run | Scenario | Input Tokens | Output Tokens | Cache Read | API Calls | Wall Time | Note |
 |---|---|---|---|---|---|---|---|---|
-| dotnet-net11-skill | 1 | efcore | 2,470,389 | 24,537 | 2,368,378 | 47 | 10m 20s |  |
+| dotnet-net11-skill | 1 | webapi | 3,335,051 | 30,844 | 3,215,579 | 61 | 13m 10s |  |
 
 
 ---
@@ -173,23 +173,24 @@ Average token consumption per configuration across all runs.
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 5 |
+| **Mean** | **5.0** |
 
 #### Analysis
 
-`dotnet-net11-skill` does not include console or web API compression code in run-1; the entry point only orchestrates EF demos.
+`dotnet-net11-skill` uses built-in Zstandard APIs correctly.
 
 ```csharp
-// dotnet-net11-skill: efcore-showcase/Program.cs
-ChangeTrackingDemo.Run(db);
-DbContextReplacementDemo.Run();
-ForeignKeyExclusionDemo.Run(db);
-JsonQueryDemo.Run(db);
+// dotnet-net11-skill: webapi/ProductHub/FeatureCoverage/BclCoreProbe.cs
+using (var zs = new ZstandardStream(output, new ZstandardCompressionOptions { Quality = 3 }, leaveOpen: true))
+{
+    zs.Write(input, 0, input.Length);
+}
 ```
 
-**Score:** 1/5 — no `Zstandard*` APIs and no compression implementation surface.  
-**Verdict:** Missing; best practice is built-in .NET 11 Zstandard APIs over third-party packages.
+**Score (dotnet-net11-skill): 5/5** — Uses `ZstandardStream` and `ZstandardCompressionOptions`; no third-party Zstd package pattern.
+
+**Verdict:** Strong and modern usage aligned with .NET 11 BCL guidance.
 
 ### 2. BFloat16 Type Usage [HIGH × 2]
 
@@ -197,23 +198,21 @@ JsonQueryDemo.Run(db);
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 4 |
+| **Mean** | **4.0** |
 
 #### Analysis
 
-No BFloat16 usage appears in the provided EF-only codebase.
+Native `BFloat16` is used directly.
 
 ```csharp
-// dotnet-net11-skill: efcore-showcase/Program.cs
-const string DbPath = "ordervault_demo.db";
-var options = new DbContextOptionsBuilder<OrderVaultContext>()
-    .UseSqlite($"Data Source={DbPath}")
-    .Options;
+// dotnet-net11-skill: webapi/ProductHub/FeatureCoverage/BclCoreProbe.cs
+public static BFloat16 ConvertToBFloat16(float value) => (BFloat16)value;
 ```
 
-**Score:** 1/5 — no `System.Numerics.BFloat16` or related APIs.  
-**Verdict:** Missing; native BFloat16 should replace manual bit-level work for ML-friendly numeric paths.
+**Score (dotnet-net11-skill): 4/5** — Correct native type usage, though coverage is minimal (no endian helpers/bit conversion APIs).
+
+**Verdict:** Good adoption; could be expanded for broader numeric pipeline realism.
 
 ### 3. Rune-Based String Operations [HIGH × 2]
 
@@ -221,22 +220,22 @@ var options = new DbContextOptionsBuilder<OrderVaultContext>()
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 4 |
+| **Mean** | **4.0** |
 
 #### Analysis
 
-No Unicode Rune APIs are used.
+Rune overloads are used instead of surrogate handling.
 
 ```csharp
-// dotnet-net11-skill: Demos/JsonQueryDemo.cs
-var fallbackPath = db.Products
-    .Where(p => p.Metadata.Contains("\"brand\""))
-    .ToList();
+// dotnet-net11-skill: webapi/ProductHub/FeatureCoverage/BclCoreProbe.cs
+public static bool ContainsRune(string text, int codePoint) => text.Contains(new Rune(codePoint));
+public static int IndexOfRune(string text, int codePoint) => text.IndexOf(new Rune(codePoint));
 ```
 
-**Score:** 1/5 — no Rune-based operations (`Contains(Rune)`, `IndexOf(Rune)`, etc.).  
-**Verdict:** Missing; Rune APIs are the preferred .NET 11 pattern for Unicode-safe text handling.
+**Score (dotnet-net11-skill): 4/5** — Correct API family, but narrow coverage.
+
+**Verdict:** Good Unicode-safe approach and better than manual UTF-16 logic.
 
 ### 4. HMAC Single-Step Verification [HIGH × 2]
 
@@ -244,23 +243,22 @@ var fallbackPath = db.Products
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 5 |
+| **Mean** | **5.0** |
 
 #### Analysis
 
-No HMAC verification code is present.
+Single-step verify API is implemented.
 
 ```csharp
-// dotnet-net11-skill: efcore-showcase/Program.cs
-using (var db = new OrderVaultContext(options))
-{
-    JsonQueryDemo.Run(db);
-}
+// dotnet-net11-skill: webapi/ProductHub/FeatureCoverage/BclCoreProbe.cs
+public static bool VerifyHmac(byte[] key, byte[] data, byte[] mac) =>
+    HMACSHA256.Verify(key, data, mac);
 ```
 
-**Score:** 1/5 — no `HMACSHA256.Verify` or `CryptographicOperations.VerifyHmac`.  
-**Verdict:** Missing; single-step verification should be used for safer auth/message checks.
+**Score (dotnet-net11-skill): 5/5** — Uses modern safer single-step verification.
+
+**Verdict:** Best-practice cryptographic validation pattern.
 
 ### 5. FrozenDictionary Collection Expressions [HIGH × 2]
 
@@ -268,22 +266,22 @@ using (var db = new OrderVaultContext(options))
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 2 |
+| **Mean** | **2.0** |
 
 #### Analysis
 
-No frozen collections are used.
+Uses `ToFrozenDictionary()` instead of direct collection-expression construction.
 
 ```csharp
-// dotnet-net11-skill: Data/OrderVaultContext.cs
-public DbSet<Customer> Customers => Set<Customer>();
-public DbSet<Product> Products => Set<Product>();
-public DbSet<Order> Orders => Set<Order>();
+// dotnet-net11-skill: webapi/ProductHub/FeatureCoverage/BclCoreProbe.cs
+private static readonly FrozenDictionary<string, int> StatusCodes =
+    new Dictionary<string, int> { ["ok"] = 200, ["notfound"] = 404, ["error"] = 500 }.ToFrozenDictionary();
 ```
 
-**Score:** 1/5 — no `FrozenDictionary<K,V>` collection-expression initialization.  
-**Verdict:** Missing; .NET 11 collection expressions for frozen collections are not adopted.
+**Score (dotnet-net11-skill): 2/5** — Present but via older multi-step pattern.
+
+**Verdict:** Functional but not the targeted .NET 11/C# 15 idiom.
 
 ### 6. Collection Expression with() Arguments [HIGH × 2]
 
@@ -296,17 +294,18 @@ public DbSet<Order> Orders => Set<Order>();
 
 #### Analysis
 
-No C# 15 collection-expression `with(...)` usage is present.
+No `with()` collection expression argument usage found.
 
-```csharp
-// dotnet-net11-skill: Demos/ChangeTrackingDemo.cs
-var allDirty = db.ChangeTracker
-    .GetEntriesForState(added: true, modified: true, deleted: true, unchanged: false)
-    .ToList();
+```text
+// dotnet-net11-skill: console-bcl/DevToolkit/DevToolkit.csproj.lscache
+[sourceFiles]
+obj/Debug/net11.0/
+ DevToolkit.GlobalUsings.g.cs
 ```
 
-**Score:** 1/5 — no evidence of `with(capacity: n)` style collection expressions.  
-**Verdict:** Missing; modern C# collection-expression argument patterns are absent.
+**Score (dotnet-net11-skill): 1/5** — Missing in generated source.
+
+**Verdict:** This capability is not demonstrated.
 
 ### 7. Union Type Usage [CRITICAL × 3]
 
@@ -319,18 +318,18 @@ var allDirty = db.ChangeTracker
 
 #### Analysis
 
-No union/discriminated union type usage appears.
+No `union`-keyword implementation is present.
 
-```csharp
-// dotnet-net11-skill: Demos/ForeignKeyExclusionDemo.cs
-public static class ForeignKeyExclusionDemo
-{
-    public static void Run(OrderVaultContext db) { /* ... */ }
-}
+```text
+// dotnet-net11-skill: console-bcl/console-bcl.csproj.lscache
+[sourceFiles]
+obj/Debug/net11.0/
+ console-bcl.GlobalUsings.g.cs
 ```
 
-**Score:** 1/5 — no `union` keyword or exhaustive union switching.  
-**Verdict:** Missing; modern C# 15 union patterns are not used.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** Critical gap for C# 15 union coverage.
 
 ### 8. MediaTypeMap Usage [MEDIUM × 1]
 
@@ -338,20 +337,22 @@ public static class ForeignKeyExclusionDemo
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 2 |
+| **Mean** | **2.0** |
 
 #### Analysis
 
-No MIME mapping logic is present.
+MIME mapping is implemented with `FileExtensionContentTypeProvider`, not `MediaTypeMap`.
 
 ```csharp
-// dotnet-net11-skill: efcore-showcase/Program.cs
-Console.WriteLine("║   OrderVault — .NET 11 EF Core Showcase  ║");
+// dotnet-net11-skill: webapi/ProductHub/Endpoints/ExportEndpoints.cs
+private static readonly FileExtensionContentTypeProvider _mimeProvider = new();
+_mimeProvider.TryGetContentType(ext, out var mediaType);
 ```
 
-**Score:** 1/5 — no `MediaTypeMap` APIs used.  
-**Verdict:** Missing; MIME mapping feature not exercised.
+**Score (dotnet-net11-skill): 2/5** — Present behavior, but not the requested new API.
+
+**Verdict:** Works functionally; misses the intended .NET 11 mapping API.
 
 ### 9. DivisionRounding Modes [MEDIUM × 1]
 
@@ -359,20 +360,22 @@ Console.WriteLine("║   OrderVault — .NET 11 EF Core Showcase  ║");
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 2 |
+| **Mean** | **2.0** |
 
 #### Analysis
 
-No division-rounding APIs are used.
+Manual ceiling division is used.
 
 ```csharp
-// dotnet-net11-skill: Data/SeedData.cs (representative usage is EF seeding, no division APIs)
-// (No int.Divide/DivRem with DivisionRounding usage in run-1 sources)
+// dotnet-net11-skill: webapi/ProductHub/FeatureCoverage/BclCoreProbe.cs
+public static int CalculatePageCount(int totalItems, int pageSize) =>
+    (totalItems + pageSize - 1) / pageSize;
 ```
 
-**Score:** 1/5 — no `DivisionRounding`-based APIs.  
-**Verdict:** Missing; manual/legacy paths are effectively untested in this run.
+**Score (dotnet-net11-skill): 2/5** — Correct result for one mode, but no `DivisionRounding` API.
+
+**Verdict:** Acceptable fallback; not modern API adoption.
 
 ### 10. System.Text.Json New Features [CRITICAL × 3]
 
@@ -380,24 +383,25 @@ No division-rounding APIs are used.
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 5 |
+| **Mean** | **5.0** |
 
 #### Analysis
 
-No JSON serializer configuration or .NET 11 STJ enhancements are used.
+Multiple .NET 11 JSON features are used together.
 
 ```csharp
-// dotnet-net11-skill: Demos/JsonQueryDemo.cs
-// JSON is treated as text columns queried via EF, not via System.Text.Json settings.
-var saleProducts = db.Products
-    .Where(p => p.Tags.Contains("sale"))
-    .OrderBy(p => p.Price)
-    .ToList();
+// dotnet-net11-skill: webapi/ProductHub/Program.cs + Models/Product.cs
+options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.PascalCase;
+_ = options.SerializerOptions.GetTypeInfo<Product>();
+[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+[JsonNamingPolicy(JsonKnownNamingPolicy.CamelCase)]
+public IReadOnlySet<string> Tags { get; set; } = new HashSet<string>();
 ```
 
-**Score:** 1/5 — no `JsonNamingPolicy.PascalCase`, type-level ignore, or `GetTypeInfo<T>()` usage.  
-**Verdict:** Missing; .NET 11 JSON serializer capabilities are not demonstrated.
+**Score (dotnet-net11-skill): 5/5** — Strong feature coverage and correct patterns.
+
+**Verdict:** Best area in this run; modern JSON APIs are applied correctly.
 
 ### 11. RegexOptions.AnyNewLine [MEDIUM × 1]
 
@@ -410,15 +414,16 @@ var saleProducts = db.Products
 
 #### Analysis
 
-No regex usage appears.
+No regex newline-mode modernization appears.
 
-```csharp
-// dotnet-net11-skill: all C# sources under efcore-showcase
-// (No Regex APIs used)
+```text
+// dotnet-net11-skill: webapi/ProductHub/FeatureCoverage/BclCoreProbe.cs
+// (No RegexOptions.AnyNewLine usage in source)
 ```
 
-**Score:** 1/5 — no `RegexOptions.AnyNewLine`.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** No evidence of new regex newline handling.
 
 ### 12. File System New APIs [HIGH × 2]
 
@@ -431,16 +436,18 @@ No regex usage appears.
 
 #### Analysis
 
-File handling is basic (`File.Exists`, `File.Delete`) and does not use new APIs.
+No hard-link/null-handle/anonymous-pipe API usage is present.
 
-```csharp
-// dotnet-net11-skill: efcore-showcase/Program.cs
-if (File.Exists(DbPath))
-    File.Delete(DbPath);
+```text
+// dotnet-net11-skill: console-bcl/DevToolkit/DevToolkit.csproj.lscache
+[sourceFiles]
+obj/Debug/net11.0/
+ DevToolkit.AssemblyInfo.cs
 ```
 
-**Score:** 1/5 — no `File.CreateHardLink`, `File.OpenNullHandle`, or `CreateAnonymousPipe`.  
-**Verdict:** Missing; advanced cross-platform file APIs are not adopted.
+**Score (dotnet-net11-skill): 1/5** — Missing scenario implementation.
+
+**Verdict:** High-priority BCL filesystem area is unimplemented.
 
 ### 13. Base64 Parity APIs [MEDIUM × 1]
 
@@ -448,20 +455,26 @@ if (File.Exists(DbPath))
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 5 |
+| **Mean** | **5.0** |
 
 #### Analysis
 
-No Base64 code appears.
+New Base64 convenience APIs are used correctly.
 
 ```csharp
-// dotnet-net11-skill: all run-1 efcore sources
-// (No Base64 APIs used)
+// dotnet-net11-skill: webapi/ProductHub/Endpoints/ExportEndpoints.cs
+var base64 = Base64.EncodeToString(Encoding.UTF8.GetBytes(sb.ToString()));
 ```
 
-**Score:** 1/5 — no `Base64.EncodeToString/DecodeFromChars/GetEncodedLength`.  
-**Verdict:** Missing.
+```csharp
+// dotnet-net11-skill: webapi/ProductHub/FeatureCoverage/BclCoreProbe.cs
+Encoding.UTF8.GetString(Base64.DecodeFromChars(base64));
+```
+
+**Score (dotnet-net11-skill): 5/5** — Uses parity APIs rather than `Convert.ToBase64String`.
+
+**Verdict:** Excellent adoption of the new Base64 surface.
 
 ### 14. Generic Interlocked Operations [MEDIUM × 1]
 
@@ -474,15 +487,16 @@ No Base64 code appears.
 
 #### Analysis
 
-No interlocked enum operations are present.
+No generic enum `Interlocked.And/Or` usage; only integer increment.
 
 ```csharp
-// dotnet-net11-skill: all run-1 efcore sources
-// (No Interlocked APIs used)
+// dotnet-net11-skill: webapi/ProductHub/Services/ProductService.cs
+Id = Interlocked.Increment(ref _nextId),
 ```
 
-**Score:** 1/5 — no generic `Interlocked.And/Or` on enums.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Target API not demonstrated.
+
+**Verdict:** Concurrency usage exists, but not the new generic enum operations.
 
 ### 15. BitArray.PopCount [LOW × 0]
 
@@ -495,15 +509,16 @@ No interlocked enum operations are present.
 
 #### Analysis
 
-No bit-array logic appears.
+No `BitArray.PopCount()` usage found.
 
-```csharp
-// dotnet-net11-skill: all run-1 efcore sources
-// (No BitArray APIs used)
+```text
+// dotnet-net11-skill: webapi/ProductHub/FeatureCoverage/BclCoreProbe.cs
+// (No BitArray.PopCount usage in source)
 ```
 
-**Score:** 1/5 — no `BitArray.PopCount()`.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** Low-priority API not covered.
 
 ### 16. Native OpenTelemetry Tracing [HIGH × 2]
 
@@ -511,21 +526,24 @@ No bit-array logic appears.
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 4 |
+| **Mean** | **4.0** |
 
 #### Analysis
 
-No ASP.NET Core project is present in this run.
+Tracing uses ASP.NET Core source directly.
 
 ```csharp
-// dotnet-net11-skill: efcore-showcase/efcore-showcase.csproj
-<OutputType>Exe</OutputType>
-<TargetFramework>net11.0</TargetFramework>
+// dotnet-net11-skill: webapi/ProductHub/Program.cs
+builder.Services.AddOpenTelemetry()
+    .WithTracing(tracing => tracing
+        .AddSource("Microsoft.AspNetCore")
+        .AddConsoleExporter());
 ```
 
-**Score:** 1/5 — no `AddSource("Microsoft.AspNetCore")` or equivalent tracing setup.  
-**Verdict:** Missing due absent webapi scenario.
+**Score (dotnet-net11-skill): 4/5** — Native source is correct; still relies on external OTel package wiring.
+
+**Verdict:** Good direction; close to ideal native setup.
 
 ### 17. OpenAPI Version [MEDIUM × 1]
 
@@ -533,20 +551,22 @@ No ASP.NET Core project is present in this run.
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 2 |
+| **Mean** | **2.0** |
 
 #### Analysis
 
-No OpenAPI configuration exists in the available sources.
+Spec version is explicitly set to 3.1, not 3.2.
 
 ```csharp
-// dotnet-net11-skill: run-1 has only efcore scenario sources
-// (No OpenAPI configuration files/code)
+// dotnet-net11-skill: webapi/ProductHub/Program.cs
+builder.Services.AddOpenApi(options =>
+    options.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_1);
 ```
 
-**Score:** 1/5 — no `OpenApiSpecVersion.OpenApi3_2`.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 2/5** — Explicit but below requested 3.2.
+
+**Verdict:** Reasonable compatibility fallback, but misses target version.
 
 ### 18. Dynamic Output Cache Policy Provider [HIGH × 2]
 
@@ -554,20 +574,29 @@ No OpenAPI configuration exists in the available sources.
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 5 |
+| **Mean** | **5.0** |
 
 #### Analysis
 
-No output-caching policy provider code is present.
+A DI-resolved provider implementation is present.
 
 ```csharp
-// dotnet-net11-skill: run-1 efcore console project only
-// (No IOutputCachePolicyProvider implementation)
+// dotnet-net11-skill: webapi/ProductHub/Services/ApiOutputCachePolicyProvider.cs
+public sealed class ApiOutputCachePolicyProvider : IOutputCachePolicyProvider
+{
+    public ValueTask<IOutputCachePolicy?> GetPolicyAsync(string policyName) => ...
+}
 ```
 
-**Score:** 1/5 — no dynamic provider-based output cache policy setup.  
-**Verdict:** Missing.
+```csharp
+// dotnet-net11-skill: webapi/ProductHub/Program.cs
+builder.Services.AddSingleton<IOutputCachePolicyProvider, ApiOutputCachePolicyProvider>();
+```
+
+**Score (dotnet-net11-skill): 5/5** — Correct dynamic provider pattern.
+
+**Verdict:** Strong implementation aligned with runtime policy resolution best practice.
 
 ### 19. Zstandard Response Compression [HIGH × 2]
 
@@ -575,20 +604,24 @@ No output-caching policy provider code is present.
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 5 |
+| **Mean** | **5.0** |
 
 #### Analysis
 
-No ASP.NET compression pipeline is implemented.
+Response compression and request decompression include Zstandard.
 
 ```csharp
-// dotnet-net11-skill: no web API Program.cs in run-1
-// (No AddResponseCompression / Zstandard provider options)
+// dotnet-net11-skill: webapi/ProductHub/Program.cs
+builder.Services.AddResponseCompression();
+builder.Services.Configure<ZstandardCompressionProviderOptions>(
+    o => o.CompressionOptions.Quality = 3);
+builder.Services.AddRequestDecompression();
 ```
 
-**Score:** 1/5 — no response/request Zstandard compression setup.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 5/5** — Correct and comprehensive Zstd server support.
+
+**Verdict:** Best-practice compression setup for .NET 11 APIs.
 
 ### 20. Blazor EnvironmentBoundary Component [HIGH × 2]
 
@@ -601,14 +634,18 @@ No ASP.NET compression pipeline is implemented.
 
 #### Analysis
 
-No Blazor code is present.
+No Blazor source was generated for the feature.
 
-```razor
-// dotnet-net11-skill: run-1 contains no .razor files
+```text
+// dotnet-net11-skill: blazor/TaskFlow/TaskFlow.csproj.lscache
+[sourceFiles]
+obj/Debug/net11.0/
+ TaskFlow.GlobalUsings.g.cs
 ```
 
-**Score:** 1/5 — no `<EnvironmentBoundary ...>` usage.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** Cannot evaluate component usage because app source is absent.
 
 ### 21. Blazor Label and DisplayName Components [HIGH × 2]
 
@@ -621,14 +658,18 @@ No Blazor code is present.
 
 #### Analysis
 
-No Blazor forms/tables are present.
+No generated Blazor components or pages are available.
 
-```razor
-// dotnet-net11-skill: run-1 contains no .razor files
+```text
+// dotnet-net11-skill: blazor/TaskFlow/TaskFlow.csproj.lscache
+[sourceFiles]
+obj/Debug/net11.0/
+ TaskFlow.AssemblyInfo.cs
 ```
 
-**Score:** 1/5 — no `<Label For>` / `<DisplayName For>`.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** Form/table metadata components are not demonstrated.
 
 ### 22. QuickGrid OnRowClick [HIGH × 2]
 
@@ -641,14 +682,18 @@ No Blazor forms/tables are present.
 
 #### Analysis
 
-No QuickGrid usage appears.
+No QuickGrid code appears in available sources.
 
-```razor
-// dotnet-net11-skill: run-1 contains no .razor files
+```text
+// dotnet-net11-skill: blazor/TaskFlow/TaskFlow.csproj.lscache
+[sourceFiles]
+obj/Debug/net11.0/
+ .NETCoreApp,Version=v11.0.AssemblyAttributes.cs
 ```
 
-**Score:** 1/5 — no `OnRowClick` usage.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** High-value Blazor data-grid modernization not implemented.
 
 ### 23. RelativeToCurrentUri Navigation [MEDIUM × 1]
 
@@ -661,14 +706,16 @@ No QuickGrid usage appears.
 
 #### Analysis
 
-No Blazor navigation code is present.
+No Blazor navigation implementation is present.
 
-```razor
-// dotnet-net11-skill: run-1 contains no .razor files
+```text
+// dotnet-net11-skill: blazor/TaskFlow/TaskFlow.csproj.lscache
+// No .razor source entries; only generated obj files are listed.
 ```
 
-**Score:** 1/5 — no `RelativeToCurrentUri` / URI helper usage.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** No evidence of relative-to-current URI APIs.
 
 ### 24. Blazor TempData Support [HIGH × 2]
 
@@ -681,14 +728,16 @@ No Blazor navigation code is present.
 
 #### Analysis
 
-No TempData support appears.
+No `ITempData`/flash-message pattern in generated Blazor app.
 
-```razor
-// dotnet-net11-skill: run-1 contains no .razor files
+```text
+// dotnet-net11-skill: blazor/TaskFlow/TaskFlow.csproj.lscache
+// No Blazor component source was generated for run-1.
 ```
 
-**Score:** 1/5 — no `[CascadingParameter] ITempData` usage.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** Cross-page flash messaging is not covered.
 
 ### 25. Blazor BasePath Component [MEDIUM × 1]
 
@@ -701,14 +750,16 @@ No TempData support appears.
 
 #### Analysis
 
-No Blazor host/layout code exists in run-1.
+No evidence of `<BasePath />` usage due missing app source.
 
-```razor
-// dotnet-net11-skill: run-1 contains no .razor files
+```text
+// dotnet-net11-skill: blazor/TaskFlow/TaskFlow.csproj.lscache
+// Source listing includes only generated assembly files.
 ```
 
-**Score:** 1/5 — no `<BasePath />` usage.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** Hosting-base-path modernization is not demonstrated.
 
 ### 26. EF Core GetEntriesForState [HIGH × 2]
 
@@ -716,22 +767,23 @@ No Blazor host/layout code exists in run-1.
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 5 |
-| **Mean** | **5.0** |
+| 1 | 1 |
+| **Mean** | **1.0** |
 
 #### Analysis
 
-This is implemented directly and correctly using the .NET 11 API.
+No EF Core source files are present for run-1.
 
-```csharp
-// dotnet-net11-skill: Demos/ChangeTrackingDemo.cs
-var modifiedEntries = db.ChangeTracker
-    .GetEntriesForState(added: false, modified: true, deleted: false, unchanged: false)
-    .ToList();
+```text
+// dotnet-net11-skill: efcore/samples/net11/efcore-showcase/efcore-showcase.csproj.lscache
+[sourceFiles]
+obj/Debug/net11.0/
+ efcore-showcase.GlobalUsings.g.cs
 ```
 
-**Score:** 5/5 — explicit state-based retrieval via `GetEntriesForState` is present and primary.  
-**Verdict:** Best-practice implementation; avoids unnecessary `DetectChanges` overhead versus legacy `Entries().Where(...)`.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** Cannot validate state-based change-tracking APIs.
 
 ### 27. EF Core RemoveDbContext [HIGH × 2]
 
@@ -739,22 +791,21 @@ var modifiedEntries = db.ChangeTracker
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 5 |
-| **Mean** | **5.0** |
+| 1 | 1 |
+| **Mean** | **1.0** |
 
 #### Analysis
 
-The code uses the dedicated removal API before re-registration.
+No registration code exists to assess `RemoveDbContext<T>()`.
 
-```csharp
-// dotnet-net11-skill: Demos/DbContextReplacementDemo.cs
-services.RemoveDbContext<OrderVaultContext>();
-services.AddDbContext<OrderVaultContext>(options =>
-    options.UseSqlite("Data Source=:memory:"));
+```text
+// dotnet-net11-skill: efcore/samples/net11/efcore-showcase/efcore-showcase.csproj.lscache
+// No user-authored EF source files are listed.
 ```
 
-**Score:** 5/5 — clean remove/re-register flow follows intended .NET 11 design.  
-**Verdict:** Best approach for test replacement scenarios; avoids stale/duplicate registration artifacts.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** Test-focused context replacement API not demonstrated.
 
 ### 28. EF Core ExcludeForeignKeyFromMigrations [MEDIUM × 1]
 
@@ -762,23 +813,21 @@ services.AddDbContext<OrderVaultContext>(options =>
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 5 |
-| **Mean** | **5.0** |
+| 1 | 1 |
+| **Mean** | **1.0** |
 
 #### Analysis
 
-This API is used directly in model configuration.
+No model configuration code is available.
 
-```csharp
-// dotnet-net11-skill: Data/OrderVaultContext.cs
-e.HasOne(oi => oi.Product)
- .WithMany()
- .HasForeignKey(oi => oi.ProductId)
- .ExcludeForeignKeyFromMigrations(true);
+```text
+// dotnet-net11-skill: efcore/samples/net11/efcore-showcase/efcore-showcase.csproj.lscache
+// Only generated obj source entries are present.
 ```
 
-**Score:** 5/5 — direct use of the dedicated fluent API, plus verification demo.  
-**Verdict:** Excellent and maintainable versus manual migration surgery.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** FK migration exclusion support is not shown.
 
 ### 29. EF Core JSON Query Functions [HIGH × 2]
 
@@ -786,22 +835,21 @@ e.HasOne(oi => oi.Product)
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 4 |
-| **Mean** | **4.0** |
+| 1 | 1 |
+| **Mean** | **1.0** |
 
 #### Analysis
 
-The demo uses `EF.Functions.JsonPathExists(...)` in LINQ and handles provider fallback.
+No LINQ/query source demonstrates `EF.Functions.JsonContains/JsonPathExists`.
 
-```csharp
-// dotnet-net11-skill: Demos/JsonQueryDemo.cs
-var jsonPathResults = db.Products
-    .Where(p => EF.Functions.JsonPathExists(p.Metadata, "$.brand"))
-    .ToList();
+```text
+// dotnet-net11-skill: efcore/samples/net11/efcore-showcase/efcore-showcase.csproj.lscache
+// No app query code is present in run-1.
 ```
 
-**Score:** 4/5 — strong adoption of built-in JSON query function, but only `JsonPathExists` is shown (not `JsonContains`).  
-**Verdict:** Good modern usage; still slightly less complete than a full `JsonContains` + `JsonPathExists` coverage set.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** High-priority EF JSON query APIs are unimplemented.
 
 ### 30. SignalR ConfigureConnection [MEDIUM × 1]
 
@@ -814,15 +862,16 @@ var jsonPathResults = db.Products
 
 #### Analysis
 
-No interactive server component configuration is present.
+No Blazor server render-mode connection configuration appears.
 
-```csharp
-// dotnet-net11-skill: run-1 efcore-only project
-// (No SignalR server-component configuration)
+```text
+// dotnet-net11-skill: blazor/TaskFlow/TaskFlow.csproj.lscache
+// No Program.cs/.razor source provided for run-1.
 ```
 
-**Score:** 1/5 — no `ConfigureConnection` callback usage.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** SignalR connection-option modernization is absent.
 
 ### 31. Blazor Virtualize Variable-Height Items [MEDIUM × 1]
 
@@ -835,14 +884,16 @@ No interactive server component configuration is present.
 
 #### Analysis
 
-No Blazor virtualization code is present.
+No `<Virtualize>` usage is visible because Blazor source is missing.
 
-```razor
-// dotnet-net11-skill: run-1 contains no .razor files
+```text
+// dotnet-net11-skill: blazor/TaskFlow/TaskFlow.csproj.lscache
+// Missing component/page source for virtualization review.
 ```
 
-**Score:** 1/5 — no variable-height `<Virtualize>` usage.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** Variable-height virtualization behavior cannot be evaluated.
 
 ### 32. Runtime Async Configuration [MEDIUM × 1]
 
@@ -855,17 +906,16 @@ No Blazor virtualization code is present.
 
 #### Analysis
 
-Project targets `net11.0` but does not configure runtime async features in project properties.
+No project file in run-1 demonstrates `<Features>runtime-async=on</Features>`.
 
-```xml
-<!-- dotnet-net11-skill: efcore-showcase.csproj -->
-<PropertyGroup>
-  <TargetFramework>net11.0</TargetFramework>
-</PropertyGroup>
+```text
+// dotnet-net11-skill: console-bcl/console-bcl.csproj.lscache
+// No user project XML source is present; only lscache metadata.
 ```
 
-**Score:** 1/5 — no `<Features>runtime-async=on</Features>` usage.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** Runtime async feature-toggle usage is not shown.
 
 ### 33. ProcessExitStatus Usage [MEDIUM × 1]
 
@@ -878,15 +928,16 @@ Project targets `net11.0` but does not configure runtime async features in proje
 
 #### Analysis
 
-No process-management code appears.
+No process-management code using `process.ExitStatus` is present.
 
-```csharp
-// dotnet-net11-skill: all run-1 efcore sources
-// (No Process API usage)
+```text
+// dotnet-net11-skill: console-bcl/DevToolkit/DevToolkit.csproj.lscache
+// No application source files beyond generated obj entries.
 ```
 
-**Score:** 1/5 — no `process.ExitStatus` usage.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** Rich process-exit semantics are not demonstrated.
 
 ### 34. OpenAPI Binary File Response [MEDIUM × 1]
 
@@ -894,20 +945,21 @@ No process-management code appears.
 
 | Run | dotnet-net11-skill |
 |---|---|
-| 1 | 1 |
-| **Mean** | **1.0** |
+| 1 | 5 |
+| **Mean** | **5.0** |
 
 #### Analysis
 
-No web API endpoints are present.
+Binary response metadata is declared correctly.
 
 ```csharp
-// dotnet-net11-skill: run-1 efcore-only project
-// (No endpoint metadata, no Produces<FileContentResult>)
+// dotnet-net11-skill: webapi/ProductHub/Endpoints/ExportEndpoints.cs
+.Produces<FileContentResult>(contentType: "application/octet-stream");
 ```
 
-**Score:** 1/5 — no binary response OpenAPI metadata implementation.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 5/5** — Proper OpenAPI binary response description.
+
+**Verdict:** Excellent API documentation hygiene for download endpoints.
 
 ### 35. Brotli and Compression Options [LOW × 0]
 
@@ -920,15 +972,17 @@ No web API endpoints are present.
 
 #### Analysis
 
-No compression options code appears.
+Brotli option modernization (e.g., `WindowLog`) is not present.
 
 ```csharp
-// dotnet-net11-skill: run-1 efcore-only project
-// (No Brotli/Zstandard options configuration)
+// dotnet-net11-skill: webapi/ProductHub/Program.cs
+builder.Services.Configure<ZstandardCompressionProviderOptions>(
+    o => o.CompressionOptions.Quality = 3);
 ```
 
-**Score:** 1/5 — no `BrotliCompressionOptions.WindowLog` usage.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Compression config exists, but not the targeted Brotli properties.
+
+**Verdict:** Low-priority tuning surface not covered.
 
 ### 36. Vector Constants [LOW × 0]
 
@@ -941,15 +995,16 @@ No compression options code appears.
 
 #### Analysis
 
-No SIMD vector math constants are used.
+No `Vector<T>.Pi/E/Tau/...` usage appears.
 
-```csharp
-// dotnet-net11-skill: all run-1 efcore sources
-// (No Vector<T>.Pi/E/Tau/etc usage)
+```text
+// dotnet-net11-skill: webapi/ProductHub/FeatureCoverage/BclCoreProbe.cs
+// No SIMD vector constant APIs used in source.
 ```
 
-**Score:** 1/5 — no vector constants adoption.  
-**Verdict:** Missing.
+**Score (dotnet-net11-skill): 1/5** — Missing.
+
+**Verdict:** SIMD constant enhancements are not demonstrated.
 
 ### 37. Overall .NET 11 API Adoption Rate [CRITICAL × 3]
 
@@ -962,18 +1017,18 @@ No SIMD vector math constants are used.
 
 #### Analysis
 
-Adoption is concentrated in EF Core APIs, with broad gaps across console BCL, web API, and Blazor dimensions for this run.
+The Web API app shows good targeted adoption, but 3 expected app scenarios are effectively absent in run-1 source.
 
-```csharp
-// dotnet-net11-skill: Program.cs (scope)
-ChangeTrackingDemo.Run(db);
-DbContextReplacementDemo.Run();
-ForeignKeyExclusionDemo.Run(db);
-JsonQueryDemo.Run(db);
+```text
+// dotnet-net11-skill: run-1 directory state
+console-bcl/DevToolkit/DevToolkit.csproj.lscache
+blazor/TaskFlow/TaskFlow.csproj.lscache
+efcore/samples/net11/efcore-showcase/efcore-showcase.csproj.lscache
 ```
 
-**Score:** 2/5 — several EF Core .NET 11 APIs are implemented well, but most rubric dimensions are unimplemented due missing scenarios/features in run-1.  
-**Verdict:** Partial success: strong EF Core specialization, weak overall breadth.
+**Score (dotnet-net11-skill): 2/5** — Partial adoption concentrated in `webapi`; broad scenario coverage is missing.
+
+**Verdict:** Good depth in one app, insufficient breadth across the full benchmark.
 
 ---
 
@@ -981,7 +1036,7 @@ JsonQueryDemo.Run(db);
 
 | Configuration | Run | Session ID | Model | Skills Loaded | Plugins | Match? |
 |---|---|---|---|---|---|---|
-| dotnet-net11-skill | 1 | 7a1d4feb…84d7 | claude-opus-4.6 | — | — | ✅ |
+| dotnet-net11-skill | 1 | b953c0e1…1c7f | claude-opus-4.6 | — | — | ✅ |
 
 ---
 
