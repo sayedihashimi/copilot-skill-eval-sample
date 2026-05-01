@@ -1,0 +1,19 @@
+{
+  "name": "vally-eval",
+  "version": "1.0.0",
+  "description": "This is the Vally equivalent of the `evals/dotnet-perf` copilot-skill-eval evaluation.\r It evaluates how [dotnet/skills](https://github.com/dotnet/skills) performance skills\r improve Copilot's ability to detect .NET performance anti-patterns.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@github/copilot-sdk": "^0.3.0",
+    "@microsoft/vally": "^0.3.0",
+    "@microsoft/vally-cli": "^0.3.0",
+    "yaml": "^2.8.3"
+  }
+}

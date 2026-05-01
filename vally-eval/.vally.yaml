@@ -11,12 +11,12 @@ paths:
 environments:
   baseline:
     files:
-      - src: ../samples/perf01
+      - src: C:\data\mycode\copilot-skill-eval-sample\vally01\samples\perf01
         dest: perf01
 
   dotnet-perf-skills:
     files:
-      - src: ../samples/perf01
+      - src: C:\data\mycode\copilot-skill-eval-sample\vally01\samples\perf01
         dest: perf01
     skills:
       - C:\data\mycode\skills\_main\plugins\dotnet-diag\skills\analyzing-dotnet-performance

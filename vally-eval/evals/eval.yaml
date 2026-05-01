@@ -16,7 +16,7 @@ type: capability
 config:
   runs: 3
   timeout: 300000
-  model: claude-sonnet-4-20250514
+  model: claude-sonnet-4
   judge_model: gpt-4.1
 
 stimuli:
@@ -409,25 +409,14 @@ stimuli:
     graders: *perf-graders
 
 # ── Scoring ──────────────────────────────────────────────────────────────
-# Weights mirror copilot-skill-eval tiers: critical=3, high=2, moderate=1.
-# The output-file-created grader is a gate (low weight, must pass).
+# Note: vally v0.3.0 scoring.weights only supports grader *types* as keys
+# (e.g., "prompt", "file-exists"), not individual grader names. Per-grader
+# weighted scoring is not yet supported. The aggregate score is an unweighted
+# average of all graders. The threshold controls pass/fail.
+#
+# Tier mapping for reference (not enforced by vally yet):
+#   Critical (3×): regex, string, collection, async
+#   High (2×): reflection, structural, aggregate, span, inheritance, severity, fix-quality
+#   Moderate (1×): params-overload
 scoring:
   threshold: 0.5
-  weights:
-    # Critical tier (3×)
-    regex-antipattern-detection: 3.0
-    string-allocation-detection: 3.0
-    collection-linq-efficiency: 3.0
-    async-io-pattern-detection: 3.0
-    # High tier (2×)
-    reflection-serialization-overhead: 2.0
-    structural-optimization-detection: 2.0
-    aggregate-replace-chain-detection: 2.0
-    span-usage-consistency: 2.0
-    inheritance-sealing-accuracy: 2.0
-    severity-classification-accuracy: 2.0
-    fix-recommendation-quality: 2.0
-    # Moderate tier (1×)
-    params-overload-optimization: 1.0
-    # Structural gate
-    output-file-created: 0.5
