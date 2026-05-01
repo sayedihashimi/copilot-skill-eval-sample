@@ -1,0 +1,433 @@
+# .NET Performance Analysis Skill Evaluation — Vally Edition
+#
+# Evaluates how the dotnet/skills performance-related skills improve Copilot's
+# ability to detect performance anti-patterns in existing .NET code compared to
+# baseline Copilot.
+#
+# Equivalent to the copilot-skill-eval dotnet-perf evaluation.
+
+name: ".NET Performance Analysis Skill Evaluation"
+description: >
+  Evaluate how the dotnet/skills performance-related skills (analyzing-dotnet-performance,
+  microbenchmarking, dotnet-trace-collect) improve Copilot's ability to detect performance
+  anti-patterns in existing .NET code compared to baseline Copilot.
+type: capability
+
+config:
+  runs: 3
+  timeout: 300000
+  model: claude-sonnet-4-20250514
+  judge_model: gpt-4.1
+
+stimuli:
+  # ── Baseline (no skills) ──────────────────────────────────────────────────
+  - name: analyze-perf-baseline
+    tags:
+      configuration: baseline
+    environment: baseline
+    prompt: |
+      You are a .NET performance expert. There is an **existing** .NET class library project already on disk at `./perf01/`. **Do NOT create any source files.** The project and all its source code already exist. Your job is to read the existing code and analyze it for performance issues.
+
+      ## Instructions
+
+      1. **Read the existing source files** from the `./perf01/` directory. Start by listing the files with a glob or directory listing, then read each `.cs` file.
+
+      2. **Scan for performance anti-patterns** across these categories:
+         - **Regex** — per-call instantiation, excessive `RegexOptions.Compiled`, missing `[GeneratedRegex]`
+         - **String** — `+=` in loops, `.Replace()` chains, `.ToLower()`/`.ToUpper()` without culture
+         - **Memory/Allocation** — boxing structs, `params` arrays, closure captures, unnecessary `.ToList()`
+         - **Collections** — `List.Contains` (O(n)), `ContainsKey` + indexer, missing capacity hints, `FrozenDictionary` candidates
+         - **Async/IO** — `new HttpClient` per call, sequential awaits in loops, missing cancellation tokens, unbounded parallelism
+         - **Reflection** — uncached `GetProperties()`/`SetValue()` in hot paths
+         - **Structural** — unsealed leaf classes, structs without `IEquatable<T>`
+         - **Serialization** — `new JsonSerializerOptions` per call, repeated deserialization
+         - **Span** — inconsistent `AsSpan` usage across similar classes, `value[..n].TrimEnd()` double allocation, `List<char>[]` vs `ReadOnlySpan<char>`
+         - **Aggregate** — `.Aggregate()` with `.Replace()` creating intermediate string allocations, `char.ToString()` in loops
+         - **Inheritance** — leaf classes that should be `sealed` vs. base classes that must remain unsealed
+         - **Params** — `params` methods without single-argument fast-path overloads
+
+      3. **Classify each finding** by severity:
+         - 🔴 **Critical** — >10x performance regression potential or production incident risk (e.g., socket exhaustion, O(n²) in hot paths)
+         - 🟡 **Moderate** — 2-10x regression, measurable impact at scale
+         - ℹ️ **Info** — Best practice improvement, minor allocation savings
+
+      4. **Provide specific fix recommendations** for each finding. Reference concrete .NET APIs and patterns. Include brief code snippets showing the before/after where helpful.
+
+      ## Output
+
+      Write your complete analysis to a file named `performance-analysis.md` in the current directory. Use the following structure:
+
+      ```markdown
+      # Performance Analysis Report
+
+      ## Executive Summary
+      (Brief overview: total issues found, breakdown by severity, top priorities)
+
+      ## Findings by File
+      ### [filename]
+      (For each file, list findings with severity, description, and fix recommendation)
+
+      ## Cross-Cutting Concerns
+      (Patterns that appear across multiple files)
+
+      ## Prioritized Fix Recommendations
+      (Top 10 fixes ranked by impact, with effort estimates: quick-fix / moderate / significant)
+      ```
+
+    graders: &perf-graders
+      # ── Critical Tier (weight 3.0) ───────────────────────────────────────
+      - type: prompt
+        name: regex-antipattern-detection
+        config:
+          prompt: |
+            You are evaluating a .NET performance analysis report produced by an AI agent.
+            The agent analyzed a .NET class library with known performance anti-patterns.
+
+            Score this dimension: **Regex Anti-Pattern Detection**
+
+            What to look for:
+            - Does the analysis flag per-call `new Regex(...)` allocations (especially in hot paths like LogAnalyzer.TryParseLine)?
+            - Does it identify the 40+ RegexOptions.Compiled instances in MarkdownStripper as a startup budget problem?
+            - Does it recommend [GeneratedRegex] source generators on .NET 8+?
+
+            Why it matters: Regex misuse is one of the most common .NET performance issues.
+            Per-call instantiation can cause 10x+ regressions in hot paths, and excessive
+            Compiled usage bloats startup time.
+
+            Score on a 1-10 scale where:
+            - 1-3: Missing most or all regex issues
+            - 4-6: Identifies some regex issues but misses key patterns
+            - 7-8: Identifies most regex issues with reasonable recommendations
+            - 9-10: Comprehensive regex analysis with specific API recommendations
+          scoring: scale_1_10
+          threshold: 0.5
+
+      - type: prompt
+        name: string-allocation-detection
+        config:
+          prompt: |
+            You are evaluating a .NET performance analysis report produced by an AI agent.
+
+            Score this dimension: **String Allocation Detection**
+
+            What to look for:
+            - Does the analysis identify `string +=` in loops (CsvParser.ParseLine char-by-char, TemplateEngine.ProcessLoops, LogAnalyzer.Summarize)?
+            - Does it flag .Replace() chains allocating intermediate strings (SlugGenerator, MarkdownStripper)?
+            - Does it identify .ToLower()/.ToUpper() without StringComparison.Ordinal or culture specification?
+
+            Why it matters: String allocations in loops create O(n²) memory pressure and are a
+            top cause of GC pauses in .NET applications. Culture-unaware casing causes both
+            correctness bugs (Turkish-I) and unnecessary allocations.
+
+            Score on a 1-10 scale where:
+            - 1-3: Missing most string allocation issues
+            - 4-6: Identifies some but misses key patterns (e.g., Replace chains)
+            - 7-8: Identifies most patterns with good recommendations
+            - 9-10: Comprehensive string analysis with specific before/after fixes
+          scoring: scale_1_10
+          threshold: 0.5
+
+      - type: prompt
+        name: collection-linq-efficiency
+        config:
+          prompt: |
+            You are evaluating a .NET performance analysis report produced by an AI agent.
+
+            Score this dimension: **Collection and LINQ Efficiency**
+
+            What to look for:
+            - Does the analysis flag List.Contains for O(n) lookups instead of HashSet (SlugGenerator, JsonTransformer.Diff)?
+            - Does it identify List without capacity hints, unnecessary .ToList() materializations?
+            - Does it flag ContainsKey + indexer instead of TryGetValue?
+            - Does it identify .Distinct().ToList() allocations?
+            - Does it flag Skip().Take().ToList() sliding windows in LogAnalyzer.DetectAnomalies?
+
+            Why it matters: Collection misuse compounds in loops — O(n) lookups in O(m) loops
+            become O(n×m). Unnecessary materializations waste memory and GC budget.
+
+            Score on a 1-10 scale where:
+            - 1-3: Missing most collection/LINQ issues
+            - 4-6: Identifies obvious issues (e.g., List.Contains) but misses subtler patterns
+            - 7-8: Good coverage with specific API alternatives
+            - 9-10: Comprehensive collection analysis with all patterns identified
+          scoring: scale_1_10
+          threshold: 0.5
+
+      - type: prompt
+        name: async-io-pattern-detection
+        config:
+          prompt: |
+            You are evaluating a .NET performance analysis report produced by an AI agent.
+
+            Score this dimension: **Async and IO Pattern Detection**
+
+            What to look for:
+            - Does the analysis flag `new HttpClient()` per call in NotificationService (socket exhaustion risk)?
+            - Does it identify sequential awaits in loops (SendBatchAsync)?
+            - Does it flag unbounded parallelism (SendBatchParallelAsync)?
+            - Does it identify missing CancellationToken propagation?
+            - Does it flag Task.Delay without cancellation support?
+
+            Why it matters: Async/IO anti-patterns cause production incidents — socket exhaustion
+            crashes services, sequential awaits waste latency, and unbounded parallelism can
+            overwhelm downstream services.
+
+            Score on a 1-10 scale where:
+            - 1-3: Missing most async/IO issues
+            - 4-6: Identifies HttpClient issue but misses async patterns
+            - 7-8: Good coverage of async anti-patterns with fixes
+            - 9-10: Comprehensive async analysis including cancellation and parallelism
+          scoring: scale_1_10
+          threshold: 0.5
+
+      # ── High Tier (weight 2.0) ───────────────────────────────────────────
+      - type: prompt
+        name: reflection-serialization-overhead
+        config:
+          prompt: |
+            You are evaluating a .NET performance analysis report produced by an AI agent.
+
+            Score this dimension: **Reflection and Serialization Overhead**
+
+            What to look for:
+            - Does the analysis flag GetProperties()/SetValue() reflection in EntityMapper hot paths without caching?
+            - Does it identify new JsonSerializerOptions per call in JsonTransformer (should be static/cached)?
+            - Does it flag repeated full deserialization where Utf8JsonReader or partial parsing would suffice?
+
+            Why it matters: Reflection is 100-1000x slower than direct access. Per-call
+            JsonSerializerOptions defeats the internal caching that System.Text.Json relies on.
+
+            Score on a 1-10 scale.
+          scoring: scale_1_10
+          threshold: 0.5
+
+      - type: prompt
+        name: structural-optimization-detection
+        config:
+          prompt: |
+            You are evaluating a .NET performance analysis report produced by an AI agent.
+
+            Score this dimension: **Structural Optimization Detection**
+
+            What to look for:
+            - Does the analysis identify unsealed leaf classes (DataPipeline.Record, ValidationResult, MappingConfig)?
+            - Does it flag structs without IEquatable<T> (DeliveryResult, ValidationError) causing boxing?
+            - Does it identify static Dictionary candidates for FrozenDictionary on .NET 8+?
+
+            Why it matters: Sealed classes enable JIT devirtualization (up to 30% faster virtual calls).
+            Missing IEquatable on structs causes boxing allocations. FrozenDictionary provides faster
+            read-only lookups for static data.
+
+            Score on a 1-10 scale.
+          scoring: scale_1_10
+          threshold: 0.5
+
+      - type: prompt
+        name: aggregate-replace-chain-detection
+        config:
+          prompt: |
+            You are evaluating a .NET performance analysis report produced by an AI agent.
+
+            Score this dimension: **Aggregate and Replace Chain Detection**
+
+            What to look for:
+            - Does the analysis flag .Aggregate() calling .Replace() over 16 unit prefixes in MetricFormatter.ExpandPrefixSymbols as creating 16 intermediate string allocations?
+            - Does it identify char.ToString() allocation inside the Aggregate lambda as a per-iteration heap allocation?
+
+            Why it matters: Aggregate+Replace chains are a subtle O(n×m) string allocation pattern.
+            Each Replace allocates even when nothing matches. Combined with char.ToString() this
+            creates 32+ allocations per call in a monitoring dashboard hot path.
+
+            Score on a 1-10 scale.
+          scoring: scale_1_10
+          threshold: 0.5
+
+      - type: prompt
+        name: span-usage-consistency
+        config:
+          prompt: |
+            You are evaluating a .NET performance analysis report produced by an AI agent.
+
+            Score this dimension: **Span Usage Consistency**
+
+            What to look for:
+            - Does the analysis flag `value[..maxLength].TrimEnd()` in FixedLengthTruncator as a double allocation (substring + TrimEnd)?
+            - Does it note that FixedCharacterTruncator correctly uses AsSpan but FixedLengthTruncator and WordBoundaryTruncator do not?
+            - Does it identify `List<char>[]` in TruncationSymbols as heap-allocated collections where ReadOnlySpan<char> or string constants would be more efficient?
+
+            Why it matters: Inconsistent Span usage across similar classes signals missed
+            optimization opportunities. Double-allocation patterns compound when called on
+            every displayed string.
+
+            Score on a 1-10 scale.
+          scoring: scale_1_10
+          threshold: 0.5
+
+      - type: prompt
+        name: inheritance-sealing-accuracy
+        config:
+          prompt: |
+            You are evaluating a .NET performance analysis report produced by an AI agent.
+
+            Score this dimension: **Inheritance Sealing Accuracy**
+
+            What to look for:
+            - Does the analysis identify EnglishOrdinalizer, GermanOrdinalizer, and SpanishOrdinalizer as unsealed leaf classes that should be sealed?
+            - CRITICALLY: Does the analysis correctly NOT flag DefaultOrdinalizer for sealing (it is a base class with subclasses)?
+            - The abstract Ordinalizer base should also not be flagged.
+
+            Why it matters: Correctly distinguishing base classes from leaf classes is essential
+            for accurate sealing recommendations. Incorrectly sealing a base class would break
+            compilation. This tests precision — avoiding false positives is as important as
+            catching true positives.
+
+            Score on a 1-10 scale. Score harshly if DefaultOrdinalizer is incorrectly flagged for sealing.
+          scoring: scale_1_10
+          threshold: 0.5
+
+      - type: prompt
+        name: severity-classification-accuracy
+        config:
+          prompt: |
+            You are evaluating a .NET performance analysis report produced by an AI agent.
+
+            Score this dimension: **Severity Classification Accuracy**
+
+            What to look for:
+            - Are critical issues (per-call Regex in million-line log parser, HttpClient per call, char-by-char string building) ranked higher than moderate issues?
+            - Does the analysis distinguish between hot-path issues and cold-path/setup-time issues?
+            - Are missing capacity hints and ContainsKey+indexer correctly classified as lower severity than socket exhaustion?
+
+            Why it matters: Accurate severity classification helps developers prioritize fixes.
+            Treating all issues equally dilutes the signal.
+
+            Score on a 1-10 scale.
+          scoring: scale_1_10
+          threshold: 0.5
+
+      - type: prompt
+        name: fix-recommendation-quality
+        config:
+          prompt: |
+            You are evaluating a .NET performance analysis report produced by an AI agent.
+
+            Score this dimension: **Fix Recommendation Quality**
+
+            What to look for:
+            - Do fix recommendations reference specific .NET APIs (e.g., [GeneratedRegex], StringBuilder, StringComparison.OrdinalIgnoreCase, FrozenDictionary, IHttpClientFactory)?
+            - Do they include code examples or patterns?
+            - Do they AVOID incorrect suggestions (e.g., using Span<T> in async methods, recommending unsafe code for micro-optimizations)?
+
+            Why it matters: Vague advice ("optimize this") is not actionable. Incorrect suggestions
+            would introduce bugs. Good fix recommendations accelerate developer productivity.
+
+            Score on a 1-10 scale.
+          scoring: scale_1_10
+          threshold: 0.5
+
+      # ── Moderate Tier (weight 1.0) ───────────────────────────────────────
+      - type: prompt
+        name: params-overload-optimization
+        config:
+          prompt: |
+            You are evaluating a .NET performance analysis report produced by an AI agent.
+
+            Score this dimension: **Params Overload Optimization**
+
+            What to look for:
+            - Does the analysis flag TruncationPipeline.Apply(string, int, params ITruncator[]) as always allocating a params array even for the common single-truncator case?
+            - Does it recommend adding a single-argument overload to avoid the array allocation?
+
+            Why it matters: params arrays allocate on every call. When the common case is a
+            single argument, a dedicated overload avoids the allocation entirely. This is a
+            standard .NET performance pattern used throughout the BCL.
+
+            Score on a 1-10 scale.
+          scoring: scale_1_10
+          threshold: 0.5
+
+      # ── Structural grader: verify the output file was created ────────────
+      - type: file-exists
+        name: output-file-created
+        config:
+          path: performance-analysis.md
+
+  # ── With Skills (dotnet-diag performance skills) ──────────────────────
+  - name: analyze-perf-with-skills
+    tags:
+      configuration: dotnet-perf-skills
+    environment: dotnet-perf-skills
+    prompt: |
+      You are a .NET performance expert. There is an **existing** .NET class library project already on disk at `./perf01/`. **Do NOT create any source files.** The project and all its source code already exist. Your job is to read the existing code and analyze it for performance issues.
+
+      ## Instructions
+
+      1. **Read the existing source files** from the `./perf01/` directory. Start by listing the files with a glob or directory listing, then read each `.cs` file.
+
+      2. **Scan for performance anti-patterns** across these categories:
+         - **Regex** — per-call instantiation, excessive `RegexOptions.Compiled`, missing `[GeneratedRegex]`
+         - **String** — `+=` in loops, `.Replace()` chains, `.ToLower()`/`.ToUpper()` without culture
+         - **Memory/Allocation** — boxing structs, `params` arrays, closure captures, unnecessary `.ToList()`
+         - **Collections** — `List.Contains` (O(n)), `ContainsKey` + indexer, missing capacity hints, `FrozenDictionary` candidates
+         - **Async/IO** — `new HttpClient` per call, sequential awaits in loops, missing cancellation tokens, unbounded parallelism
+         - **Reflection** — uncached `GetProperties()`/`SetValue()` in hot paths
+         - **Structural** — unsealed leaf classes, structs without `IEquatable<T>`
+         - **Serialization** — `new JsonSerializerOptions` per call, repeated deserialization
+         - **Span** — inconsistent `AsSpan` usage across similar classes, `value[..n].TrimEnd()` double allocation, `List<char>[]` vs `ReadOnlySpan<char>`
+         - **Aggregate** — `.Aggregate()` with `.Replace()` creating intermediate string allocations, `char.ToString()` in loops
+         - **Inheritance** — leaf classes that should be `sealed` vs. base classes that must remain unsealed
+         - **Params** — `params` methods without single-argument fast-path overloads
+
+      3. **Classify each finding** by severity:
+         - 🔴 **Critical** — >10x performance regression potential or production incident risk (e.g., socket exhaustion, O(n²) in hot paths)
+         - 🟡 **Moderate** — 2-10x regression, measurable impact at scale
+         - ℹ️ **Info** — Best practice improvement, minor allocation savings
+
+      4. **Provide specific fix recommendations** for each finding. Reference concrete .NET APIs and patterns. Include brief code snippets showing the before/after where helpful.
+
+      ## Output
+
+      Write your complete analysis to a file named `performance-analysis.md` in the current directory. Use the following structure:
+
+      ```markdown
+      # Performance Analysis Report
+
+      ## Executive Summary
+      (Brief overview: total issues found, breakdown by severity, top priorities)
+
+      ## Findings by File
+      ### [filename]
+      (For each file, list findings with severity, description, and fix recommendation)
+
+      ## Cross-Cutting Concerns
+      (Patterns that appear across multiple files)
+
+      ## Prioritized Fix Recommendations
+      (Top 10 fixes ranked by impact, with effort estimates: quick-fix / moderate / significant)
+      ```
+
+    graders: *perf-graders
+
+# ── Scoring ──────────────────────────────────────────────────────────────
+# Weights mirror copilot-skill-eval tiers: critical=3, high=2, moderate=1.
+# The output-file-created grader is a gate (low weight, must pass).
+scoring:
+  threshold: 0.5
+  weights:
+    # Critical tier (3×)
+    regex-antipattern-detection: 3.0
+    string-allocation-detection: 3.0
+    collection-linq-efficiency: 3.0
+    async-io-pattern-detection: 3.0
+    # High tier (2×)
+    reflection-serialization-overhead: 2.0
+    structural-optimization-detection: 2.0
+    aggregate-replace-chain-detection: 2.0
+    span-usage-consistency: 2.0
+    inheritance-sealing-accuracy: 2.0
+    severity-classification-accuracy: 2.0
+    fix-recommendation-quality: 2.0
+    # Moderate tier (1×)
+    params-overload-optimization: 1.0
+    # Structural gate
+    output-file-created: 0.5

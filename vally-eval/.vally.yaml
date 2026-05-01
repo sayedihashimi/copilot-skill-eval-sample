@@ -1,0 +1,29 @@
+# Vally project configuration for .NET Performance Analysis evaluation.
+#
+# This mirrors the copilot-skill-eval dotnet-perf evaluation using Vally.
+# See README.md for setup and usage instructions.
+
+paths:
+  skills: ["."]
+  evals: ["evals"]
+  results: "results"
+
+environments:
+  baseline:
+    files:
+      - src: ../samples/perf01
+        dest: perf01
+
+  dotnet-perf-skills:
+    files:
+      - src: ../samples/perf01
+        dest: perf01
+    skills:
+      - C:\data\mycode\skills\_main\plugins\dotnet-diag\skills\analyzing-dotnet-performance
+      - C:\data\mycode\skills\_main\plugins\dotnet-diag\skills\microbenchmarking
+      - C:\data\mycode\skills\_main\plugins\dotnet-diag\skills\dotnet-trace-collect
+
+suites:
+  dotnet-perf:
+    description: ".NET performance analysis evaluation"
+    evals: ["evals/eval.yaml"]
