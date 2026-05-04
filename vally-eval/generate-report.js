@@ -40,17 +40,17 @@ if (trajectoryEntries.length === 0) {
 // Tier/weight mapping (mirrors the eval.yaml comments)
 // ---------------------------------------------------------------------------
 const TIER_MAP = {
-  "regex-antipattern-detection": { tier: "CRITICAL", weight: 3 },
-  "string-allocation-detection": { tier: "CRITICAL", weight: 3 },
-  "collection-linq-efficiency": { tier: "CRITICAL", weight: 3 },
-  "async-io-pattern-detection": { tier: "CRITICAL", weight: 3 },
-  "reflection-serialization-overhead": { tier: "HIGH", weight: 2 },
-  "structural-optimization-detection": { tier: "HIGH", weight: 2 },
-  "aggregate-replace-chain-detection": { tier: "HIGH", weight: 2 },
-  "span-usage-consistency": { tier: "HIGH", weight: 2 },
-  "inheritance-sealing-accuracy": { tier: "HIGH", weight: 2 },
-  "severity-classification-accuracy": { tier: "HIGH", weight: 2 },
-  "fix-recommendation-quality": { tier: "HIGH", weight: 2 },
+  "regex-antipattern-detection": { tier: "MODERATE", weight: 1 },
+  "string-allocation-detection": { tier: "MODERATE", weight: 1 },
+  "collection-linq-efficiency": { tier: "MODERATE", weight: 1 },
+  "async-io-pattern-detection": { tier: "MODERATE", weight: 1 },
+  "reflection-serialization-overhead": { tier: "MODERATE", weight: 1 },
+  "structural-optimization-detection": { tier: "MODERATE", weight: 1 },
+  "aggregate-replace-chain-detection": { tier: "MODERATE", weight: 1 },
+  "span-usage-consistency": { tier: "MODERATE", weight: 1 },
+  "inheritance-sealing-accuracy": { tier: "MODERATE", weight: 1 },
+  "severity-classification-accuracy": { tier: "MODERATE", weight: 1 },
+  "fix-recommendation-quality": { tier: "MODERATE", weight: 1 },
   "params-overload-optimization": { tier: "MODERATE", weight: 1 },
   "output-file-created": { tier: "GATE", weight: 0 },
 };

@@ -16,8 +16,8 @@ type: capability
 config:
   runs: 3
   timeout: 300000
-  model: claude-sonnet-4
-  judge_model: gpt-4.1
+  model: claude-opus-4.6
+  judge_model: gpt-5.4
 
 stimuli:
   # ── Baseline (no skills) ──────────────────────────────────────────────────
@@ -75,7 +75,7 @@ stimuli:
       ```
 
     graders: &perf-graders
-      # ── Critical Tier (weight 3.0) ───────────────────────────────────────
+      # ── All dimensions at MODERATE tier (weight 1.0) ─────────────────────
       - type: prompt
         name: regex-antipattern-detection
         config:
@@ -180,7 +180,7 @@ stimuli:
           scoring: scale_1_10
           threshold: 0.5
 
-      # ── High Tier (weight 2.0) ───────────────────────────────────────────
+      # ── Continued ───────────────────────────────────────────────────────
       - type: prompt
         name: reflection-serialization-overhead
         config:
@@ -325,7 +325,7 @@ stimuli:
           scoring: scale_1_10
           threshold: 0.5
 
-      # ── Moderate Tier (weight 1.0) ───────────────────────────────────────
+      # ── Continued ───────────────────────────────────────────────────────
       - type: prompt
         name: params-overload-optimization
         config:
@@ -414,9 +414,6 @@ stimuli:
 # weighted scoring is not yet supported. The aggregate score is an unweighted
 # average of all graders. The threshold controls pass/fail.
 #
-# Tier mapping for reference (not enforced by vally yet):
-#   Critical (3×): regex, string, collection, async
-#   High (2×): reflection, structural, aggregate, span, inheritance, severity, fix-quality
-#   Moderate (1×): params-overload
+# All dimensions use MODERATE tier (weight 1×) — equal weighting.
 scoring:
   threshold: 0.5
